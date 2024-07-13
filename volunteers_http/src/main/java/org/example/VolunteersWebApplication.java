@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class VolunteersApplication {
+public class VolunteersWebApplication {
     public static void main(String[] args) {
-        SpringApplication.run(VolunteersApplication.class, args);
+        SpringApplication.run(VolunteersWebApplication.class, args);
     }
 }
