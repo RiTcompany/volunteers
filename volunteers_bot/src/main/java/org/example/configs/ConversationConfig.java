@@ -2,6 +2,7 @@ package org.example.configs;
 
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
+import org.example.repositories.ConversationRepository;
 import org.example.services.ConversationStepService;
 import org.example.services.impl.ConversationStepServiceImpl;
 import org.example.steps.CityChoiceStep;
@@ -53,13 +54,22 @@ public class ConversationConfig {
     }
 
     private void buildRegisterConversationStepGraph(Map<EConversationStep, ConversationStep> conversationStepMap) {
-        ConversationStep parentConversationStep = conversationStepMap.get(EConversationStep.CITY_CHOICE);
-        List<EConversationStep> childerConversationStepList = new ArrayList<>() {{
+        buildConversationStepGraphNode(conversationStepMap, EConversationStep.CITY_CHOICE, new ArrayList<>() {{
             add(EConversationStep.CITY_INPUT);
             add(null);
-            add(EConversationStep.CITY_CHOICE);
-        }};
-        setNextConversationStepList(parentConversationStep, childerConversationStepList);
+        }});
+        buildConversationStepGraphNode(conversationStepMap, EConversationStep.CITY_INPUT, new ArrayList<>() {{
+            add(null);
+        }});
+    }
+
+    private void buildConversationStepGraphNode(
+            Map<EConversationStep, ConversationStep> conversationStepMap,
+            EConversationStep eParentConversationStep,
+            List<EConversationStep> eChilderConversationStepList
+    ) {
+        ConversationStep parentConversationStep = conversationStepMap.get(eParentConversationStep);
+        setNextConversationStepList(parentConversationStep, eChilderConversationStepList);
     }
 
     private void setNextConversationStepList(

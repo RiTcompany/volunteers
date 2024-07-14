@@ -16,5 +16,5 @@ public class ChatHash implements Serializable {
     private Long id;
     private EConversation eConversation;
     private EConversationStep eConversationStep;
-    private Integer lastMessageId;
+    private Integer prevBotMessageId;
 }
