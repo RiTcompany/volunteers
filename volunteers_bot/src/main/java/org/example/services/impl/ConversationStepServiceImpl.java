@@ -1,6 +1,7 @@
 package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.repositories.ConversationRepository;
 import org.example.steps.ConversationStep;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
@@ -27,9 +28,7 @@ public class ConversationStepServiceImpl implements ConversationStepService {
         step.prepare(chatHash, sender);
     }
 
-    public EConversationStep executeStep(
-            ChatHash chatHash, MessageDto messageDto, AbsSender sender
-    ) {
+    public EConversationStep executeStep(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         ConversationStep step = getConversationStep(chatHash);
         return step.execute(chatHash, messageDto, sender);
     }

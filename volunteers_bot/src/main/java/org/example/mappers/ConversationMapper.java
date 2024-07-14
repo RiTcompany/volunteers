@@ -10,14 +10,13 @@ public class ConversationMapper {
     public ChatHash conversationHash(
             long chatId,
             EConversation eConversation,
-            EConversationStep eConversationStep,
-            Integer lastMessageId
+            EConversationStep eConversationStep
     ) {
         ChatHash chatHash = new ChatHash();
         chatHash.setId(chatId);
         chatHash.setEConversation(eConversation);
         chatHash.setEConversationStep(eConversationStep);
-        chatHash.setLastMessageId(lastMessageId);
+        chatHash.setPrevBotMessageId(-1);
         return chatHash;
     }
 }
