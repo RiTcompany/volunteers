@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ECity {
     SPB("Санкт-Петербург"),
-    NOT_SPB("Другое");
+    OTHER("Другое");
 
-    private final String cityName;
+    private final String cityStr;
 
-    ECity(String cityName) {
-        this.cityName = cityName;
+    ECity(String cityStr) {
+        this.cityStr = cityStr;
     }
 }

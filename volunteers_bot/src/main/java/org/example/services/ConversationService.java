@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Service
 public interface ConversationService {
-    void executeConversationStep(Update update, EMessage EMessage, AbsSender sender) throws CommandException;
-
     void startConversation(long chatId, EConversation eConversation, AbsSender sender);
+
+    void executeConversationStep(Update update, EMessage EMessage, AbsSender sender) throws CommandException;
 }

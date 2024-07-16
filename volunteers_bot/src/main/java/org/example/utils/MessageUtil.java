@@ -1,10 +1,9 @@
 package org.example.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.enums.EMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -19,6 +18,7 @@ public class MessageUtil {
 
     public static int sendMessage(SendMessage message, AbsSender sender) {
         try {
+            message.enableHtml(true);
             return sender.execute(message).getMessageId();
         } catch (TelegramApiException e) {
             log.error(
@@ -32,13 +32,14 @@ public class MessageUtil {
 
     public static void editMessage(long chatId, Integer messageId, String newText, AbsSender sender) {
         if (messageId > 0) {
-            EditMessageText edit = completeEditMessage(chatId, messageId, newText);
+            EditMessageText edit = completeEditMessageText(chatId, messageId, newText);
             editMessage(edit, sender);
         }
     }
 
     public static void editMessage(EditMessageText edit, AbsSender sender) {
         try {
+            edit.enableHtml(true);
             sender.execute(edit);
         } catch (TelegramApiException e) {
             log.error(
@@ -58,13 +59,35 @@ public class MessageUtil {
 
     public static SendMessage completeSendMessage(String text, String chatId) {
         SendMessage message = new SendMessage();
-        message.enableMarkdown(true);
-        message.setText(TextUtil.adaptMarkdownText(text));
+        message.setText(text);
         message.setChatId(chatId);
         return message;
     }
 
-    public static EditMessageText completeEditMessage(
+
+
+    public static EditMessageReplyMarkup completeEditMessageReplyMarkup(
+            String chatId, Integer messageId, InlineKeyboardMarkup inlineKeyboardMarkup
+    ) {
+        EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
+        edit.setMessageId(messageId);
+        edit.setReplyMarkup(inlineKeyboardMarkup);
+        edit.setChatId(chatId);
+        return edit;
+    }
+
+    public static void editMessageReplyMarkup(EditMessageReplyMarkup edit, AbsSender sender) {
+        try {
+            sender.execute(edit);
+        } catch (TelegramApiException e) {
+            log.error(
+                    "Для ID чата {} не удалось изменить сообщение. Причина: {}",
+                    edit.getChatId(), e.getMessage()
+            );
+        }
+    }
+
+    private static EditMessageText completeEditMessageText(
             long chatId, Integer messageId, String newText
     ) {
         EditMessageText edit = new EditMessageText();
