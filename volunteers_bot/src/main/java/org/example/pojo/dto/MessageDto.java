@@ -1,9 +1,11 @@
 package org.example.pojo.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.enums.EMessage;
 
-@Data
+@Getter @Setter
 public class MessageDto {
     private long chatId;
     private String data;

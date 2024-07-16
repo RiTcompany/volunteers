@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ConversationRepository extends CrudRepository<ChatHash, Long> {
+public interface ChatHashRepository extends CrudRepository<ChatHash, Long> {
 }

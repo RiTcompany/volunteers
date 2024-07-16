@@ -6,17 +6,15 @@ import org.example.enums.EConversationStep;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConversationMapper {
-    public ChatHash conversationHash(
-            long chatId,
-            EConversation eConversation,
-            EConversationStep eConversationStep
-    ) {
+public class ChatHashMapper {
+    private static final int DEFAULT_MESSAGE_ID = -1;
+    private static final int DEFAULT_PAGE_NUMBER = 0;
+    public ChatHash chatHash(long chatId, EConversation eConversation) {
         ChatHash chatHash = new ChatHash();
         chatHash.setId(chatId);
         chatHash.setEConversation(eConversation);
-        chatHash.setEConversationStep(eConversationStep);
-        chatHash.setPrevBotMessageId(-1);
+        chatHash.setPrevBotMessageId(DEFAULT_MESSAGE_ID);
+        chatHash.setPrevBotMessagePageNumber(DEFAULT_PAGE_NUMBER);
         return chatHash;
     }
 }

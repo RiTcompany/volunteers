@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
 public class InfoCommand extends BotCommand {
-    private final String MESSAGE = "Hello"; // TODO : add information list
+    private final String MESSAGE = "Здесь будет безумно важная информация, но потом"; // TODO : add information list
 
     public InfoCommand() {
         super("info", "Information command");

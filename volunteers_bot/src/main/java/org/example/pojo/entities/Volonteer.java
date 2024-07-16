@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
 
 import java.util.Date;
@@ -39,6 +40,10 @@ public class Volonteer {
     @Column(name = "tg_link")
     private String tgLink;
 
+    @Column(name = "education_status")
+    @Enumerated(EnumType.STRING)
+    private EEducationStatus educationStatus;
+
     @Column(name = "education_institution")
     private String educationInstitution;
 
@@ -53,5 +58,10 @@ public class Volonteer {
 
     public Volonteer(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public Volonteer(Long chatId, String tgLink) {
+        this.chatId = chatId;
+        this.tgLink = tgLink;
     }
 }
