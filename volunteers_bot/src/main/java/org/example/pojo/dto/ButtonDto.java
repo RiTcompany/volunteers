@@ -2,14 +2,15 @@ package org.example.pojo.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 @Getter
-@RequiredArgsConstructor
+@Setter
 public class ButtonDto {
-    private final String callback;
-    private final String text;
-    private final int row;
+    private String callback;
+    private String text;
+    private int row;
 
     public InlineKeyboardButton toKeyboardButton() {
         InlineKeyboardButton button = new InlineKeyboardButton();

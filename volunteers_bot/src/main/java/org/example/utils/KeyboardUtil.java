@@ -28,7 +28,7 @@ public class KeyboardUtil {
             EditMessageReplyMarkup edit = completeEditMessageReplyMarkup(chatId, keyboardMessageId);
             sender.execute(edit);
         } catch (TelegramApiException e) {
-            logger.error("Для ID чата {} не удалось отправить сообщение. Причина: {}", chatId, e.getMessage());
+            logger.warn("В чате ID={} нет клавиатуры для её удаления", chatId); // TODO : надо бы наверное глядеть, если ли клава и только тогда удалять
         }
     }
 

@@ -42,9 +42,9 @@ public final class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         try {
             if (message.isCommand()) {
-                executeCommand(message);
+                executeCommand(update);
             } else if (message.hasText()) {
-                conversationService.executeConversationStep(message, EMessage.TEXT, this);
+                executeConversationStep(update, EMessage.TEXT);
             }
         } catch (AbstractException e) {
             log.error(e.getMessage());
@@ -52,8 +52,9 @@ public final class Bot extends TelegramLongPollingBot {
         }
     }
 
-    private void executeCommand(Message message) throws CommandException, ChatNotFoundException {
-        conversationService.executeConversationStep(message, EMessage.COMMAND, this);
+    private void executeCommand(Update update) throws CommandException, ChatNotFoundException {
+        Message message = update.getMessage();
+        executeConversationStep(update, EMessage.COMMAND);
         if (!commandRegistry.executeCommand(this, message)) {
             MessageUtil.sendMessage("Такой команды не существует", message.getChatId(), this);
         }
@@ -62,10 +63,14 @@ public final class Bot extends TelegramLongPollingBot {
     private void executeCallbackRequest(Update update) {
         CallbackQuery callbackQuery = update.getCallbackQuery();
         try {
-            conversationService.executeConversationStep(callbackQuery, this);
+            executeConversationStep(update, EMessage.CALLBACK);
         } catch (AbstractException e) {
             log.error(e.getMessage());
             MessageUtil.sendMessage(e.getUserMessage(), callbackQuery.getMessage().getChatId(), this);
         }
+    }
+
+    private void executeConversationStep(Update update, EMessage eMessage) throws CommandException {
+        conversationService.executeConversationStep(update, eMessage, this);
     }
 }

@@ -38,11 +38,6 @@ public class InlineKeyboardBuilder {
         this.buttons.get(row).add(button.toKeyboardButton());
     }
 
-    public InlineKeyboardMarkup getInlineKeyboardMarkup() {
-        build();
-        return inlineKeyboardMarkup;
-    }
-
     public SendMessage build() {
         this.rowList.clear();
         this.rowList.addAll(this.buttons.values());
