@@ -1,14 +1,16 @@
 package org.example.steps.impl;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.ECity;
 import org.example.enums.EConversationStep;
-import org.example.mappers.KeyboardMapper;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volonteer;
-import org.example.repositories.VolonteerRepository;
+import org.example.services.VolonteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -21,7 +23,10 @@ import java.util.List;
 @Slf4j
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@RequiredArgsConstructor
 public class CityChoiceStep extends ChoiceStep {
+    private final VolonteerService volonteerService;
+    @Getter(AccessLevel.PROTECTED)
     private static final String PREPARE_MESSAGE_TEXT = "Укажите ваш <b>город</b>: ";
     private static final String DEFAULT_CITY_MESSAGE_TEXT = "Ваш город: <b>".concat(ECity.SPB.getCityStr()).concat("</b>");
     private static final String INPUT_CITY_MESSAGE_TEXT = "Ваш город: ожидается...";
@@ -29,10 +34,6 @@ public class CityChoiceStep extends ChoiceStep {
 
     static {
         buttonDtoList = ButtonUtil.cityButtonList();
-    }
-
-    public CityChoiceStep(VolonteerRepository volonteerRepository, KeyboardMapper keyboardMapper) {
-        super(volonteerRepository, PREPARE_MESSAGE_TEXT, keyboardMapper);
     }
 
     @Override
@@ -44,8 +45,8 @@ public class CityChoiceStep extends ChoiceStep {
         try {
             ECity eCity = ECity.valueOf(city);
             return switch (eCity) {
-                case OTHER -> executeOtherCity(chatHash, messageDto, sender);
-                case SPB -> executeDefaultCity(chatHash, messageDto, sender);
+                case OTHER -> executeOtherCity(chatHash, sender);
+                case SPB -> executeDefaultCity(chatHash, sender);
             };
         } catch (IllegalArgumentException e) {
             log.error("Chat ID={} Incorrect city choice: {}", chatHash.getId(), city);
@@ -54,24 +55,24 @@ public class CityChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected void setButtonList(ChatHash chatHash) {
+    protected void setButtonList(long chatId) {
         setButtonDtoList(buttonDtoList);
     }
 
-    private EConversationStep executeOtherCity(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        finishStep(chatHash, messageDto, sender, INPUT_CITY_MESSAGE_TEXT);
+    private EConversationStep executeOtherCity(ChatHash chatHash, AbsSender sender) {
+        finishStep(chatHash, sender, INPUT_CITY_MESSAGE_TEXT);
         return eConversationStepList.get(0);
     }
 
-    private EConversationStep executeDefaultCity(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+    private EConversationStep executeDefaultCity(ChatHash chatHash, AbsSender sender) {
         saveDefaultCity(chatHash);
-        finishStep(chatHash, messageDto, sender, DEFAULT_CITY_MESSAGE_TEXT);
+        finishStep(chatHash, sender, DEFAULT_CITY_MESSAGE_TEXT);
         return eConversationStepList.get(1);
     }
 
     private void saveDefaultCity(ChatHash chatHash) {
-        Volonteer volonteer = getVolonteer(chatHash);
+        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatHash.getId());
         volonteer.setCity(ECity.SPB.getCityStr());
-        saveAndFlushVolonteer(volonteer);
+        volonteerService.saveAndFlushVolonteer(volonteer);
     }
 }

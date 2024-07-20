@@ -1,7 +1,5 @@
 package org.example.steps;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.example.enums.EConversationStep;
 import org.example.pojo.dto.MessageDto;
@@ -12,10 +10,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.List;
 
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class ConversationStep {
-    protected final String PREPARE_MESSAGE_TEXT;
-
     @Setter
     protected List<EConversationStep> eConversationStepList;
 
@@ -25,17 +20,15 @@ public abstract class ConversationStep {
             ChatHash chatHash, MessageDto messageDto, AbsSender sender
     );
 
-    protected void finishStep(
-            ChatHash chatHash, MessageDto messageDto, AbsSender sender, String editMessageText
-    ) {
+    protected void finishStep(ChatHash chatHash, AbsSender sender, String text) {
         deleteKeyboard(chatHash, sender);
-        editMessageText(messageDto, sender, editMessageText);
+        sendFinishMessage(chatHash, sender, text);
     }
 
     protected EConversationStep handleIllegalUserAction(
             ChatHash chatHash, MessageDto messageDto, AbsSender sender, String exceptionMessageText
     ) {
-        MessageUtil.sendMessage(exceptionMessageText, messageDto.getChatId(), sender);
+        MessageUtil.sendMessageText(exceptionMessageText, messageDto.getChatId(), sender);
         return chatHash.getEConversationStep();
     }
 
@@ -45,12 +38,7 @@ public abstract class ConversationStep {
         KeyboardUtil.cleanKeyboard(chatId, keyBoardMessageId, sender);
     }
 
-    private void editMessageText(MessageDto messageDto, AbsSender sender, String editMessageText) {
-        MessageUtil.editMessage(
-                messageDto.getChatId(),
-                messageDto.getPrevBotMessageId(),
-                editMessageText,
-                sender
-        );
+    private void sendFinishMessage(ChatHash chatHash, AbsSender sender, String text) {
+        MessageUtil.sendMessageText(text, chatHash.getId(), sender);
     }
 }

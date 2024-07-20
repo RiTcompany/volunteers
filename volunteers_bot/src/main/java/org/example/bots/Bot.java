@@ -43,12 +43,14 @@ public final class Bot extends TelegramLongPollingBot {
         try {
             if (message.isCommand()) {
                 executeCommand(update);
+            } else if (message.hasDocument()) {
+                executeConversationStep(update, EMessage.DOCUMENT);
             } else if (message.hasText()) {
                 executeConversationStep(update, EMessage.TEXT);
             }
         } catch (AbstractException e) {
             log.error(e.getMessage());
-            MessageUtil.sendMessage(e.getUserMessage(), message.getChatId(), this);
+            MessageUtil.sendMessageText(e.getUserMessage(), message.getChatId(), this);
         }
     }
 
@@ -56,7 +58,7 @@ public final class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         executeConversationStep(update, EMessage.COMMAND);
         if (!commandRegistry.executeCommand(this, message)) {
-            MessageUtil.sendMessage("Такой команды не существует", message.getChatId(), this);
+            MessageUtil.sendMessageText("Такой команды не существует", message.getChatId(), this);
         }
     }
 
@@ -66,7 +68,7 @@ public final class Bot extends TelegramLongPollingBot {
             executeConversationStep(update, EMessage.CALLBACK);
         } catch (AbstractException e) {
             log.error(e.getMessage());
-            MessageUtil.sendMessage(e.getUserMessage(), callbackQuery.getMessage().getChatId(), this);
+            MessageUtil.sendMessageText(e.getUserMessage(), callbackQuery.getMessage().getChatId(), this);
         }
     }
 

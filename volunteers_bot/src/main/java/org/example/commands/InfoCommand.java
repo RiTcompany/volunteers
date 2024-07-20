@@ -17,6 +17,6 @@ public class InfoCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        MessageUtil.sendMessage(MESSAGE, chat.getId(), absSender);
+        MessageUtil.sendMessageText(MESSAGE, chat.getId(), absSender);
     }
 }

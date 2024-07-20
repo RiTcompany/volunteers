@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum EMessage {
     TEXT("text"),
     COMMAND("command"),
-    CALLBACK("callback");
+    CALLBACK("callback"),
+    DOCUMENT("document");
 
     private final String description;
 

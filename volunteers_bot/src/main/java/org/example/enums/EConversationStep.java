@@ -4,6 +4,7 @@ public enum EConversationStep {
     CITY_CHOICE,
     CITY_INPUT,
     BIRTHDAY_INPUT,
+    CHILD_DOCUMENT_SEND,
     FULL_NAME_INPUT,
     GENDER_CHOICE,
     PHONE_INPUT,

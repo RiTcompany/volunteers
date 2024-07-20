@@ -1,14 +1,16 @@
 package org.example.steps.impl;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EConversationStep;
 import org.example.enums.EEducationStatus;
-import org.example.mappers.KeyboardMapper;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volonteer;
-import org.example.repositories.VolonteerRepository;
+import org.example.services.VolonteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.example.utils.EducationUtil;
@@ -22,14 +24,13 @@ import java.util.List;
 @Slf4j
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@RequiredArgsConstructor
 public class EducationInstitutionChoiceStep extends ChoiceStep {
+    private final VolonteerService volonteerService;
+    @Getter(AccessLevel.PROTECTED)
     private static final String PREPARE_MESSAGE_TEXT = "Укажите ваше <b>учебное заведение</b>: ";
     private static final String FOUND_INSTITUTION_MESSAGE_TEXT_TEMPLATE = "Ваше учебное заведение: <b>";
     private static final String NOT_FOUND_INSTITUTION_MESSAGE_TEXT = "Ваше учебное заведение: ожидается";
-
-    public EducationInstitutionChoiceStep(VolonteerRepository volonteerRepository, KeyboardMapper keyboardMapper) {
-        super(volonteerRepository, PREPARE_MESSAGE_TEXT, keyboardMapper);
-    }
 
     @Override
     public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
@@ -37,15 +38,15 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
         if (eConversationStep != null) return eConversationStep;
 
         String educationInstitution = messageDto.getData();
-        EEducationStatus eEducationStatus = getEEducationStatus(chatHash); // TODO : дважды запрашиваю из бд, надо бы исправить
+        EEducationStatus eEducationStatus = getEEducationStatus(chatHash.getId()); // TODO : дважды запрашиваю из бд, надо бы исправить
         if (isValidEducationInstitution(educationInstitution, eEducationStatus)) {
             if (EducationUtil.ANOTHER_ANSWER.equals(educationInstitution)) {
-                finishStep(chatHash, messageDto, sender, NOT_FOUND_INSTITUTION_MESSAGE_TEXT);
+                finishStep(chatHash, sender, NOT_FOUND_INSTITUTION_MESSAGE_TEXT);
                 return eConversationStepList.get(0);
             }
 
-            finishStep(chatHash, messageDto, sender, FOUND_INSTITUTION_MESSAGE_TEXT_TEMPLATE.concat(educationInstitution).concat("</b>"));
-            saveEducationInstitution(chatHash, educationInstitution);
+            finishStep(chatHash, sender, FOUND_INSTITUTION_MESSAGE_TEXT_TEMPLATE.concat(educationInstitution).concat("</b>"));
+            saveEducationInstitution(chatHash.getId(), educationInstitution);
             return eConversationStepList.get(1);
         } else {
             log.error("Chat ID={} Incorrect gender choice: {}", chatHash.getId(), educationInstitution);
@@ -54,8 +55,8 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected void setButtonList(ChatHash chatHash) {
-        EEducationStatus eEducationStatus = getEEducationStatus(chatHash);
+    protected void setButtonList(long chatId) {
+        EEducationStatus eEducationStatus = getEEducationStatus(chatId);
         setButtonDtoList(getButtonDtoList(eEducationStatus));
     }
 
@@ -64,17 +65,17 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
         return educationInstitutionList.contains(educationInstitution);
     }
 
-    private void saveEducationInstitution(ChatHash chatHash, String educationInstitution) {
-        Volonteer volonteer = getVolonteer(chatHash);
+    private void saveEducationInstitution(long chatId, String educationInstitution) {
+        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
         volonteer.setEducationInstitution(educationInstitution);
-        saveAndFlushVolonteer(volonteer);
+        volonteerService.saveAndFlushVolonteer(volonteer);
     }
 
     private List<ButtonDto> getButtonDtoList(EEducationStatus eEducationStatus) {
         return ButtonUtil.educationInstitutionButtonList(eEducationStatus);
     }
 
-    private EEducationStatus getEEducationStatus(ChatHash chatHash) {
-        return getVolonteer(chatHash).getEducationStatus();
+    private EEducationStatus getEEducationStatus(long chatId) {
+        return volonteerService.getVolonteerByChatId(chatId).getEducationStatus();
     }
 }

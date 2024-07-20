@@ -9,43 +9,37 @@ import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.KeyboardDto;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.repositories.VolonteerRepository;
 import org.example.utils.KeyboardUtil;
 import org.example.utils.MessageUtil;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.List;
 
-public abstract class ChoiceStep extends VolonteerConversationStep {
+@Component
+public abstract class ChoiceStep extends ConversationStep {
     protected static final String EXCEPTION_MESSAGE_TEXT = "Выберите один из выше предложенных вариантов";
-    private final KeyboardMapper keyboardMapper;
+    @Autowired
+    private KeyboardMapper keyboardMapper;
     @Setter(value = AccessLevel.PROTECTED)
     private List<ButtonDto> buttonDtoList;
 
-    public ChoiceStep(
-            VolonteerRepository volonteerRepository,
-            String prepareMessageText,
-            KeyboardMapper keyboardMapper
-    ) {
-        super(volonteerRepository, prepareMessageText);
-        this.keyboardMapper = keyboardMapper;
-    }
+    protected abstract String getPREPARE_MESSAGE_TEXT();
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        setButtonList(chatHash);
+        setButtonList(chatHash.getId());
         KeyboardDto keyboardDto = keyboardMapper.keyboardDto(
-                chatHash, buttonDtoList, PREPARE_MESSAGE_TEXT
+                chatHash, buttonDtoList, getPREPARE_MESSAGE_TEXT()
         );
-        SendMessage sendMessage = KeyboardUtil.sendMessageWithKeyboard(keyboardDto);
-        int messageId = MessageUtil.sendMessage(sendMessage, sender);
+        int messageId = MessageUtil.sendMessageReplyMarkup(keyboardDto, sender);
         chatHash.setPrevBotMessageId(messageId);
     }
 
     @Override
     public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        setButtonList(chatHash);
+        setButtonList(chatHash.getId());
         if (isMovePageAction(chatHash, messageDto, sender)) {
             return chatHash.getEConversationStep();
         }
@@ -53,7 +47,7 @@ public abstract class ChoiceStep extends VolonteerConversationStep {
         return null;
     }
 
-    protected abstract void setButtonList(ChatHash chatHash);
+    protected abstract void setButtonList(long chatId);
 
     private boolean isMovePageAction(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         try {
