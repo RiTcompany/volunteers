@@ -1,11 +1,14 @@
 package org.example.steps.impl;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EConversationStep;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volonteer;
-import org.example.repositories.VolonteerRepository;
+import org.example.services.VolonteerService;
 import org.example.steps.InputStep;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -15,37 +18,36 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Slf4j
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@RequiredArgsConstructor
 public class FullNameInputStep extends InputStep {
+    private final VolonteerService volonteerService;
+    @Getter(AccessLevel.PROTECTED)
     private static final String PREPARE_MESSAGE_TEXT = "Введите ваше <b>ФИО</b> полностью: ";
     private static final String ANSWER_MESSAGE_TEXT_TEMPLATE = "Ваше ФИО: <b>";
     private static final String EXCEPTION_MESSAGE_TEXT = "Ваше ФИО некорректно. Причина: слишком длинные данные";
     private static final int MAX_FULL_NAME_LENGTH = 100;
 
-    public FullNameInputStep(VolonteerRepository volonteerRepository) {
-        super(volonteerRepository, PREPARE_MESSAGE_TEXT);
-    }
-
     @Override
     public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         String fullName = messageDto.getData();
-        boolean citySaved = setFullName(chatHash, fullName);
+        boolean citySaved = setFullName(chatHash.getId(), fullName);
         if (citySaved) {
-            finishStep(chatHash, messageDto, sender, ANSWER_MESSAGE_TEXT_TEMPLATE.concat(fullName).concat("</b>"));
+            finishStep(chatHash, sender, ANSWER_MESSAGE_TEXT_TEMPLATE.concat(fullName).concat("</b>"));
             return eConversationStepList.get(0);
         }
 
         return handleIllegalUserAction(chatHash, messageDto, sender, EXCEPTION_MESSAGE_TEXT);
     }
 
-    private boolean setFullName(ChatHash chatHash, String fullName) {
+    private boolean setFullName(long chatId, String fullName) {
         if (!isValidFullName(fullName)) {
-            log.error("Chat ID={} incorrect full name: {}", chatHash.getId(), fullName);
+            log.error("Chat ID={} incorrect full name: {}", chatId, fullName);
             return false;
         }
 
-        Volonteer volonteer = getVolonteer(chatHash);
+        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
         volonteer.setFullName(fullName);
-        saveAndFlushVolonteer(volonteer);
+        volonteerService.saveAndFlushVolonteer(volonteer);
         return true;
     }
 

@@ -5,9 +5,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class ChatUtil {
     public static long getChatId(Update update, EMessage eMessage) {
-        return switch (eMessage) {
-            case TEXT, COMMAND -> update.getMessage().getChatId();
-            case CALLBACK -> update.getCallbackQuery().getMessage().getChatId();
-        };
+        return (EMessage.CALLBACK.equals(eMessage))
+                ? update.getCallbackQuery().getMessage().getChatId()
+                : update.getMessage().getChatId();
     }
 }

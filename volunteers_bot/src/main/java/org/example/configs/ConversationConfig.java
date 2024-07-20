@@ -5,6 +5,7 @@ import org.example.enums.EConversationStep;
 import org.example.services.ConversationStepService;
 import org.example.services.impl.ConversationStepServiceImpl;
 import org.example.steps.impl.BirthdayInputStep;
+import org.example.steps.impl.ChildDocumentStep;
 import org.example.steps.impl.CityChoiceStep;
 import org.example.steps.impl.CityInputStep;
 import org.example.steps.ConversationStep;
@@ -33,6 +34,8 @@ public class ConversationConfig {
     @Autowired
     private ObjectFactory<BirthdayInputStep> birthdayStepObjectFactory;
     @Autowired
+    private ObjectFactory<ChildDocumentStep> childDocumentStepObjectFactory;
+    @Autowired
     private ObjectFactory<FullNameInputStep> fullNameInputStepObjectFactory;
     @Autowired
     private ObjectFactory<GenderChoiceStep> genderChoiceStepObjectFactory;
@@ -47,7 +50,10 @@ public class ConversationConfig {
 
     @Bean
     public ConversationStepService conversation() {
-        return new ConversationStepServiceImpl(conversationStepGraph(), conversationStartStepMap());
+        return new ConversationStepServiceImpl(
+                conversationStepGraph(),
+                conversationStartStepMap()
+        );
     }
 
     @Bean
@@ -69,6 +75,7 @@ public class ConversationConfig {
             put(EConversationStep.CITY_CHOICE, cityChoiceStepObjectFactory.getObject());
             put(EConversationStep.CITY_INPUT, cityInputStepObjectFactory.getObject());
             put(EConversationStep.BIRTHDAY_INPUT, birthdayStepObjectFactory.getObject());
+            put(EConversationStep.CHILD_DOCUMENT_SEND, childDocumentStepObjectFactory.getObject());
             put(EConversationStep.FULL_NAME_INPUT, fullNameInputStepObjectFactory.getObject());
             put(EConversationStep.GENDER_CHOICE, genderChoiceStepObjectFactory.getObject());
             put(EConversationStep.PHONE_INPUT, phoneInputStepObjectFactory.getObject());
@@ -89,6 +96,10 @@ public class ConversationConfig {
             add(EConversationStep.BIRTHDAY_INPUT);
         }});
         buildConversationStepGraphNode(conversationStepMap, EConversationStep.BIRTHDAY_INPUT, new ArrayList<>() {{
+            add(EConversationStep.CHILD_DOCUMENT_SEND);
+            add(EConversationStep.FULL_NAME_INPUT);
+        }});
+        buildConversationStepGraphNode(conversationStepMap, EConversationStep.CHILD_DOCUMENT_SEND, new ArrayList<>() {{
             add(EConversationStep.FULL_NAME_INPUT);
         }});
         buildConversationStepGraphNode(conversationStepMap, EConversationStep.FULL_NAME_INPUT, new ArrayList<>() {{

@@ -11,11 +11,14 @@ public class MessageMapper {
     public MessageDto messageDto(Update update, EMessage eMessage, ChatHash chatHash) {
         MessageDto messageDto = new MessageDto();
         messageDto.setChatId(chatHash.getId());
-        messageDto.setPrevBotMessageId(chatHash.getPrevBotMessageId());
         messageDto.setEMessage(eMessage);
         switch (eMessage) {
             case TEXT, COMMAND -> messageDto.setData(update.getMessage().getText());
             case CALLBACK -> messageDto.setData(update.getCallbackQuery().getData());
+            case DOCUMENT -> {
+                messageDto.setData(update.getMessage().getText());
+                messageDto.setDocument(update.getMessage().getDocument());
+            }
         }
         return messageDto;
     }

@@ -4,18 +4,17 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.example.enums.PageMoveEnum;
 import org.example.pojo.dto.ButtonDto;
+import org.example.utils.ButtonUtil;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PageableInlineKeyboardBuilder extends InlineKeyboardBuilder {
+public class PageableInlineKeyboardMarkupBuilder extends InlineKeyboardMarkupBuilder {
     private static final Integer MAX_ROW_COUNT_IN_PAGE = 7;
-
-    public static PageableInlineKeyboardBuilder create() {
-        return new PageableInlineKeyboardBuilder();
-    }
+    private int pageNumber;
 
     public static int getPageCount(List<ButtonDto> buttonDtoList) {
         int rowButtonCount = buttonDtoList.size();
@@ -27,16 +26,23 @@ public class PageableInlineKeyboardBuilder extends InlineKeyboardBuilder {
         return pageCount;
     } // TODO : неверно, если несколько кнопок на одном ряду
 
-    public void addButtonList(List<ButtonDto> buttonDtoList, int pageNumber) {
-        for (ButtonDto buttonDto : buttonDtoList) {
+    public static PageableInlineKeyboardMarkupBuilder create() {
+        return new PageableInlineKeyboardMarkupBuilder();
+    }
+
+    @Override
+    public InlineKeyboardMarkupBuilder setButtonList(List<ButtonDto> buttonDtoList) {
+        buttonDtoList.forEach(buttonDto -> {
             if (isCorrectRowForCurrentPage(pageNumber, buttonDto.getRow())) {
                 addButton(buttonDto);
             }
-        }
+        });
 
         if (buttonDtoList.size() > MAX_ROW_COUNT_IN_PAGE) {
             addMoveButtons();
         }
+
+        return this;
     }
 
     @Override
@@ -45,15 +51,13 @@ public class PageableInlineKeyboardBuilder extends InlineKeyboardBuilder {
         addButton(row, button);
     }
 
-    public void addMoveButtons() {
-        rowButtonList.add(getPageMoveButtonList());
+    private void addMoveButtons() {
+        rowButtonList.add(ButtonUtil.pageMoveButtonList());
     }
 
-    private List<InlineKeyboardButton> getPageMoveButtonList() {
-        return Arrays.asList(
-                (new ButtonDto(PageMoveEnum.PREV.name(), PageMoveEnum.PREV.getDescription())).toKeyboardButton(),
-                (new ButtonDto(PageMoveEnum.NEXT.name(), PageMoveEnum.NEXT.getDescription())).toKeyboardButton()
-        );
+    public PageableInlineKeyboardMarkupBuilder setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+        return this;
     }
 
     private boolean isCorrectRowForCurrentPage(int pageNumber, int row) {
