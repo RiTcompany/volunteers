@@ -3,6 +3,7 @@ package org.example.configs;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.steps.ConversationStep;
+import org.example.steps.impl.AgreementChoiceStep;
 import org.example.steps.impl.BirthdayInputStep;
 import org.example.steps.impl.ChildDocumentStep;
 import org.example.steps.impl.CityChoiceStep;
@@ -49,20 +50,22 @@ public class ConversationConfig {
             @Autowired PhoneInputStep phoneInputStep,
             @Autowired EducationStatusChoiceStep educationStatusChoiceStep,
             @Autowired EducationInstitutionChoiceStep educationInstitutionChoiceStep,
-            @Autowired EducationInstitutionInputStep educationInstitutionInputStep
+            @Autowired EducationInstitutionInputStep educationInstitutionInputStep,
+            @Autowired AgreementChoiceStep agreementChoiceStep
     ) {
-        Map<EConversationStep, ConversationStep> conversationStepMap = new HashMap<>();
-        conversationStepMap.put(EConversationStep.CITY_CHOICE, cityChoiceStep);
-        conversationStepMap.put(EConversationStep.CITY_INPUT, cityInputStep);
-        conversationStepMap.put(EConversationStep.BIRTHDAY_INPUT, birthdayInputStep);
-        conversationStepMap.put(EConversationStep.CHILD_DOCUMENT, childDocumentStep);
-        conversationStepMap.put(EConversationStep.FULL_NAME_INPUT, fullNameInputStep);
-        conversationStepMap.put(EConversationStep.GENDER_CHOICE, genderChoiceStep);
-        conversationStepMap.put(EConversationStep.PHONE_INPUT, phoneInputStep);
-        conversationStepMap.put(EConversationStep.EDUCATION_STATUS_CHOICE, educationStatusChoiceStep);
-        conversationStepMap.put(EConversationStep.EDUCATION_INSTITUTION_CHOICE, educationInstitutionChoiceStep);
-        conversationStepMap.put(EConversationStep.EDUCATION_INSTITUTION_INPUT, educationInstitutionInputStep);
-        return conversationStepMap;
+        return new HashMap<>() {{
+            put(EConversationStep.CITY_CHOICE, cityChoiceStep);
+            put(EConversationStep.CITY_INPUT, cityInputStep);
+            put(EConversationStep.BIRTHDAY_INPUT, birthdayInputStep);
+            put(EConversationStep.CHILD_DOCUMENT, childDocumentStep);
+            put(EConversationStep.FULL_NAME_INPUT, fullNameInputStep);
+            put(EConversationStep.GENDER_CHOICE, genderChoiceStep);
+            put(EConversationStep.PHONE_INPUT, phoneInputStep);
+            put(EConversationStep.EDUCATION_STATUS_CHOICE, educationStatusChoiceStep);
+            put(EConversationStep.EDUCATION_INSTITUTION_CHOICE, educationInstitutionChoiceStep);
+            put(EConversationStep.EDUCATION_INSTITUTION_INPUT, educationInstitutionInputStep);
+            put(EConversationStep.AGREEMENT_CHOICE, agreementChoiceStep);
+        }};
     }
 
     private Map<EConversationStep, List<EConversationStep>> registerConversationStepGraph() {
@@ -95,9 +98,12 @@ public class ConversationConfig {
             }});
             put(EConversationStep.EDUCATION_INSTITUTION_CHOICE, new ArrayList<>() {{
                 add(EConversationStep.EDUCATION_INSTITUTION_INPUT);
-                add(null);
+                add(EConversationStep.AGREEMENT_CHOICE);
             }});
             put(EConversationStep.EDUCATION_INSTITUTION_INPUT, new ArrayList<>() {{
+                add(EConversationStep.AGREEMENT_CHOICE);
+            }});
+            put(EConversationStep.AGREEMENT_CHOICE, new ArrayList<>() {{
                 add(null);
             }});
         }};
