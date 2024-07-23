@@ -17,5 +17,5 @@ public enum EConversationStep {
     REASON_INPUT,
     EXPERIENCE_INPUT,
     EMAIL_INPUT,
-    VOLONTEER_ID_INPUT
+    VOLUNTEER_ID_INPUT
 }

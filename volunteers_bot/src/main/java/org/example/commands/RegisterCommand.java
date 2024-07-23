@@ -1,8 +1,8 @@
 package org.example.commands;
 
 import org.example.enums.EConversation;
-import org.example.pojo.entities.Volonteer;
-import org.example.repositories.VolonteerRepository;
+import org.example.pojo.entities.Volunteer;
+import org.example.repositories.VolunteerRepository;
 import org.example.services.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class RegisterCommand extends BotCommand {
     @Autowired
     private ConversationService conversationService;
     @Autowired
-    private VolonteerRepository volonteerRepository;
+    private VolunteerRepository volunteerRepository;
     private final EConversation CONVERSATION_TYPE = EConversation.REGISTER;
     private static final String TG_LINK_TEMPLATE = "https://t.me/";
 
@@ -26,14 +26,14 @@ public class RegisterCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        createVolonteer(chat.getId(), chat.getUserName());
+        createVolunteer(chat.getId(), chat.getUserName());
         conversationService.startConversation(chat.getId(), CONVERSATION_TYPE, absSender);
     }
 
-    private void createVolonteer(long chatId, String tgUserName) {
-        if (!volonteerRepository.existsByChatId(chatId)) {
-            Volonteer volonteer = new Volonteer(chatId, TG_LINK_TEMPLATE.concat(tgUserName));
-            volonteerRepository.saveAndFlush(volonteer);
+    private void createVolunteer(long chatId, String tgUserName) {
+        if (!volunteerRepository.existsByChatId(chatId)) {
+            Volunteer volunteer = new Volunteer(chatId, TG_LINK_TEMPLATE.concat(tgUserName));
+            volunteerRepository.saveAndFlush(volunteer);
         }
     }
 }

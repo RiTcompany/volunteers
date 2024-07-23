@@ -2,12 +2,11 @@ package org.example.steps.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.enums.ECity;
 import org.example.enums.EClothingSize;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.services.VolonteerService;
+import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ClothingSizeChoiceStep extends ChoiceStep {
-    private final VolonteerService volonteerService;
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Укажите ваш <b>размер одежды</b>:";
     private final static List<ButtonDto> buttonDtoList;
 
@@ -55,9 +54,9 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
     }
 
     private void saveClothingSize(long chatId, EClothingSize eClothingSize) {
-//        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-//        volonteer.setClothingSize(eClothingSize);
-//        volonteerService.saveAndFlushVolonteer(volonteer);
+//        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+//        volunteer.setClothingSize(eClothingSize);
+//        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private String getAnswerMessageText(String clothingSize) {
