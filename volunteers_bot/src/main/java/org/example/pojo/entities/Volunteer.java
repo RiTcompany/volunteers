@@ -17,10 +17,10 @@ import org.example.enums.EGender;
 import java.util.Date;
 
 @Entity
-@Table(name = "volonteer")
+@Table(name = "volunteer")
 @Getter @Setter
 @NoArgsConstructor
-public class Volonteer {
+public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,11 +56,11 @@ public class Volonteer {
     @Column(name = "complete_step")
     private Integer completeStep;
 
-    public Volonteer(Long chatId) {
+    public Volunteer(Long chatId) {
         this.chatId = chatId;
     }
 
-    public Volonteer(Long chatId, String tgLink) {
+    public Volunteer(Long chatId, String tgLink) {
         this.chatId = chatId;
         this.tgLink = tgLink;
     }

@@ -6,8 +6,8 @@ import org.example.enums.EEducationStatus;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volonteer;
-import org.example.services.VolonteerService;
+import org.example.pojo.entities.Volunteer;
+import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class EducationStatusChoiceStep extends ChoiceStep {
-    private final VolonteerService volonteerService;
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Укажите, на какой <b>стадии получения образования</b> вы сейчас находитесь:";
     private final static List<ButtonDto> buttonDtoList;
 
@@ -55,9 +55,9 @@ public class EducationStatusChoiceStep extends ChoiceStep {
     }
 
     private void saveEducation(long chatId, EEducationStatus eEducationStatus) {
-        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-        volonteer.setEducationStatus(eEducationStatus);
-        volonteerService.saveAndFlushVolonteer(volonteer);
+        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+        volunteer.setEducationStatus(eEducationStatus);
+        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private String getAnswerMessageText(String answer) {

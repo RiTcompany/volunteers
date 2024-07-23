@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volonteer;
-import org.example.services.VolonteerService;
+import org.example.pojo.entities.Volunteer;
+import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Component
 @RequiredArgsConstructor
 public class FullNameInputStep extends InputStep {
-    private final VolonteerService volonteerService;
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Введите ваше <b>ФИО</b> полностью:";
     private static final int MAX_FULL_NAME_LENGTH = 100;
 
@@ -53,9 +53,9 @@ public class FullNameInputStep extends InputStep {
     // TODO : возможно стоит добавить проверка на 1 или 2 пробела (если нет отчества)
 
     private void saveFullName(long chatId, String fullName) {
-        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-        volonteer.setFullName(fullName);
-        volonteerService.saveAndFlushVolonteer(volonteer);
+        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+        volunteer.setFullName(fullName);
+        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private String getAnswerMessageText(String answer) {

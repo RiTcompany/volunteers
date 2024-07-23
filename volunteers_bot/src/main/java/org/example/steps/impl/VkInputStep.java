@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.services.VolonteerService;
+import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Component
 @RequiredArgsConstructor
 public class VkInputStep extends InputStep {
-    private final VolonteerService volonteerService;
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Введите ссылку на ваш <b>Профиль ВКонтакте</b>:";
 
     @Override
@@ -43,9 +43,9 @@ public class VkInputStep extends InputStep {
     }
 
     private void saveVk(long chatId, String vk) {
-//        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-//        volonteer.setVk(vk);
-//        volonteerService.saveAndFlushVolonteer(volonteer);
+//        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+//        volunteer.setVk(vk);
+//        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private String getAnswerMessageText(String vk) {

@@ -6,8 +6,8 @@ import org.example.enums.EEducationStatus;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volonteer;
-import org.example.services.VolonteerService;
+import org.example.pojo.entities.Volunteer;
+import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.example.utils.EducationUtil;
@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class EducationInstitutionChoiceStep extends ChoiceStep {
-    private final VolonteerService volonteerService;
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Укажите ваше <b>учебное заведение</b>:";
     private EEducationStatus eEducationStatus;
 
@@ -75,9 +75,9 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     }
 
     private void saveEducationInstitution(long chatId, String educationInstitution) {
-        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-        volonteer.setEducationInstitution(educationInstitution);
-        volonteerService.saveAndFlushVolonteer(volonteer);
+        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+        volunteer.setEducationInstitution(educationInstitution);
+        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private List<ButtonDto> getButtonDtoList(EEducationStatus eEducationStatus) {
@@ -86,7 +86,7 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
 
     private void collectEEducationStatus(long chatId) {
         if (eEducationStatus == null) {
-            eEducationStatus = volonteerService.getVolonteerByChatId(chatId).getEducationStatus();
+            eEducationStatus = volunteerService.getVolunteerByChatId(chatId).getEducationStatus();
         }
     }
 

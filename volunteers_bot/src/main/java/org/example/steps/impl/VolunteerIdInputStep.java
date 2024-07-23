@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.services.VolonteerService;
+import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -13,16 +13,16 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class VolonteerIdInputStep extends InputStep {
-    private final VolonteerService volonteerService;
+public class VolunteerIdInputStep extends InputStep {
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "С сайта https://волонтёрыпобеды.рф введите ваш <b>ID</b>:";
 
     @Override
     public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        String volonteerId = messageDto.getData();
-        ResultDto result = setVolonteerId(chatHash.getId(), volonteerId);
+        String volunteerId = messageDto.getData();
+        ResultDto result = setVolunteerId(chatHash.getId(), volunteerId);
         if (result.isDone()) {
-            finishStep(chatHash, sender, getAnswerMessageText(volonteerId));
+            finishStep(chatHash, sender, getAnswerMessageText(volunteerId));
             return 0;
         }
 
@@ -34,17 +34,17 @@ public class VolonteerIdInputStep extends InputStep {
         return PREPARE_MESSAGE_TEXT;
     }
 
-    private ResultDto setVolonteerId(long chatId, String email) {
+    private ResultDto setVolunteerId(long chatId, String email) {
 //        TODO : будем ли проверить верность id ???
 
-        saveVolonteerId(chatId, email);
+        saveVolunteerId(chatId, email);
         return new ResultDto(true);
     }
 
-    private void saveVolonteerId(long chatId, String volonteerId) {
-//        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-//        volonteer.setVolonteerId(volonteerId);
-//        volonteerService.saveAndFlushVolonteer(volonteer);
+    private void saveVolunteerId(long chatId, String volunteerId) {
+//        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+//        volunteer.setVolunteerId(volunteerId);
+//        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private String getAnswerMessageText(String id) {

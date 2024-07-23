@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volonteer;
-import org.example.services.VolonteerService;
+import org.example.pojo.entities.Volunteer;
+import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.example.utils.CityUtil;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Component
 @RequiredArgsConstructor
 public class CityInputStep extends InputStep {
-    private final VolonteerService volonteerService;
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = """
             Мероприятия проходит очно в Санкт-Петербурге. Если вы подтверждаете, что сможете участвовать в них, то продолжите регистрацию
 
@@ -54,9 +54,9 @@ public class CityInputStep extends InputStep {
     }
 
     private void saveCity(long chatId, String city) {
-        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-        volonteer.setCity(city);
-        volonteerService.saveAndFlushVolonteer(volonteer);
+        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
+        volunteer.setCity(city);
+        volunteerService.saveAndFlushVolunteer(volunteer);
     }
 
     private String getAnswerMessageText(String answer) {
