@@ -1,6 +1,8 @@
 package org.example.utils;
 
+import org.example.enums.EAgreement;
 import org.example.enums.ECity;
+import org.example.enums.EClothingSize;
 import org.example.enums.EEducationInstitution;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
@@ -24,6 +26,8 @@ public class ButtonUtil {
     private static List<ButtonDto> cityList;
     private static List<ButtonDto> educationStatusList;
     private static List<ButtonDto> genderList;
+    private static List<ButtonDto> agreementList;
+    private static List<ButtonDto> clothingSizeList;
 
     public static List<InlineKeyboardButton> pageMoveButtonList() {
         if (pageMoveButtonList == null) {
@@ -64,6 +68,22 @@ public class ButtonUtil {
         }
 
         return genderList;
+    }
+
+    public static List<ButtonDto> agrrementButtonList() {
+        if (agreementList == null) {
+            agreementList = getAgreementButtonDtoList();
+        }
+
+        return agreementList;
+    }
+
+    public static List<ButtonDto> clothingSizeButtonList() {
+        if (clothingSizeList == null) {
+            clothingSizeList = getClothingSizeButtonDtoList();
+        }
+
+        return clothingSizeList;
     }
 
     private static List<InlineKeyboardButton> getPageMoveButtonList() {
@@ -112,6 +132,22 @@ public class ButtonUtil {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
         for (int i = 0; i < eGenderArray.length; i++) {
             buttonDtoList.add(new ButtonDto(eGenderArray[i].toString(), eGenderArray[i].getGenderStr(), i));
+        }
+
+        return buttonDtoList;
+    }
+
+    private static List<ButtonDto> getAgreementButtonDtoList() {
+        List<ButtonDto> buttonDtoList = new ArrayList<>();
+        buttonDtoList.add(new ButtonDto(EAgreement.YES.toString(), EAgreement.YES.getAgreementStr(), 0));
+        return buttonDtoList;
+    }
+
+    private static List<ButtonDto> getClothingSizeButtonDtoList() {
+        EClothingSize[] eClothingSizeArray = EClothingSize.values();
+        List<ButtonDto> buttonDtoList = new ArrayList<>();
+        for (int i = 0; i < eClothingSizeArray.length; i++) {
+            buttonDtoList.add(new ButtonDto(eClothingSizeArray[i].toString(), eClothingSizeArray[i].getEClothingSizeStr(), i));
         }
 
         return buttonDtoList;
