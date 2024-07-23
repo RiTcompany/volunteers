@@ -1,13 +1,11 @@
 package org.example.steps.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.enums.EConversationStep;
 import org.example.pojo.dto.MessageDto;
+import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.steps.ConversationStep;
+import org.example.steps.DocumentStep;
 import org.example.utils.MessageUtil;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -17,48 +15,61 @@ import java.io.File;
 
 @Slf4j
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ChildDocumentStep extends ConversationStep {
-    private static final String PREPARE_MESSAGE_TEXT = new StringBuilder()
-            .append("Вам необходимо согласие родителей. Для этого необходимо сделать следующие шаги:\n")
-            .append("\t1) Скачайте и распечатайте документ.\n")
-            .append("\t2) Передайте документ родителям для заполнения.\n")
-            .append("\t3) Отсканируйте заполненный документ.\n")
-            .append("\t4) Отправьте отсканированный документ в ответном сообщении")
-            .toString();
+public class ChildDocumentStep extends DocumentStep {
+    private static final String PREPARE_MESSAGE_TEXT = """
+            Вам необходимо согласие родителей. Для этого необходимо сделать следующие шаги:
+                1) Скачайте и распечатайте документ.
+                2) Передайте документ родителям для заполнения.
+                3) Отсканируйте заполненный документ.
+                4) Отправьте отсканированный документ в ответном сообщении
+                P.S. Документ должен быть в формате .doc или .pdf""";
     private static final String ANSWER_MESSAGE_TEXT = "Ваш документ был отправлен на проверку. Ожидайте ответа. А пока можете продолжить регистрацию";
-    private static final String EXCEPTION_MESSAGE_TEXT = "Вам необходимо отправить документ в ответном сообщении";
+//    TODO : изменить путь на короткий
     private static final File FILE = new File("C:\\Users\\User\\IdeaProjects\\volunteers\\volunteers_bot\\src\\main\\resources\\static\\Согласие.pdf");
-    private static final long MAX_DOCUMENT_SIZE = 300 * 1024;
+//    TODO : уточнить, какой макс размер файла должен быть
+    private static final long MAX_DOCUMENT_SIZE_KB = 300;
 
     @Override
-    public void prepare(ChatHash chatHash, AbsSender sender) {
-        int messageId = MessageUtil.sendDocument(chatHash.getId(), FILE, PREPARE_MESSAGE_TEXT, sender);
-        chatHash.setPrevBotMessageId(messageId);
-    }
-
-    @Override
-    public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        boolean isDocumentDownloaded = downloadDocument(messageDto.getDocument(), sender);
-        if (isDocumentDownloaded) {
+    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+        Document document = messageDto.getDocument();
+        ResultDto result = downloadDocument(document, sender);
+        if (result.isDone()) {
             finishStep(chatHash, sender, ANSWER_MESSAGE_TEXT);
-            return eConversationStepList.get(0);
+            return 0;
         }
 
-        return handleIllegalUserAction(chatHash, messageDto, sender, EXCEPTION_MESSAGE_TEXT);
+        return handleIllegalUserAction(messageDto, sender, result.getMessage());
     }
 
-    private boolean downloadDocument(Document document, AbsSender sender) {
-        if (document == null || document.getFileSize() > MAX_DOCUMENT_SIZE) {
-            return false;
+    @Override
+    protected String getPREPARE_MESSAGE_TEXT() {
+        return PREPARE_MESSAGE_TEXT;
+    }
+
+    @Override
+    protected File getFILE() {
+        return FILE;
+    }
+
+    private ResultDto downloadDocument(Document document, AbsSender sender) {
+        if (document == null) {
+            return new ResultDto(false, "Вам необходимо отправить документ в ответном сообщении");
+        }
+
+        if (document.getFileSize() > MAX_DOCUMENT_SIZE_KB * 1024) {
+            return new ResultDto(false, "Размер документа не должен превышать ".concat(String.valueOf(MAX_DOCUMENT_SIZE_KB)).concat("KB"));
+        }
+
+        if (!document.getFileName().endsWith(".doc") || !document.getFileName().endsWith(".pdf")) {
+            return new ResultDto(false, "Формат документа должен быть в формате .doc или .pdf");
         }
 
         File file = MessageUtil.downloadDocument(document, sender);
         if (file == null) {
-            return false;
-        }
+            return new ResultDto(false, "Нам не удалось загрузить ваш документ. Попробуйте другой");
+        } // TODO : Надо бы посмотреть в каком случае будет падать эта ошибка
 
         log.info(file.getAbsoluteFile().toString());
-        return true;
+        return new ResultDto(true);
     }
 }

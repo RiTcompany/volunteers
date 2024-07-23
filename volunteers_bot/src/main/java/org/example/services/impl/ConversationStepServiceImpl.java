@@ -10,13 +10,15 @@ import org.example.services.ConversationStepService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class ConversationStepServiceImpl implements ConversationStepService {
-    private final Map<EConversation, Map<EConversationStep, ConversationStep>> conversationMap;
+    private final Map<EConversation, Map<EConversationStep, List<EConversationStep>>> conversationStepGraph;
     private final Map<EConversation, EConversationStep> conversationStartStepMap;
+    private final Map<EConversationStep, ConversationStep> conversationStepMap;
 
     public EConversationStep getStartStep(EConversation eConversation) {
         return conversationStartStepMap.get(eConversation);
@@ -31,12 +33,18 @@ public class ConversationStepServiceImpl implements ConversationStepService {
 
     public EConversationStep executeStep(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         ConversationStep step = getConversationStep(chatHash);
-        return step.execute(chatHash, messageDto, sender);
+        int stepIndex = step.execute(chatHash, messageDto, sender);
+        if (stepIndex == -1) {
+            return chatHash.getEConversationStep();
+        }
+
+        return conversationStepGraph
+                .get(chatHash.getEConversation())
+                .get(chatHash.getEConversationStep())
+                .get(stepIndex);
     }
 
     private ConversationStep getConversationStep(ChatHash chatHash) {
-        return conversationMap
-                .get(chatHash.getEConversation())
-                .get(chatHash.getEConversationStep());
+        return conversationStepMap.get(chatHash.getEConversationStep());
     }
 }

@@ -1,10 +1,7 @@
 package org.example.steps.impl;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.enums.EConversationStep;
 import org.example.enums.EEducationStatus;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.MessageDto;
@@ -13,8 +10,6 @@ import org.example.pojo.entities.Volonteer;
 import org.example.services.VolonteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -22,13 +17,10 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @RequiredArgsConstructor
 public class EducationStatusChoiceStep extends ChoiceStep {
     private final VolonteerService volonteerService;
-    @Getter(AccessLevel.PROTECTED)
-    private static final String PREPARE_MESSAGE_TEXT = "Укажите, на какой <b>стадии получения образования</b> вы сейчас находитесь: ";
-    private static final String ANSWER_MESSAGE_TEXT_TEMPLATE = "Ваш ответ: <b>";
+    private static final String PREPARE_MESSAGE_TEXT = "Укажите, на какой <b>стадии получения образования</b> вы сейчас находитесь:";
     private final static List<ButtonDto> buttonDtoList;
 
     static {
@@ -36,30 +28,39 @@ public class EducationStatusChoiceStep extends ChoiceStep {
     }
 
     @Override
-    public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        EConversationStep eConversationStep = super.execute(chatHash, messageDto, sender);
-        if (eConversationStep != null) return eConversationStep;
+    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+        int stepIndex = super.execute(chatHash, messageDto, sender);
+        if (stepIndex != 0) return stepIndex;
 
         String educationStatus = messageDto.getData();
         try {
             EEducationStatus eEducationStatus = EEducationStatus.valueOf(educationStatus);
             saveEducation(chatHash.getId(), eEducationStatus);
-            finishStep(chatHash, sender, ANSWER_MESSAGE_TEXT_TEMPLATE.concat(eEducationStatus.getEEducationStatusStr()).concat("</b>"));
-            return eConversationStepList.get(0);
+            finishStep(chatHash, sender, getAnswerMessageText(eEducationStatus.getEEducationStatusStr()));
+            return 0;
         } catch (IllegalArgumentException e) {
             log.error("Chat ID={} Incorrect educationStatus choice: {}", chatHash.getId(), educationStatus);
-            return handleIllegalUserAction(chatHash, messageDto, sender, EXCEPTION_MESSAGE_TEXT);
+            return handleIllegalUserAction(messageDto, sender, EXCEPTION_MESSAGE_TEXT);
         }
     }
 
     @Override
-    protected void setButtonList(long chatId) {
+    protected void setButtonList() {
         setButtonDtoList(buttonDtoList);
+    }
+
+    @Override
+    protected String getPREPARE_MESSAGE_TEXT() {
+        return PREPARE_MESSAGE_TEXT;
     }
 
     private void saveEducation(long chatId, EEducationStatus eEducationStatus) {
         Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
         volonteer.setEducationStatus(eEducationStatus);
         volonteerService.saveAndFlushVolonteer(volonteer);
+    }
+
+    private String getAnswerMessageText(String answer) {
+        return "Ваш ответ: <b>".concat(answer).concat("</b>");
     }
 }

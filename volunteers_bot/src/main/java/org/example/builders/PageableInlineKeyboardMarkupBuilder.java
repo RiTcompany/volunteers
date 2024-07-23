@@ -2,14 +2,10 @@ package org.example.builders;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.example.enums.PageMoveEnum;
 import org.example.pojo.dto.ButtonDto;
 import org.example.utils.ButtonUtil;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PageableInlineKeyboardMarkupBuilder extends InlineKeyboardMarkupBuilder {
