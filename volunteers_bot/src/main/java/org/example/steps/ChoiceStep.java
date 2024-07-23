@@ -2,7 +2,6 @@ package org.example.steps;
 
 import lombok.AccessLevel;
 import lombok.Setter;
-import org.example.enums.EConversationStep;
 import org.example.enums.PageMoveEnum;
 import org.example.mappers.KeyboardMapper;
 import org.example.pojo.dto.ButtonDto;
@@ -25,11 +24,11 @@ public abstract class ChoiceStep extends ConversationStep {
     @Setter(value = AccessLevel.PROTECTED)
     private List<ButtonDto> buttonDtoList;
 
-    protected abstract String getPREPARE_MESSAGE_TEXT();
+    protected abstract void setButtonList();
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        setButtonList(chatHash.getId());
+        setButtonList();
         KeyboardDto keyboardDto = keyboardMapper.keyboardDto(
                 chatHash, buttonDtoList, getPREPARE_MESSAGE_TEXT()
         );
@@ -38,16 +37,14 @@ public abstract class ChoiceStep extends ConversationStep {
     }
 
     @Override
-    public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        setButtonList(chatHash.getId());
+    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+        setButtonList();
         if (isMovePageAction(chatHash, messageDto, sender)) {
-            return chatHash.getEConversationStep();
+            return -1;
         }
 
-        return null;
+        return 0;
     }
-
-    protected abstract void setButtonList(long chatId);
 
     private boolean isMovePageAction(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         try {

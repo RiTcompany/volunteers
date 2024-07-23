@@ -1,17 +1,13 @@
 package org.example.steps.impl;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.enums.EConversationStep;
 import org.example.pojo.dto.MessageDto;
+import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volonteer;
 import org.example.services.VolonteerService;
 import org.example.steps.InputStep;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -23,35 +19,33 @@ import java.util.TimeZone;
 
 @Slf4j
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @RequiredArgsConstructor
 public class BirthdayInputStep extends InputStep {
     private final VolonteerService volonteerService;
-    @Getter(AccessLevel.PROTECTED)
-    private static final String PREPARE_MESSAGE_TEXT = "Укажите вашу <b>дату рождения</b>: ";
-    private static final String ANSWER_MESSAGE_TEXT_TEMPLATE = "Ваша дата рождения: <b>";
-    private static final String EXCEPTION_MESSAGE_TEXT = "Неверный ввод даты рождения. Введите данные по шаблону <b>дд.мм.гггг</b>";
+    private static final String PREPARE_MESSAGE_TEXT = "Укажите вашу <b>дату рождения</b>:";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     private static final int MAX_AGE = 122;
     private static final int MAJORITY_AGE = 18;
 
     @Override
-    public EConversationStep execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        String birthday = messageDto.getData();
-        Date date = convertDate(birthday);
-        if (date != null) {
-            boolean isCitySaved = setBirthday(chatHash.getId(), date);
-            if (isCitySaved) {
-                finishStep(chatHash, sender, ANSWER_MESSAGE_TEXT_TEMPLATE.concat(birthday).concat("</b>"));
-                if (isMinor(date)) {
-                    return eConversationStepList.get(0);
-                }
-
-                return eConversationStepList.get(1);
+    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+        Date date = convertDate(messageDto.getData());
+        ResultDto result = setBirthday(chatHash.getId(), date);
+        if (result.isDone()) {
+            finishStep(chatHash, sender, getAnswerMessageText(DATE_FORMAT.format(date)));
+            if (isMinor(date)) {
+                return 0;
             }
+
+            return 1;
         }
 
-        return handleIllegalUserAction(chatHash, messageDto, sender, EXCEPTION_MESSAGE_TEXT);
+        return handleIllegalUserAction(messageDto, sender, result.getMessage());
+    }
+
+    @Override
+    protected String getPREPARE_MESSAGE_TEXT() {
+        return PREPARE_MESSAGE_TEXT;
     }
 
     private Date convertDate(String birthdayStr) {
@@ -62,16 +56,18 @@ public class BirthdayInputStep extends InputStep {
         }
     }
 
-    private boolean setBirthday(long chatId, Date birthdayDate) {
-        if (isValidBirthday(birthdayDate)) {
-            Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
-            volonteer.setBirthday(birthdayDate);
-            volonteerService.saveAndFlushVolonteer(volonteer);
-            return true;
+    private ResultDto setBirthday(long chatId, Date birthdayDate) {
+        if (birthdayDate == null) {
+            return new ResultDto(false, "Некорректный формат даты. Введите данные по шаблону <b>дд.мм.гггг</b>");
         }
 
-        log.error("Chat ID={} Incorrect birthday : {}", chatId, birthdayDate.toString());
-        return false;
+        if (!isValidBirthday(birthdayDate)) {
+            log.error("Chat ID={} Incorrect birthday : {}", chatId, birthdayDate);
+            return new ResultDto(false, "Вы ввели невозможную дату рождения. Введите свои настоящие данные");
+        }
+
+        saveBirthday(chatId, birthdayDate);
+        return new ResultDto(true);
     }
 
     private boolean isValidBirthday(Date birthday) {
@@ -109,5 +105,15 @@ public class BirthdayInputStep extends InputStep {
         }
 
         return today.get(Calendar.DAY_OF_MONTH) >= birthday.get(Calendar.DAY_OF_MONTH);
+    }
+
+    private void saveBirthday(long chatId, Date date) {
+        Volonteer volonteer = volonteerService.getVolonteerByChatId(chatId);
+        volonteer.setBirthday(date);
+        volonteerService.saveAndFlushVolonteer(volonteer);
+    }
+
+    private String getAnswerMessageText(String answer) {
+        return "Ваша дата рождения: <b>".concat(answer).concat("</b>");
     }
 }
