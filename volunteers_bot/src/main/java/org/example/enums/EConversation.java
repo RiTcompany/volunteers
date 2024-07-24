@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum EConversation {
-    REGISTER(1);
+    VOLUNTEER_REGISTER(1),
+    PARENT_REGISTER(2);
 
     private final int conversationInt;
 

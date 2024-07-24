@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface VolunteerService {
-    Volunteer getVolunteerByChatId(long chatId);
+    Volunteer getByChatId(long chatId);
 
-    void saveAndFlushVolunteer(Volunteer volunteer);
+    void saveAndFlush(Volunteer volunteer);
 }
