@@ -7,6 +7,7 @@ import org.example.mappers.KeyboardMapper;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.KeyboardDto;
 import org.example.pojo.dto.MessageDto;
+import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.utils.KeyboardUtil;
 import org.example.utils.MessageUtil;
@@ -24,13 +25,11 @@ public abstract class ChoiceStep extends ConversationStep {
     @Setter(value = AccessLevel.PROTECTED)
     private List<ButtonDto> buttonDtoList;
 
-    protected abstract void setButtonList();
-
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        setButtonList();
+        System.out.println(buttonDtoList.size());
         KeyboardDto keyboardDto = keyboardMapper.keyboardDto(
-                chatHash, buttonDtoList, getPREPARE_MESSAGE_TEXT()
+                chatHash, buttonDtoList, getPrepareMessageText()
         );
         int messageId = MessageUtil.sendMessageReplyMarkup(keyboardDto, sender);
         chatHash.setPrevBotMessageId(messageId);
@@ -38,13 +37,20 @@ public abstract class ChoiceStep extends ConversationStep {
 
     @Override
     public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        setButtonList();
         if (isMovePageAction(chatHash, messageDto, sender)) {
             return -1;
         }
 
-        return 0;
+        String data = messageDto.getData();
+        ResultDto result = isValidData(data);
+        if (!result.isDone()) {
+            return handleIllegalUserAction(messageDto, sender, result.getMessage());
+        }
+
+        return finishStep(chatHash, sender, data);
     }
+
+    protected abstract ResultDto isValidData(String data);
 
     private boolean isMovePageAction(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         try {

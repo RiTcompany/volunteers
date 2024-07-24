@@ -12,23 +12,22 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
-public class RegisterCommand extends BotCommand {
+public class VolunteerRegisterCommand extends BotCommand {
     @Autowired
     private ConversationService conversationService;
     @Autowired
     private VolunteerRepository volunteerRepository;
-    private final EConversation CONVERSATION_TYPE = EConversation.REGISTER;
     private static final String TG_LINK_TEMPLATE = "https://t.me/";
 
-    public RegisterCommand() {
-        super("register", "Register command");
+    public VolunteerRegisterCommand() {
+        super("volunteer_register", "Volunteer register command");
     }
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         createVolunteer(chat.getId(), chat.getUserName());
-        conversationService.startConversation(chat.getId(), CONVERSATION_TYPE, absSender);
-    }
+        conversationService.startConversation(chat.getId(), EConversation.VOLUNTEER_REGISTER, absSender);
+    } // TODO : добавить отказ в регистрации, если она уже пройдена
 
     private void createVolunteer(long chatId, String tgUserName) {
         if (!volunteerRepository.existsByChatId(chatId)) {

@@ -14,7 +14,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     private final VolunteerRepository volunteerRepository;
 
     @Override
-    public Volunteer getVolunteerByChatId(long chatId) {
+    public Volunteer getByChatId(long chatId) {
         return volunteerRepository.findByChatId(chatId)
                 .orElseGet(() -> {
                     log.error("No TG link for volunteer chat ID={}", chatId);
@@ -26,7 +26,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    public void saveAndFlushVolunteer(Volunteer volunteer) {
+    public void saveAndFlush(Volunteer volunteer) {
         volunteerRepository.saveAndFlush(volunteer);
     }
 }

@@ -1,7 +1,6 @@
-package org.example.steps.impl;
+package org.example.steps.impl.volunteer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.steps.DocumentStep;
@@ -30,28 +29,17 @@ public class ChildDocumentStep extends DocumentStep {
     private static final long MAX_DOCUMENT_SIZE_KB = 300;
 
     @Override
-    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        Document document = messageDto.getDocument();
-        ResultDto result = downloadDocument(document, sender);
-        if (result.isDone()) {
-            finishStep(chatHash, sender, ANSWER_MESSAGE_TEXT);
-            return 0;
-        }
-
-        return handleIllegalUserAction(messageDto, sender, result.getMessage());
-    }
-
-    @Override
-    protected String getPREPARE_MESSAGE_TEXT() {
+    protected String getPrepareMessageText() {
         return PREPARE_MESSAGE_TEXT;
     }
 
     @Override
-    protected File getFILE() {
+    protected File getFile() {
         return FILE;
     }
 
-    private ResultDto downloadDocument(Document document, AbsSender sender) {
+    @Override
+    protected ResultDto downloadDocument(Document document, AbsSender sender) {
         if (document == null) {
             return new ResultDto(false, "Вам необходимо отправить документ в ответном сообщении");
         }
@@ -60,7 +48,7 @@ public class ChildDocumentStep extends DocumentStep {
             return new ResultDto(false, "Размер документа не должен превышать ".concat(String.valueOf(MAX_DOCUMENT_SIZE_KB)).concat("KB"));
         }
 
-        if (!document.getFileName().endsWith(".doc") || !document.getFileName().endsWith(".pdf")) {
+        if (!document.getFileName().endsWith(".doc") && !document.getFileName().endsWith(".pdf")) {
             return new ResultDto(false, "Формат документа должен быть в формате .doc или .pdf");
         }
 
@@ -71,5 +59,16 @@ public class ChildDocumentStep extends DocumentStep {
 
         log.info(file.getAbsoluteFile().toString());
         return new ResultDto(true);
+    }
+
+    @Override
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+        cleanPreviousMessage(chatHash, sender, data);
+        return 0;
+    }
+
+    @Override
+    protected String getAnswerMessageText() {
+        return ANSWER_MESSAGE_TEXT;
     }
 }

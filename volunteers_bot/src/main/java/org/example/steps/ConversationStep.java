@@ -13,9 +13,11 @@ public abstract class ConversationStep {
             ChatHash chatHash, MessageDto messageDto, AbsSender sender
     );
 
-    protected abstract String getPREPARE_MESSAGE_TEXT();
+    protected abstract String getPrepareMessageText();
 
-    protected void finishStep(ChatHash chatHash, AbsSender sender, String text) {
+    protected abstract int finishStep(ChatHash chatHash, AbsSender sender, String data);
+
+    protected void cleanPreviousMessage(ChatHash chatHash, AbsSender sender, String text) {
         deleteKeyboard(chatHash, sender);
         sendFinishMessage(chatHash, sender, text);
     }

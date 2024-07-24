@@ -1,8 +1,7 @@
-package org.example.steps.impl;
+package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -23,40 +22,31 @@ public class CityInputStep extends InputStep {
             Введите ваш <b>город</b>:""";
 
     @Override
-    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        String city = CityUtil.setCityRegister(messageDto.getData());
-        ResultDto result = setCity(chatHash.getId(), city);
-        if (result.isDone()) {
-            finishStep(chatHash, sender, getAnswerMessageText(city));
-            return 0;
-        }
-
-        return handleIllegalUserAction(messageDto, sender, result.getMessage());
-    }
-
-    @Override
-    protected String getPREPARE_MESSAGE_TEXT() {
+    protected String getPrepareMessageText() {
         return CityInputStep.PREPARE_MESSAGE_TEXT;
     }
 
-    private ResultDto setCity(long chatId, String city) {
-        if (!isValidCity(city)) {
-            log.error("Chat ID={} incorrect city: {}", chatId, city);
+    @Override
+    protected ResultDto isValidData(String city) {
+        if (!CityUtil.isExistsRussianCity(city)) {
             return new ResultDto(false, "Такого города не существует в РФ. Проверьте правильность написания и попробуйте снова");
         }
 
-        saveCity(chatId, city);
         return new ResultDto(true);
     }
 
-    private boolean isValidCity(String city) {
-        return CityUtil.isExistsRussianCity(city);
+    @Override
+    protected void saveData(long chatId, String city) {
+        Volunteer volunteer = volunteerService.getByChatId(chatId);
+        volunteer.setCity(city);
+        volunteerService.saveAndFlush(volunteer);
     }
 
-    private void saveCity(long chatId, String city) {
-        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
-        volunteer.setCity(city);
-        volunteerService.saveAndFlushVolunteer(volunteer);
+    @Override
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+        saveData(chatHash.getId(), data);
+        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
+        return 0;
     }
 
     private String getAnswerMessageText(String answer) {

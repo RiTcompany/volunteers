@@ -1,10 +1,10 @@
-package org.example.steps.impl;
+package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
+import org.example.pojo.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
@@ -18,33 +18,28 @@ public class VolunteerIdInputStep extends InputStep {
     private static final String PREPARE_MESSAGE_TEXT = "С сайта https://волонтёрыпобеды.рф введите ваш <b>ID</b>:";
 
     @Override
-    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        String volunteerId = messageDto.getData();
-        ResultDto result = setVolunteerId(chatHash.getId(), volunteerId);
-        if (result.isDone()) {
-            finishStep(chatHash, sender, getAnswerMessageText(volunteerId));
-            return 0;
-        }
-
-        return handleIllegalUserAction(messageDto, sender, result.getMessage());
-    }
-
-    @Override
-    protected String getPREPARE_MESSAGE_TEXT() {
+    protected String getPrepareMessageText() {
         return PREPARE_MESSAGE_TEXT;
     }
 
-    private ResultDto setVolunteerId(long chatId, String email) {
+    @Override
+    protected ResultDto isValidData(String data) {
 //        TODO : будем ли проверить верность id ???
-
-        saveVolunteerId(chatId, email);
         return new ResultDto(true);
     }
 
-    private void saveVolunteerId(long chatId, String volunteerId) {
-//        Volunteer volunteer = volunteerService.getVolunteerByChatId(chatId);
-//        volunteer.setVolunteerId(volunteerId);
-//        volunteerService.saveAndFlushVolunteer(volunteer);
+    @Override
+    protected void saveData(long chatId, String data) {
+        Volunteer volunteer = volunteerService.getByChatId(chatId);
+        volunteer.setVolunteerId(data);
+        volunteerService.saveAndFlush(volunteer);
+    }
+
+    @Override
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+        saveData(chatHash.getId(), data);
+        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
+        return 0;
     }
 
     private String getAnswerMessageText(String id) {

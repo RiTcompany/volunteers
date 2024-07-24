@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.enums.EClothingSize;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
 
@@ -50,11 +51,23 @@ public class Volunteer {
     @Column(name = "educational_specialty")
     private String educationalSpecialty;
 
+    private String vk;
+
+    @Column(name = "clothing_size")
+    @Enumerated(EnumType.STRING)
+    private EClothingSize clothingSize;
+
+    private String reason;
+
+    private String experience;
+
+    private String email;
+
+    @Column(name = "volunteer_id")
+    private String volunteerId;
+
     @Column(name = "chat_id")
     private Long chatId;
-
-    @Column(name = "complete_step")
-    private Integer completeStep;
 
     public Volunteer(Long chatId) {
         this.chatId = chatId;
