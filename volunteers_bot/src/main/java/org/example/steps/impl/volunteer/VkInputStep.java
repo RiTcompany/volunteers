@@ -2,6 +2,7 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -10,12 +11,15 @@ import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
+import java.util.regex.Pattern;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class VkInputStep extends InputStep {
     private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Введите ссылку на ваш <b>Профиль ВКонтакте</b>:";
+    private static final Pattern pattern = Pattern.compile("^https://vk.com/[a-z0-9_.]{5,32}$");
 
     @Override
     protected String getPrepareMessageText() {
@@ -23,14 +27,15 @@ public class VkInputStep extends InputStep {
     }
 
     protected ResultDto isValidData(String data) {
-//        TODO : будем ли проверить верность ссылки ???
-//        Можно проверить по http запросу, можно просто по регулярке
+        if (!pattern.matcher(data).matches()) {
+            return new ResultDto(false, "Некорректная ссылка");
+        }
 
         return new ResultDto(true);
     }
 
     @Override
-    protected void saveData(long chatId, String data) {
+    protected void saveData(long chatId, String data) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setVk(data);
         volunteerService.saveAndFlush(volunteer);
@@ -38,8 +43,7 @@ public class VkInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        saveData(chatHash.getId(), data);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         return 0;
     }
 

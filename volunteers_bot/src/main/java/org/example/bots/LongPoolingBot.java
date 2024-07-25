@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
-public final class Bot extends TelegramLongPollingBot {
+public final class LongPoolingBot extends TelegramLongPollingBot {
     @Getter
     private final String botUsername;
     @Autowired
@@ -24,7 +24,7 @@ public final class Bot extends TelegramLongPollingBot {
     @Autowired
     private ConversationService conversationService;
 
-    public Bot(String botUsername, String token) {
+    public LongPoolingBot(String botUsername, String token) {
         super(token);
         this.botUsername = botUsername;
     }
@@ -45,6 +45,8 @@ public final class Bot extends TelegramLongPollingBot {
                 executeCommand(update);
             } else if (message.hasDocument()) {
                 executeConversationStep(update, EMessage.DOCUMENT);
+            } else if (message.hasPhoto()) {
+                executeConversationStep(update, EMessage.PHOTO);
             } else if (message.hasText()) {
                 executeConversationStep(update, EMessage.TEXT);
             }

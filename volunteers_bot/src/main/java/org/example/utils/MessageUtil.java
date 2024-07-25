@@ -1,7 +1,7 @@
 package org.example.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.bots.Bot;
+import org.example.bots.LongPoolingBot;
 import org.example.builders.PageableInlineKeyboardMarkupBuilder;
 import org.example.pojo.dto.KeyboardDto;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -43,8 +42,8 @@ public class MessageUtil {
         editMessageReplyMarkup(editMessageReplyMarkup, sender);
     }
 
-    public static java.io.File downloadDocument(Document document, AbsSender sender) {
-        GetFile getFile = completeGetFile(document.getFileId());
+    public static java.io.File downloadFile(String fileId, AbsSender sender) {
+        GetFile getFile = completeGetFile(fileId);
         File fileInfo = getFile(getFile, sender);
         if (fileInfo != null) {
             return downloadFile(fileInfo, sender);
@@ -53,7 +52,7 @@ public class MessageUtil {
         return null;
     }
 
-    public static int sendDocument(long chatId, java.io.File file, String text, AbsSender sender) {
+    public static int sendFile(long chatId, java.io.File file, String text, AbsSender sender) {
         SendDocument document = completeSendDocument(chatId, new InputFile(file), text);
         return sendDocument(document, sender);
     }
@@ -157,7 +156,7 @@ public class MessageUtil {
     private static java.io.File downloadFile(File fileInfo, AbsSender sender) {
         try {
             String filePath = fileInfo.getFilePath();
-            return ((Bot) sender).downloadFile(filePath, new java.io.File(STORAGE_PATH.concat(filePath)));
+            return ((LongPoolingBot) sender).downloadFile(filePath, new java.io.File(STORAGE_PATH.concat(filePath)));
         } catch (TelegramApiException e) {
             log.error(EXCEPTION_MESSAGE_DOWNLOAD_FILE, e.getMessage());
         }

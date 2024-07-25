@@ -2,6 +2,7 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -36,7 +37,7 @@ public class PhoneInputStep extends InputStep {
     }
 
     @Override
-    protected void saveData(long chatId, String data) {
+    protected void saveData(long chatId, String data) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setPhone(data);
         volunteerService.saveAndFlush(volunteer);
@@ -44,8 +45,7 @@ public class PhoneInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        saveData(chatHash.getId(), data);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         return 0;
     }
 

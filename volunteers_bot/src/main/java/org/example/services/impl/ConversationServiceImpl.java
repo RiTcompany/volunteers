@@ -12,6 +12,7 @@ import org.example.mappers.MessageMapper;
 import org.example.repositories.ChatHashRepository;
 import org.example.services.ConversationService;
 import org.example.utils.ChatUtil;
+import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -55,7 +56,7 @@ public class ConversationServiceImpl implements ConversationService {
         }
 
         saveChatHash(chatHash);
-        handleConversationEnd(chatHash);
+        handleConversationEnd(chatHash, sender);
     }
 
     private EConversationStep executeStep(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
@@ -80,8 +81,9 @@ public class ConversationServiceImpl implements ConversationService {
         conversationStepService.prepareStep(chatHash, sender);
     }
 
-    private void handleConversationEnd(ChatHash chatHash) {
+    private void handleConversationEnd(ChatHash chatHash, AbsSender sender) {
         if (isConversationFinished(chatHash)) {
+            MessageUtil.sendMessageText("Данный диалог успешно завершен", chatHash.getId(), sender);
             deleteChatHash(chatHash);
         }
     }

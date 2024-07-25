@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EClothingSize;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -41,14 +42,14 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EClothingSize eClothingSize = EClothingSize.valueOf(data);
         saveClothingSize(chatHash.getId(), eClothingSize);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(eClothingSize.getEClothingSizeStr()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eClothingSize.getEClothingSizeStr()));
         return 0;
     }
 
-    private void saveClothingSize(long chatId, EClothingSize eClothingSize) {
+    private void saveClothingSize(long chatId, EClothingSize eClothingSize) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setClothingSize(eClothingSize);
         volunteerService.saveAndFlush(volunteer);

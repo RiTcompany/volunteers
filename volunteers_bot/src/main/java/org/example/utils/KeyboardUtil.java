@@ -1,5 +1,6 @@
 package org.example.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.builders.PageableInlineKeyboardMarkupBuilder;
 import org.example.enums.PageMoveEnum;
 import org.example.pojo.dto.ButtonDto;
@@ -12,15 +13,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
+@Slf4j
 public class KeyboardUtil {
-    private static final Logger logger = LoggerFactory.getLogger(KeyboardUtil.class);
-
     public static void cleanKeyboard(long chatId, int messageId, AbsSender sender) {
         try {
             EditMessageReplyMarkup edit = completeEditMessageReplyMarkup(chatId, messageId);
             sender.execute(edit);
         } catch (TelegramApiException e) {
-            logger.warn("В чате ID={} нет клавиатуры для её удаления", chatId); // TODO : надо бы глядеть, если ли клава и только тогда удалять
+            log.warn("В чате ID={} нет клавиатуры для её удаления", chatId);
         }
     }
 

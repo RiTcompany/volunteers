@@ -11,7 +11,7 @@ import org.example.steps.impl.parent.ParentFullNameInputStep;
 import org.example.steps.impl.parent.ParentRegisterPlaceInputStep;
 import org.example.steps.impl.volunteer.AgreementChoiceStep;
 import org.example.steps.impl.volunteer.BirthdayInputStep;
-import org.example.steps.impl.volunteer.ChildDocumentStep;
+import org.example.steps.impl.volunteer.ChildFileSendStep;
 import org.example.steps.impl.volunteer.CityChoiceStep;
 import org.example.steps.impl.volunteer.CityInputStep;
 import org.example.steps.impl.volunteer.ClothingSizeChoiceStep;
@@ -23,6 +23,7 @@ import org.example.steps.impl.volunteer.ExperienceInputStep;
 import org.example.steps.impl.volunteer.FullNameInputStep;
 import org.example.steps.impl.volunteer.GenderChoiceStep;
 import org.example.steps.impl.volunteer.PhoneInputStep;
+import org.example.steps.impl.volunteer.PhotoSendStep;
 import org.example.steps.impl.volunteer.ReasonInputStep;
 import org.example.steps.impl.volunteer.VkInputStep;
 import org.example.steps.impl.volunteer.VolunteerIdInputStep;
@@ -48,7 +49,7 @@ public class ConversationConfig {
     @Bean
     public Map<EConversation, EConversationStep> conversationStartStepMap() {
         Map<EConversation, EConversationStep> conversationStartStepMap = new HashMap<>();
-        conversationStartStepMap.put(EConversation.VOLUNTEER_REGISTER, EConversationStep.EDUCATION_STATUS_CHOICE);
+        conversationStartStepMap.put(EConversation.VOLUNTEER_REGISTER, EConversationStep.CITY_CHOICE);
         conversationStartStepMap.put(EConversation.PARENT_REGISTER, EConversationStep.PARENT_FULL_NAME_INPUT);
         return conversationStartStepMap;
     }
@@ -58,7 +59,7 @@ public class ConversationConfig {
             @Autowired CityChoiceStep cityChoiceStep,
             @Autowired CityInputStep cityInputStep,
             @Autowired BirthdayInputStep birthdayInputStep,
-            @Autowired ChildDocumentStep childDocumentStep,
+            @Autowired ChildFileSendStep childDocumentSendStep,
             @Autowired FullNameInputStep fullNameInputStep,
             @Autowired GenderChoiceStep genderChoiceStep,
             @Autowired PhoneInputStep phoneInputStep,
@@ -70,6 +71,7 @@ public class ConversationConfig {
             @Autowired ClothingSizeChoiceStep clothingSizeChoiceStep,
             @Autowired ReasonInputStep reasonInputStep,
             @Autowired ExperienceInputStep experienceInputStep,
+            @Autowired PhotoSendStep photoSendStep,
             @Autowired EmailInputStep emailInputStep,
             @Autowired VolunteerIdInputStep volunteerIdInputStep,
             @Autowired ChildFullNameInputStep childFullNameInputStep,
@@ -83,7 +85,7 @@ public class ConversationConfig {
             put(EConversationStep.CITY_CHOICE, cityChoiceStep);
             put(EConversationStep.CITY_INPUT, cityInputStep);
             put(EConversationStep.BIRTHDAY_INPUT, birthdayInputStep);
-            put(EConversationStep.CHILD_DOCUMENT, childDocumentStep);
+            put(EConversationStep.CHILD_DOCUMENT_SEND, childDocumentSendStep);
             put(EConversationStep.FULL_NAME_INPUT, fullNameInputStep);
             put(EConversationStep.GENDER_CHOICE, genderChoiceStep);
             put(EConversationStep.PHONE_INPUT, phoneInputStep);
@@ -95,6 +97,7 @@ public class ConversationConfig {
             put(EConversationStep.CLOTHING_SIZE_CHOICE, clothingSizeChoiceStep);
             put(EConversationStep.REASON_INPUT, reasonInputStep);
             put(EConversationStep.EXPERIENCE_INPUT, experienceInputStep);
+            put(EConversationStep.PHOTO_SEND, photoSendStep);
             put(EConversationStep.EMAIL_INPUT, emailInputStep);
             put(EConversationStep.VOLUNTEER_ID_INPUT, volunteerIdInputStep);
             put(EConversationStep.CHILD_FULL_NAME_INPUT, childFullNameInputStep);
@@ -116,10 +119,10 @@ public class ConversationConfig {
                 add(EConversationStep.BIRTHDAY_INPUT);
             }});
             put(EConversationStep.BIRTHDAY_INPUT, new ArrayList<>() {{
-                add(EConversationStep.CHILD_DOCUMENT);
+                add(EConversationStep.CHILD_DOCUMENT_SEND);
                 add(EConversationStep.FULL_NAME_INPUT);
             }});
-            put(EConversationStep.CHILD_DOCUMENT, new ArrayList<>() {{
+            put(EConversationStep.CHILD_DOCUMENT_SEND, new ArrayList<>() {{
                 add(EConversationStep.FULL_NAME_INPUT);
             }});
             put(EConversationStep.FULL_NAME_INPUT, new ArrayList<>() {{
@@ -154,6 +157,9 @@ public class ConversationConfig {
                 add(EConversationStep.EXPERIENCE_INPUT);
             }});
             put(EConversationStep.EXPERIENCE_INPUT, new ArrayList<>() {{
+                add(EConversationStep.PHOTO_SEND);
+            }});
+            put(EConversationStep.PHOTO_SEND, new ArrayList<>() {{
                 add(EConversationStep.EMAIL_INPUT);
             }});
             put(EConversationStep.EMAIL_INPUT, new ArrayList<>() {{

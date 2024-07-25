@@ -2,6 +2,7 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -36,7 +37,7 @@ public class CityInputStep extends InputStep {
     }
 
     @Override
-    protected void saveData(long chatId, String city) {
+    protected void saveData(long chatId, String city) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setCity(city);
         volunteerService.saveAndFlush(volunteer);
@@ -44,12 +45,11 @@ public class CityInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        saveData(chatHash.getId(), data);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         return 0;
     }
 
     private String getAnswerMessageText(String answer) {
-        return "Ваш город: <b>".concat(answer).concat("</b>");
+        return "Ваш город: <b>".concat(CityUtil.setCityRegister(answer)).concat("</b>");
     }
 }

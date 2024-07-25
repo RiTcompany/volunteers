@@ -2,6 +2,7 @@ package org.example.steps.impl.parent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Parent;
@@ -33,7 +34,7 @@ public class ChildFullNameInputStep extends InputStep {
     }
 
     @Override
-    protected void saveData(long chatId, String fullName) {
+    protected void saveData(long chatId, String fullName) throws EntityNotFoundException {
         Parent parent = parentService.getByChatId(chatId);
         parent.setChildFullName(fullName);
         parentService.saveAndFlush(parent);
@@ -41,8 +42,7 @@ public class ChildFullNameInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        saveData(chatHash.getId(), data);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         return 0;
     }
 

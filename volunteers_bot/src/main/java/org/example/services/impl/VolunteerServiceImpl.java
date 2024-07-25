@@ -2,6 +2,7 @@ package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.entities.Volunteer;
 import org.example.repositories.VolunteerRepository;
 import org.example.services.VolunteerService;
@@ -14,15 +15,12 @@ public class VolunteerServiceImpl implements VolunteerService {
     private final VolunteerRepository volunteerRepository;
 
     @Override
-    public Volunteer getByChatId(long chatId) {
+    public Volunteer getByChatId(long chatId) throws EntityNotFoundException {
         return volunteerRepository.findByChatId(chatId)
-                .orElseGet(() -> {
-                    log.error("No TG link for volunteer chat ID={}", chatId);
-                    return new Volunteer(chatId);
-                }); // TODO : потом нужно как-то всё равно добавлять ссылку на тг
-//        но это вариант, когда волонтер не создался в бд (хотя должен создаваться в команде RegisterCommand)
-//        следовательно, он попал в диалог не через команду, а это не должно быть возможно
-//        поэтому предлагаю поставить тут просто какую-то метку, но ничего с этим не делать
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Не существует волонтёра с чатом ID = ".concat(String.valueOf(chatId)),
+                        "Что-то пошло не так, пожалуйста обратитесь в поддержку"
+                ));
     }
 
     @Override
