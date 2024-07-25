@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.ECity;
-import org.example.pojo.dto.ButtonDto;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -13,8 +13,6 @@ import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-
-import java.util.List;
 
 @Slf4j
 @Component
@@ -44,19 +42,18 @@ public class CityChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         ECity eCity = ECity.valueOf(data);
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eCity.getCityStr()));
         if (ECity.OTHER.equals(eCity)) {
-            cleanPreviousMessage(chatHash, sender, getAnswerMessageText("ожидается..."));
             return 0;
         }
 
         saveDefaultCity(chatHash);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(eCity.getCityStr()));
         return 1;
     }
 
-    private void saveDefaultCity(ChatHash chatHash) {
+    private void saveDefaultCity(ChatHash chatHash) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatHash.getId());
         volunteer.setCity(ECity.SPB.getCityStr());
         volunteerService.saveAndFlush(volunteer);

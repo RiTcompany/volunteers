@@ -4,6 +4,7 @@ import org.example.enums.EConversation;
 import org.example.pojo.entities.Volunteer;
 import org.example.repositories.VolunteerRepository;
 import org.example.services.ConversationService;
+import org.example.utils.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
@@ -25,9 +26,13 @@ public class VolunteerRegisterCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
+//        if (volunteerRepository.existsByChatId(chat.getId())) {
+//            MessageUtil.sendMessageText("Вы уже зарегистрированы", chat.getId(), absSender);
+//        }
+
         createVolunteer(chat.getId(), chat.getUserName());
         conversationService.startConversation(chat.getId(), EConversation.VOLUNTEER_REGISTER, absSender);
-    } // TODO : добавить отказ в регистрации, если она уже пройдена
+    }
 
     private void createVolunteer(long chatId, String tgUserName) {
         if (!volunteerRepository.existsByChatId(chatId)) {

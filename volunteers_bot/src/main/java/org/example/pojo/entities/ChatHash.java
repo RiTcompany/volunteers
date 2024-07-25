@@ -18,4 +18,9 @@ public class ChatHash implements Serializable {
     private EConversationStep eConversationStep;
     private Integer prevBotMessageId;
     private Integer prevBotMessagePageNumber;
+
+    public void setDefaultPrevBotMessagePageNumber() {
+        prevBotMessagePageNumber = 0;
+    }
+
 }

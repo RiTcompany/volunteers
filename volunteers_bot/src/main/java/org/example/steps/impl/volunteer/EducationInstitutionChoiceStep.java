@@ -3,8 +3,8 @@ package org.example.steps.impl.volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EEducationStatus;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ButtonDto;
-import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -25,15 +25,9 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     private static final String PREPARE_MESSAGE_TEXT = "Укажите ваше <b>учебное заведение</b>:";
 
     @Override
-    public void prepare(ChatHash chatHash, AbsSender sender) {
+    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
         setButtonList(chatHash.getId());
         super.prepare(chatHash, sender);
-    }
-
-    @Override
-    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        setButtonList(chatHash.getId());
-        return super.execute(chatHash, messageDto, sender);
     }
 
     @Override
@@ -53,24 +47,23 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         if (EducationUtil.OTHER_ANSWER.equals(data)) {
-            cleanPreviousMessage(chatHash, sender, getAnswerMessageText("ожидается..."));
             return 0;
         }
 
         saveEducationInstitution(chatHash.getId(), data);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(data));
         return 1;
     }
 
-    protected void setButtonList(long chatId) {
+    protected void setButtonList(long chatId) throws EntityNotFoundException {
         EEducationStatus eEducationStatus = volunteerService.getByChatId(chatId).getEducationStatus();
         List<ButtonDto> buttonDtoList = ButtonUtil.educationInstitutionButtonList(eEducationStatus);
         setButtonDtoList(buttonDtoList);
     }
 
-    private void saveEducationInstitution(long chatId, String educationInstitution) {
+    private void saveEducationInstitution(long chatId, String educationInstitution) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setEducationInstitution(educationInstitution);
         volunteerService.saveAndFlush(volunteer);

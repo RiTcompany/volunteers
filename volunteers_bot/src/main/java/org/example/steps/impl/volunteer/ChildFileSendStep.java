@@ -1,20 +1,28 @@
 package org.example.steps.impl.volunteer;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
+import org.example.pojo.dto.MessageDto;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
-import org.example.steps.DocumentStep;
+import org.example.pojo.entities.Volunteer;
+import org.example.services.VolunteerService;
+import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.File;
+import java.util.Objects;
 
 
 @Slf4j
 @Component
-public class ChildDocumentStep extends DocumentStep {
+@RequiredArgsConstructor
+public class ChildFileSendStep extends FileSendStep {
+    private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = """
             Вам необходимо согласие родителей. Для этого необходимо сделать следующие шаги:
                 1) Скачайте и распечатайте документ.
@@ -26,7 +34,13 @@ public class ChildDocumentStep extends DocumentStep {
 //    TODO : изменить путь на короткий
     private static final File FILE = new File("C:\\Users\\User\\IdeaProjects\\volunteers\\volunteers_bot\\src\\main\\resources\\static\\Согласие.pdf");
 //    TODO : уточнить, какой макс размер файла должен быть
-    private static final long MAX_DOCUMENT_SIZE_KB = 300;
+    private static final int MAX_DOCUMENT_SIZE_KB = 300;
+
+    @Override
+    public void prepare(ChatHash chatHash, AbsSender sender) {
+        int messageId = MessageUtil.sendFile(chatHash.getId(), FILE, getPrepareMessageText(), sender);
+        chatHash.setPrevBotMessageId(messageId);
+    }
 
     @Override
     protected String getPrepareMessageText() {
@@ -34,12 +48,9 @@ public class ChildDocumentStep extends DocumentStep {
     }
 
     @Override
-    protected File getFile() {
-        return FILE;
-    }
+    protected ResultDto isValidFile(MessageDto messageDto, AbsSender sender) {
+        Document document = messageDto.getDocument();
 
-    @Override
-    protected ResultDto downloadDocument(Document document, AbsSender sender) {
         if (document == null) {
             return new ResultDto(false, "Вам необходимо отправить документ в ответном сообщении");
         }
@@ -52,18 +63,23 @@ public class ChildDocumentStep extends DocumentStep {
             return new ResultDto(false, "Формат документа должен быть в формате .doc или .pdf");
         }
 
-        File file = MessageUtil.downloadDocument(document, sender);
-        if (file == null) {
-            return new ResultDto(false, "Нам не удалось загрузить ваш документ. Попробуйте другой");
-        } // TODO : Надо бы посмотреть в каком случае будет падать эта ошибка
-
-        log.info(file.getAbsoluteFile().toString());
         return new ResultDto(true);
     }
 
     @Override
+    protected void saveFile(long chatId, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException {
+        File file = MessageUtil.downloadFile(messageDto.getDocument().getFileId(), sender);
+        if (file != null) {
+            Volunteer volunteer = volunteerService.getByChatId(chatId);
+            volunteer.setChildDocumentPath(file.getPath());
+            volunteerService.saveAndFlush(volunteer);
+        }
+//        TODO : добавить что-то, если вдруг файл не скачан
+    }
+
+    @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        cleanPreviousMessage(chatHash, sender, data);
+        sendFinishMessage(chatHash, sender, data);
         return 0;
     }
 

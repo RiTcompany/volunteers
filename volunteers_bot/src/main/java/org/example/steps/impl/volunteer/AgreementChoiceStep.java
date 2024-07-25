@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Slf4j
 @Component
+// TODO : не вызывается кнопка ДА
 public class AgreementChoiceStep extends ChoiceStep {
     private static final String PREPARE_MESSAGE_TEXT = """
             На данном шаге от вас требуются следующие шаги:
@@ -40,7 +41,7 @@ public class AgreementChoiceStep extends ChoiceStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        cleanPreviousMessage(chatHash, sender, ANSWER_MESSAGE_TEXT);
+        sendFinishMessage(chatHash, sender, ANSWER_MESSAGE_TEXT);
         return 0;
     }
 }

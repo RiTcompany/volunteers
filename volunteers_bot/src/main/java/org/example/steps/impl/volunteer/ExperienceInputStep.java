@@ -2,6 +2,7 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -30,7 +31,7 @@ public class ExperienceInputStep  extends InputStep {
     }
 
     @Override
-    protected void saveData(long chatId, String experience) {
+    protected void saveData(long chatId, String experience) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setExperience(experience);
         volunteerService.saveAndFlush(volunteer);
@@ -38,8 +39,7 @@ public class ExperienceInputStep  extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        saveData(chatHash.getId(), data);
-        cleanPreviousMessage(chatHash, sender, ANSWER_MESSAGE_TEXT);
+        sendFinishMessage(chatHash, sender, ANSWER_MESSAGE_TEXT);
         return 0;
     }
 }

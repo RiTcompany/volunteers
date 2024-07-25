@@ -30,6 +30,9 @@ public class Volunteer {
 
     private Date birthday;
 
+    @Column(name = "child_document_path")
+    private String childDocumentPath;
+
     @Column(name = "full_name")
     private String fullName;
 
@@ -60,6 +63,9 @@ public class Volunteer {
     private String reason;
 
     private String experience;
+
+    @Column(name = "photo_path")
+    private String photoPath;
 
     private String email;
 

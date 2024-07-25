@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EGender;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -41,14 +42,14 @@ public class GenderChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EGender eGender = EGender.valueOf(data);
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getGenderStr()));
         saveGender(chatHash.getId(), eGender);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(eGender.getGenderStr()));
         return 0;
     }
 
-    private void saveGender(long chatId, EGender eGender) {
+    private void saveGender(long chatId, EGender eGender) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setGender(eGender);
         volunteerService.saveAndFlush(volunteer);

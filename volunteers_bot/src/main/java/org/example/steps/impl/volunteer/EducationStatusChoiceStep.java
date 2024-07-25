@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EEducationStatus;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.pojo.dto.ResultDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.pojo.entities.Volunteer;
@@ -41,14 +42,14 @@ public class EducationStatusChoiceStep extends ChoiceStep {
     }
 
     @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EEducationStatus eEducationStatus = EEducationStatus.valueOf(data);
         saveEducation(chatHash.getId(), eEducationStatus);
-        cleanPreviousMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getEEducationStatusStr()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getEEducationStatusStr()));
         return 0;
     }
 
-    private void saveEducation(long chatId, EEducationStatus eEducationStatus) {
+    private void saveEducation(long chatId, EEducationStatus eEducationStatus) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
         volunteer.setEducationStatus(eEducationStatus);
         volunteerService.saveAndFlush(volunteer);

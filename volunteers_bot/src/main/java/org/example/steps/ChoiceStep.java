@@ -3,6 +3,7 @@ package org.example.steps;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.example.enums.PageMoveEnum;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
 import org.example.pojo.dto.ButtonDto;
 import org.example.pojo.dto.KeyboardDto;
@@ -26,8 +27,7 @@ public abstract class ChoiceStep extends ConversationStep {
     private List<ButtonDto> buttonDtoList;
 
     @Override
-    public void prepare(ChatHash chatHash, AbsSender sender) {
-        System.out.println(buttonDtoList.size());
+    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
         KeyboardDto keyboardDto = keyboardMapper.keyboardDto(
                 chatHash, buttonDtoList, getPrepareMessageText()
         );
@@ -36,7 +36,7 @@ public abstract class ChoiceStep extends ConversationStep {
     }
 
     @Override
-    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException {
         if (isMovePageAction(chatHash, messageDto, sender)) {
             return -1;
         }
@@ -47,10 +47,23 @@ public abstract class ChoiceStep extends ConversationStep {
             return handleIllegalUserAction(messageDto, sender, result.getMessage());
         }
 
+        deleteKeyboard(chatHash, sender);
         return finishStep(chatHash, sender, data);
     }
 
     protected abstract ResultDto isValidData(String data);
+
+    @Override
+    protected void sendFinishMessage(ChatHash chatHash, AbsSender sender, String text) {
+        super.sendFinishMessage(chatHash, sender, text);
+    }
+
+    private void deleteKeyboard(ChatHash chatHash, AbsSender sender) {
+        long chatId = chatHash.getId();
+        int keyBoardMessageId = chatHash.getPrevBotMessageId();
+        KeyboardUtil.cleanKeyboard(chatId, keyBoardMessageId, sender);
+        chatHash.setDefaultPrevBotMessagePageNumber();
+    }
 
     private boolean isMovePageAction(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         try {

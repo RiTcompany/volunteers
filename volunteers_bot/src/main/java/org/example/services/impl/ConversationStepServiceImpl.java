@@ -1,12 +1,14 @@
 package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.steps.ConversationStep;
 import org.example.pojo.dto.MessageDto;
 import org.example.pojo.entities.ChatHash;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.services.ConversationStepService;
+import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -27,24 +29,47 @@ public class ConversationStepServiceImpl implements ConversationStepService {
     public void prepareStep(ChatHash chatHash, AbsSender sender) {
         ConversationStep step = getConversationStep(chatHash);
         if (step != null) {
-            step.prepare(chatHash, sender);
+            prepareStep(step, chatHash, sender);
         }
     }
 
     public EConversationStep executeStep(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         ConversationStep step = getConversationStep(chatHash);
-        int stepIndex = step.execute(chatHash, messageDto, sender);
+        int stepIndex = executeStep(step, chatHash, messageDto, sender);
+
         if (stepIndex == -1) {
             return chatHash.getEConversationStep();
         }
 
-        return conversationStepGraph
-                .get(chatHash.getEConversation())
-                .get(chatHash.getEConversationStep())
-                .get(stepIndex);
+        return getNextEStep(chatHash, stepIndex);
+    }
+
+    private void prepareStep(ConversationStep step, ChatHash chatHash, AbsSender sender) {
+        try {
+            step.prepare(chatHash, sender);
+        } catch (EntityNotFoundException e) {
+            MessageUtil.sendMessageText(e.getUserMessage(), chatHash.getId(), sender);
+        }
     }
 
     private ConversationStep getConversationStep(ChatHash chatHash) {
         return conversationStepMap.get(chatHash.getEConversationStep());
+    }
+
+    private int executeStep(ConversationStep step, ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+        try {
+            return step.execute(chatHash, messageDto, sender);
+        } catch (EntityNotFoundException e) {
+            MessageUtil.sendMessageText(e.getUserMessage(), chatHash.getId(), sender);
+        }
+
+        return -1;
+    }
+
+    private EConversationStep getNextEStep(ChatHash chatHash, int stepIndex) {
+        return conversationStepGraph
+                .get(chatHash.getEConversation())
+                .get(chatHash.getEConversationStep())
+                .get(stepIndex);
     }
 }
