@@ -1,4 +1,4 @@
-package org.example.pojo.entities;
+package org.example.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,6 @@ import java.util.Date;
 @Entity
 @Table(name = "parent")
 @Getter @Setter
-@NoArgsConstructor
 public class Parent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +39,4 @@ public class Parent {
 
     @Column(name = "chat_id")
     private Long chatId;
-
-    public Parent(Long chatId) {
-        this.chatId = chatId;
-    }
 }

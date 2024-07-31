@@ -1,33 +1,23 @@
 package org.example.utils;
 
 import org.example.enums.EAgreement;
-import org.example.enums.ECity;
-import org.example.enums.EClothingSize;
-import org.example.enums.EEducationInstitution;
-import org.example.enums.EEducationStatus;
-import org.example.enums.EGender;
-import org.example.enums.PageMoveEnum;
-import org.example.pojo.dto.ButtonDto;
+import org.example.enums.EPageMove;
+import org.example.dto.ButtonDto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ButtonUtil {
+    public static final String OTHER_CHOICE = "Другое";
     private static List<InlineKeyboardButton> pageMoveButtonList;
-    private static final Map<EEducationInstitution, List<ButtonDto>> eduStatusToInstitutionList = new HashMap<>() {{
-        put(EEducationInstitution.SCHOOL, null);
-        put(EEducationInstitution.UNIVERSITY, null);
-        put(EEducationInstitution.SECONDARY_PROFESSIONAL, null);
-    }};
-    private static List<ButtonDto> cityList;
-    private static List<ButtonDto> educationStatusList;
-    private static List<ButtonDto> genderList;
-    private static List<ButtonDto> agreementList;
-    private static List<ButtonDto> clothingSizeList;
+    private static List<ButtonDto> yesList;
+    private static List<ButtonDto> clearList;
+
+    public static void addOtherChoice(List<ButtonDto> buttonDtoList) {
+        buttonDtoList.add(new ButtonDto(OTHER_CHOICE, OTHER_CHOICE, buttonDtoList.size()));
+    }
 
     public static List<InlineKeyboardButton> pageMoveButtonList() {
         if (pageMoveButtonList == null) {
@@ -37,119 +27,38 @@ public class ButtonUtil {
         return pageMoveButtonList;
     }
 
-    public static List<ButtonDto> educationInstitutionButtonList(EEducationStatus eEducationStatus) {
-        EEducationInstitution eEducationInstitution = EducationUtil.getEEducationInstitution(eEducationStatus);
-        if (eduStatusToInstitutionList.get(eEducationInstitution) == null) {
-            eduStatusToInstitutionList.put(eEducationInstitution, getEducationInstitutionButtonList(eEducationStatus));
+    public static List<ButtonDto> yesButtonList() {
+        if (yesList == null) {
+            yesList = getYesButtonDtoList();
         }
 
-        return eduStatusToInstitutionList.get(eEducationInstitution);
+        return yesList;
     }
 
-    public static List<ButtonDto> cityButtonList() {
-        if (cityList == null) {
-            cityList = getCityButtonDtoList();
+    public static List<ButtonDto> clearButtonList() {
+        if (yesList == null) {
+            yesList = getClearButtonDtoList();
         }
 
-        return cityList;
-    }
-
-    public static List<ButtonDto> educationStatusButtonList() {
-        if (educationStatusList == null) {
-            educationStatusList = getEducationStatusButtonDtoList();
-        }
-
-        return educationStatusList;
-    }
-
-    public static List<ButtonDto> genderButtonList() {
-        if (genderList == null) {
-            genderList = getGenderButtonDtoList();
-        }
-
-        return genderList;
-    }
-
-    public static List<ButtonDto> agrrementButtonList() {
-        if (agreementList == null) {
-            agreementList = getAgreementButtonDtoList();
-        }
-
-        return agreementList;
-    }
-
-    public static List<ButtonDto> clothingSizeButtonList() {
-        if (clothingSizeList == null) {
-            clothingSizeList = getClothingSizeButtonDtoList();
-        }
-
-        return clothingSizeList;
+        return yesList;
     }
 
     private static List<InlineKeyboardButton> getPageMoveButtonList() {
         return Arrays.asList(
-                (new ButtonDto(PageMoveEnum.PREV.name(), PageMoveEnum.PREV.getDescription())).toKeyboardButton(),
-                (new ButtonDto(PageMoveEnum.NEXT.name(), PageMoveEnum.NEXT.getDescription())).toKeyboardButton()
+                (new ButtonDto(EPageMove.PREV.name(), EPageMove.PREV.getDescription())).toKeyboardButton(),
+                (new ButtonDto(EPageMove.NEXT.name(), EPageMove.NEXT.getDescription())).toKeyboardButton()
         );
     }
 
-    private static List<ButtonDto> getEducationInstitutionButtonList(EEducationStatus eEducationStatus) {
-        List<String> educationInstitutionList = EducationUtil.getEducationInstitutionList(eEducationStatus);
-        List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < educationInstitutionList.size(); i++) {
-            buttonDtoList.add(new ButtonDto(educationInstitutionList.get(i), educationInstitutionList.get(i), i));
-        }
-
-        return buttonDtoList;
-    }
-
-    private static List<ButtonDto> getCityButtonDtoList() {
-        ECity[] eCityArray = ECity.values();
-        List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eCityArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eCityArray[i].toString(), eCityArray[i].getCityStr(), i));
-        }
-
-        return buttonDtoList;
-    }
-
-    private static List<ButtonDto> getEducationStatusButtonDtoList() {
-        EEducationStatus[] eEducationStatusArray = EEducationStatus.values();
-        List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eEducationStatusArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(
-                    eEducationStatusArray[i].toString(),
-                    eEducationStatusArray[i].getEEducationStatusStr(),
-                    i
-            ));
-        }
-
-        return buttonDtoList;
-    }
-
-    private static List<ButtonDto> getGenderButtonDtoList() {
-        EGender[] eGenderArray = EGender.values();
-        List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eGenderArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eGenderArray[i].toString(), eGenderArray[i].getGenderStr(), i));
-        }
-
-        return buttonDtoList;
-    }
-
-    private static List<ButtonDto> getAgreementButtonDtoList() {
+    private static List<ButtonDto> getYesButtonDtoList() {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
         buttonDtoList.add(new ButtonDto(EAgreement.YES.toString(), EAgreement.YES.getAgreementStr(), 0));
         return buttonDtoList;
     }
 
-    private static List<ButtonDto> getClothingSizeButtonDtoList() {
-        EClothingSize[] eClothingSizeArray = EClothingSize.values();
+    private static List<ButtonDto> getClearButtonDtoList() {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eClothingSizeArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eClothingSizeArray[i].toString(), eClothingSizeArray[i].getEClothingSizeStr(), i));
-        }
-
+        buttonDtoList.add(new ButtonDto(EAgreement.CLEARLY.toString(), EAgreement.CLEARLY.getAgreementStr(), 0));
         return buttonDtoList;
     }
 }

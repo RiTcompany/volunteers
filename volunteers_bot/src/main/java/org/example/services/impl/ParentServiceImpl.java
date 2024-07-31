@@ -2,7 +2,8 @@ package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.entities.Parent;
+import org.example.mappers.ParentMapper;
+import org.example.entities.Parent;
 import org.example.repositories.ParentRepository;
 import org.example.services.ParentService;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ParentServiceImpl implements ParentService {
     private final ParentRepository parentRepository;
+    private final ParentMapper parentMapper;
 
     @Override
     public Parent getByChatId(long chatId) throws EntityNotFoundException {
@@ -24,5 +26,12 @@ public class ParentServiceImpl implements ParentService {
     @Override
     public void saveAndFlush(Parent parent) {
         parentRepository.saveAndFlush(parent);
+    }
+
+    @Override
+    public void create(long chatId) {
+        if (!parentRepository.existsByChatId(chatId)) {
+            parentRepository.saveAndFlush(parentMapper.parent(chatId));
+        }
     }
 }

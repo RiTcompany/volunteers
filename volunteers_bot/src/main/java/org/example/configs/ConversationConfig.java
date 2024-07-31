@@ -3,6 +3,7 @@ package org.example.configs;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.steps.ConversationStep;
+import org.example.steps.impl.moderator.ChildDocumentCheckStep;
 import org.example.steps.impl.parent.ChildBirthdayInputStep;
 import org.example.steps.impl.parent.ChildFullNameInputStep;
 import org.example.steps.impl.parent.ChildRegisterPlaceInputStep;
@@ -11,7 +12,7 @@ import org.example.steps.impl.parent.ParentFullNameInputStep;
 import org.example.steps.impl.parent.ParentRegisterPlaceInputStep;
 import org.example.steps.impl.volunteer.AgreementChoiceStep;
 import org.example.steps.impl.volunteer.BirthdayInputStep;
-import org.example.steps.impl.volunteer.ChildFileSendStep;
+import org.example.steps.impl.volunteer.ChildDocumentSendStep;
 import org.example.steps.impl.volunteer.CityChoiceStep;
 import org.example.steps.impl.volunteer.CityInputStep;
 import org.example.steps.impl.volunteer.ClothingSizeChoiceStep;
@@ -43,6 +44,7 @@ public class ConversationConfig {
         Map<EConversation, Map<EConversationStep, List<EConversationStep>>> conversationMap = new HashMap<>();
         conversationMap.put(EConversation.VOLUNTEER_REGISTER, volunteerRegisterConversationStepGraph());
         conversationMap.put(EConversation.PARENT_REGISTER, parentRegisterConversationStepGraph());
+        conversationMap.put(EConversation.CHECK_DOCUMENT, checkChildDocumentConversationStepGraph());
         return conversationMap;
     }
 
@@ -51,6 +53,7 @@ public class ConversationConfig {
         Map<EConversation, EConversationStep> conversationStartStepMap = new HashMap<>();
         conversationStartStepMap.put(EConversation.VOLUNTEER_REGISTER, EConversationStep.CITY_CHOICE);
         conversationStartStepMap.put(EConversation.PARENT_REGISTER, EConversationStep.PARENT_FULL_NAME_INPUT);
+        conversationStartStepMap.put(EConversation.CHECK_DOCUMENT, EConversationStep.CHILD_DOCUMENT_CHECK);
         return conversationStartStepMap;
     }
 
@@ -59,7 +62,7 @@ public class ConversationConfig {
             @Autowired CityChoiceStep cityChoiceStep,
             @Autowired CityInputStep cityInputStep,
             @Autowired BirthdayInputStep birthdayInputStep,
-            @Autowired ChildFileSendStep childDocumentSendStep,
+            @Autowired ChildDocumentSendStep childDocumentSendStep,
             @Autowired FullNameInputStep fullNameInputStep,
             @Autowired GenderChoiceStep genderChoiceStep,
             @Autowired PhoneInputStep phoneInputStep,
@@ -79,8 +82,9 @@ public class ConversationConfig {
             @Autowired ChildRegisterPlaceInputStep childRegisterPlaceInputStep,
             @Autowired ParentFullNameInputStep parentFullNameInputStep,
             @Autowired ParentBirthdayInputStep parentBirthdayInputStep,
-            @Autowired ParentRegisterPlaceInputStep parentRegisterPlaceInputStep
-    ) {
+            @Autowired ParentRegisterPlaceInputStep parentRegisterPlaceInputStep,
+            @Autowired ChildDocumentCheckStep childDocumentCheckStep
+            ) {
         return new HashMap<>() {{
             put(EConversationStep.CITY_CHOICE, cityChoiceStep);
             put(EConversationStep.CITY_INPUT, cityInputStep);
@@ -106,6 +110,7 @@ public class ConversationConfig {
             put(EConversationStep.PARENT_FULL_NAME_INPUT, parentFullNameInputStep);
             put(EConversationStep.PARENT_BIRTHDAY_INPUT, parentBirthdayInputStep);
             put(EConversationStep.PARENT_REGISTER_PLACE, parentRegisterPlaceInputStep);
+            put(EConversationStep.CHILD_DOCUMENT_CHECK, childDocumentCheckStep);
         }};
     }
 
@@ -189,6 +194,14 @@ public class ConversationConfig {
                 add(EConversationStep.CHILD_REGISTER_PLACE);
             }});
             put(EConversationStep.CHILD_REGISTER_PLACE, new ArrayList<>() {{
+                add(null);
+            }});
+        }};
+    }
+
+    private Map<EConversationStep, List<EConversationStep>> checkChildDocumentConversationStepGraph() {
+        return new HashMap<>() {{
+            put(EConversationStep.CHILD_DOCUMENT_CHECK, new ArrayList<>() {{
                 add(null);
             }});
         }};

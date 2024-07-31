@@ -3,16 +3,20 @@ package org.example.steps.impl.volunteer;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.dto.ButtonDto;
 import org.example.enums.EGender;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -23,7 +27,7 @@ public class GenderChoiceStep extends ChoiceStep {
 
     @PostConstruct
     public void init() {
-        setButtonDtoList(ButtonUtil.genderButtonList());
+        setButtonDtoList(getGenderButtonDtoList());
     }
 
     @Override
@@ -44,7 +48,7 @@ public class GenderChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EGender eGender = EGender.valueOf(data);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getGenderStr()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getGender()));
         saveGender(chatHash.getId(), eGender);
         return 0;
     }
@@ -57,5 +61,15 @@ public class GenderChoiceStep extends ChoiceStep {
 
     private String getAnswerMessageText(String answer) {
         return "Ваш пол: <b>".concat(answer).concat("</b>");
+    }
+
+    private List<ButtonDto> getGenderButtonDtoList() {
+        EGender[] eGenderArray = EGender.values();
+        List<ButtonDto> buttonDtoList = new ArrayList<>();
+        for (int i = 0; i < eGenderArray.length; i++) {
+            buttonDtoList.add(new ButtonDto(eGenderArray[i].toString(), eGenderArray[i].getGender(), i));
+        }
+
+        return buttonDtoList;
     }
 }

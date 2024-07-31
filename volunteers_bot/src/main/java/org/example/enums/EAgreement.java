@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum EAgreement {
-    YES("ДА");
+    YES("ОК"),
+    CLEARLY("Понятно"),;
 
     private final String agreementStr;
 

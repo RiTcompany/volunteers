@@ -3,10 +3,10 @@ package org.example.steps.impl.volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.MessageDto;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.MessageDto;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
@@ -50,9 +50,14 @@ public class PhotoSendStep extends FileSendStep {
             return new ResultDto(false, "Вам необходимо отправить фото в ответном сообщении");
         }
 
-        int maxPhotoSize = MAX_PHOTO_SIZE_MB * 1024 * 1024;
-        if (photoList.get(0).getFileSize() > maxPhotoSize) {
+        PhotoSize photo = photoList.get(0);
+        if (photo.getFileSize() > MAX_PHOTO_SIZE_MB * 1024 * 1024) {
             return new ResultDto(false, "Размер фото не должен превышать ".concat(String.valueOf(MAX_PHOTO_SIZE_MB)).concat("MB"));
+        }
+
+        double proportion = (double) photo.getWidth() / photo.getHeight();
+        if (!(0.7 < proportion && proportion < 0.8)) {
+            return new ResultDto(false, "Формат фото должен быть 3x4");
         }
 
         return new ResultDto(true);

@@ -3,9 +3,9 @@ package org.example.steps.impl.volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class ExperienceInputStep  extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-//        TODO : нужно ли ограничивать ответ по длине?
+//        TODO : нужно ли ограничивать ответ по длине
         return new ResultDto(true);
     }
 

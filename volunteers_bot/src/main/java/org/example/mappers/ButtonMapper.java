@@ -3,7 +3,7 @@ package org.example.mappers;
 import org.example.enums.ECity;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
-import org.example.pojo.dto.ButtonDto;
+import org.example.dto.ButtonDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +19,7 @@ public class ButtonMapper {
     public ButtonDto buttonDto(EGender eGender, int row) {
         ButtonDto buttonDto = new ButtonDto();
         buttonDto.setCallback(eGender.toString());
-        buttonDto.setText(eGender.getGenderStr());
+        buttonDto.setText(eGender.getGender());
         buttonDto.setRow(row);
         return buttonDto;
     }
