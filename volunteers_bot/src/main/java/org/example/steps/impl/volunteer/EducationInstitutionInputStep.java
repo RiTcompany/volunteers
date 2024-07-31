@@ -3,9 +3,9 @@ package org.example.steps.impl.volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class EducationInstitutionInputStep extends InputStep {
     protected ResultDto isValidData(String educationInstitution) {
         if (educationInstitution.isEmpty()) {
             return new ResultDto(false, "Такого учебного заведения не существует");
-        } // TODO : нужна валидация ???
+        } // TODO : нужна валидация, надо найти список
 
         return new ResultDto(true);
     }

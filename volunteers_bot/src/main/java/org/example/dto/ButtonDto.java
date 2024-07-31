@@ -1,4 +1,4 @@
-package org.example.pojo.dto;
+package org.example.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 public class ButtonDto {
     private String callback;
     private String text;
+    private String url;
     private int row;
 
     public ButtonDto(String callback, String text) {
@@ -26,9 +27,9 @@ public class ButtonDto {
 
     public InlineKeyboardButton toKeyboardButton() {
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(text);
         button.setCallbackData(callback);
-
+        if (text != null) button.setText(text);
+        if (url != null) button.setUrl(url);
         return button;
     }
 }

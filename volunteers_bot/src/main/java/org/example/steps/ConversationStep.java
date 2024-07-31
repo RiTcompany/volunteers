@@ -1,9 +1,11 @@
 package org.example.steps;
 
+import org.example.builders.MessageBuilder;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.MessageDto;
-import org.example.pojo.entities.ChatHash;
+import org.example.dto.MessageDto;
+import org.example.entities.ChatHash;
 import org.example.utils.MessageUtil;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public abstract class ConversationStep {
@@ -18,13 +20,19 @@ public abstract class ConversationStep {
     protected abstract int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException;
 
     protected void sendFinishMessage(ChatHash chatHash, AbsSender sender, String text) {
-        MessageUtil.sendMessageText(text, chatHash.getId(), sender);
+        SendMessage sendMessage = MessageBuilder.create()
+                .setText(text)
+                .sendMessage(chatHash.getId());
+        MessageUtil.sendMessage(sendMessage, sender);
     }
 
     protected int handleIllegalUserAction(
             MessageDto messageDto, AbsSender sender, String exceptionMessageText
     ) {
-        MessageUtil.sendMessageText(exceptionMessageText, messageDto.getChatId(), sender);
+        SendMessage sendMessage = MessageBuilder.create()
+                .setText(exceptionMessageText)
+                .sendMessage(messageDto.getChatId());
+        MessageUtil.sendMessage(sendMessage, sender);
         return -1;
     }
 }

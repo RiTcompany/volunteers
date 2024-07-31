@@ -1,9 +1,9 @@
 package org.example.steps;
 
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.MessageDto;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
+import org.example.dto.MessageDto;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public abstract class FileSendStep extends ConversationStep {

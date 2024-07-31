@@ -3,10 +3,11 @@ package org.example.steps.impl.volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.MessageDto;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.MessageDto;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
+import org.example.services.ChildDocumentService;
 import org.example.services.VolunteerService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
@@ -15,14 +16,14 @@ import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.File;
-import java.util.Objects;
 
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChildFileSendStep extends FileSendStep {
+public class ChildDocumentSendStep extends FileSendStep {
     private final VolunteerService volunteerService;
+    private final ChildDocumentService childDocumentService;
     private static final String PREPARE_MESSAGE_TEXT = """
             Вам необходимо согласие родителей. Для этого необходимо сделать следующие шаги:
                 1) Скачайте и распечатайте документ.
@@ -67,12 +68,14 @@ public class ChildFileSendStep extends FileSendStep {
     }
 
     @Override
-    protected void saveFile(long chatId, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException {
+    protected void saveFile(long chatId, MessageDto messageDto, AbsSender sender) {
         File file = MessageUtil.downloadFile(messageDto.getDocument().getFileId(), sender);
         if (file != null) {
-            Volunteer volunteer = volunteerService.getByChatId(chatId);
-            volunteer.setChildDocumentPath(file.getPath());
-            volunteerService.saveAndFlush(volunteer);
+            childDocumentService.create(chatId, file.getPath());
+//            Volunteer volunteer = volunteerService.getByChatId(chatId);
+//            volunteer.setChildDocumentPath(file.getPath());
+//            volunteer.setCheckChildDocument(true);
+//            volunteerService.saveAndFlush(volunteer);
         }
 //        TODO : добавить что-то, если вдруг файл не скачан
     }

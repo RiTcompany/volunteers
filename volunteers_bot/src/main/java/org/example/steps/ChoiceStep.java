@@ -2,18 +2,20 @@ package org.example.steps;
 
 import lombok.AccessLevel;
 import lombok.Setter;
-import org.example.enums.PageMoveEnum;
+import org.example.builders.MessageBuilder;
+import org.example.enums.EPageMove;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
-import org.example.pojo.dto.ButtonDto;
-import org.example.pojo.dto.KeyboardDto;
-import org.example.pojo.dto.MessageDto;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
+import org.example.dto.ButtonDto;
+import org.example.dto.KeyboardDto;
+import org.example.dto.MessageDto;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
 import org.example.utils.KeyboardUtil;
 import org.example.utils.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.List;
@@ -31,7 +33,11 @@ public abstract class ChoiceStep extends ConversationStep {
         KeyboardDto keyboardDto = keyboardMapper.keyboardDto(
                 chatHash, buttonDtoList, getPrepareMessageText()
         );
-        int messageId = MessageUtil.sendMessageReplyMarkup(keyboardDto, sender);
+        SendMessage sendMessage = MessageBuilder.create()
+                .setText(getPrepareMessageText())
+                .setPageableKeyBoard(keyboardDto)
+                .sendMessage(chatHash.getId());
+        int messageId = MessageUtil.sendMessage(sendMessage, sender);
         chatHash.setPrevBotMessageId(messageId);
     }
 
@@ -67,17 +73,17 @@ public abstract class ChoiceStep extends ConversationStep {
 
     private boolean isMovePageAction(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         try {
-            PageMoveEnum pageMoveEnum = PageMoveEnum.valueOf(messageDto.getData());
-            changePage(pageMoveEnum, chatHash, sender);
+            EPageMove ePageMove = EPageMove.valueOf(messageDto.getData());
+            changePage(ePageMove, chatHash, sender);
             return true;
         } catch (IllegalArgumentException e) {
             return false;
         }
     }
 
-    private void changePage(PageMoveEnum pageMoveEnum, ChatHash chatHash, AbsSender sender) {
+    private void changePage(EPageMove ePageMove, ChatHash chatHash, AbsSender sender) {
         KeyboardDto keyboardDto = keyboardMapper.keyboardDto(chatHash, buttonDtoList);
-        int newPageNumber = KeyboardUtil.movePage(pageMoveEnum, keyboardDto, sender);
+        int newPageNumber = KeyboardUtil.movePage(ePageMove, keyboardDto, sender);
         chatHash.setPrevBotMessagePageNumber(newPageNumber);
     }
 }

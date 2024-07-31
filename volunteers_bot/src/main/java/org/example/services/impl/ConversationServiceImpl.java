@@ -1,8 +1,8 @@
 package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.pojo.dto.MessageDto;
-import org.example.pojo.entities.ChatHash;
+import org.example.dto.MessageDto;
+import org.example.entities.ChatHash;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.enums.EMessage;

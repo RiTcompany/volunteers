@@ -3,9 +3,9 @@ package org.example.steps.impl.volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class VolunteerIdInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-//        TODO : будем ли проверить верность id ???
+//        TODO : будем ли проверить верность id (проверить на число и сделать запрос на регионалов, что такой существует + проверить имя)
         return new ResultDto(true);
     }
 

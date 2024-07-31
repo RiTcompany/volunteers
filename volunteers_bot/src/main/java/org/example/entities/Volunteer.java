@@ -1,4 +1,4 @@
-package org.example.pojo.entities;
+package org.example.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,6 @@ import java.util.Date;
 @Entity
 @Table(name = "volunteer")
 @Getter @Setter
-@NoArgsConstructor
 public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +29,6 @@ public class Volunteer {
 
     private Date birthday;
 
-    @Column(name = "child_document_path")
-    private String childDocumentPath;
-
     @Column(name = "full_name")
     private String fullName;
 
@@ -41,7 +37,7 @@ public class Volunteer {
 
     private String phone;
 
-    @Column(name = "tg_link")
+    @Column(name = "tg_link", nullable = false)
     private String tgLink;
 
     @Column(name = "education_status")
@@ -72,15 +68,6 @@ public class Volunteer {
     @Column(name = "volunteer_id")
     private String volunteerId;
 
-    @Column(name = "chat_id")
+    @Column(name = "chat_id", nullable = false)
     private Long chatId;
-
-    public Volunteer(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public Volunteer(Long chatId, String tgLink) {
-        this.chatId = chatId;
-        this.tgLink = tgLink;
-    }
 }

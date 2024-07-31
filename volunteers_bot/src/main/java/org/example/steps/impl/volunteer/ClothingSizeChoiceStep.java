@@ -3,16 +3,20 @@ package org.example.steps.impl.volunteer;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.dto.ButtonDto;
 import org.example.enums.EClothingSize;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Volunteer;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Volunteer;
 import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -23,7 +27,7 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
 
     @PostConstruct
     public void init() {
-        setButtonDtoList(ButtonUtil.clothingSizeButtonList());
+        setButtonDtoList(getClothingSizeButtonDtoList());
     }
 
     @Override
@@ -57,5 +61,15 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
 
     private String getAnswerMessageText(String clothingSize) {
         return "Ваш размер одежды: <b>".concat(clothingSize).concat("</b>");
+    }
+
+    private List<ButtonDto> getClothingSizeButtonDtoList() {
+        EClothingSize[] eClothingSizeArray = EClothingSize.values();
+        List<ButtonDto> buttonDtoList = new ArrayList<>();
+        for (int i = 0; i < eClothingSizeArray.length; i++) {
+            buttonDtoList.add(new ButtonDto(eClothingSizeArray[i].toString(), eClothingSizeArray[i].getEClothingSizeStr(), i));
+        }
+
+        return buttonDtoList;
     }
 }

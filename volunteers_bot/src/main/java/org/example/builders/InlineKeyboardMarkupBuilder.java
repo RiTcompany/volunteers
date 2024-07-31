@@ -2,7 +2,7 @@ package org.example.builders;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.example.pojo.dto.ButtonDto;
+import org.example.dto.ButtonDto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 

@@ -1,8 +1,8 @@
 package org.example.mappers;
 
-import org.example.pojo.dto.ButtonDto;
-import org.example.pojo.dto.KeyboardDto;
-import org.example.pojo.entities.ChatHash;
+import org.example.dto.ButtonDto;
+import org.example.dto.KeyboardDto;
+import org.example.entities.ChatHash;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -3,9 +3,9 @@ package org.example.steps.impl.parent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.pojo.dto.ResultDto;
-import org.example.pojo.entities.ChatHash;
-import org.example.pojo.entities.Parent;
+import org.example.dto.ResultDto;
+import org.example.entities.ChatHash;
+import org.example.entities.Parent;
 import org.example.services.ParentService;
 import org.example.steps.InputStep;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 public class ChildFullNameInputStep extends InputStep {
     private final ParentService parentService;
     private static final String PREPARE_MESSAGE_TEXT = "Введите <b>ФИО</b> вашего ребёнка полностью:";
-    private static final int MAX_FULL_NAME_LENGTH = 100;
+    private static final int MAX_FULL_NAME_LENGTH = 100; // TODO: сменить на 511
 
     @Override
     protected String getPrepareMessageText() {
@@ -51,7 +51,7 @@ public class ChildFullNameInputStep extends InputStep {
     }
 
     private boolean isLongFullName(String fullName) {
-        // TODO : возможно стоит добавить проверка на 1 или 2 пробела (если нет отчества)
+        // TODO : хранить отдельно: фамилия, имя, отчество (если есть)
         return fullName.length() > MAX_FULL_NAME_LENGTH;
     }
 }

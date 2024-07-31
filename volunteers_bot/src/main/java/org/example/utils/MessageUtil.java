@@ -3,7 +3,7 @@ package org.example.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bots.LongPoolingBot;
 import org.example.builders.PageableInlineKeyboardMarkupBuilder;
-import org.example.pojo.dto.KeyboardDto;
+import org.example.dto.KeyboardDto;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,7 +33,7 @@ public class MessageUtil {
     }
 
     public static int sendMessageReplyMarkup(KeyboardDto keyboardDto, AbsSender sender) {
-        SendMessage message = sendMessageWithKeyboard(keyboardDto);
+        SendMessage message = sendMessageReplyMarkup(keyboardDto);
         return sendMessage(message, sender);
     }
 
@@ -57,21 +57,30 @@ public class MessageUtil {
         return sendDocument(document, sender);
     }
 
-    private static SendMessage sendMessageWithKeyboard(KeyboardDto keyboardDto) {
+    private static SendMessage sendMessageReplyMarkup(KeyboardDto keyboardDto) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboard(keyboardDto);
-        return MessageUtil.completeSendMessage(keyboardDto.getMessageText(), keyboardDto.getChatId(), inlineKeyboardMarkup);
+        return MessageUtil.completeSendMessageReplyMarkup(
+                keyboardDto.getMessageText(), keyboardDto.getChatId(), inlineKeyboardMarkup
+        );
     }
 
     private static EditMessageReplyMarkup editMessageWithKeyboard(KeyboardDto keyboardDto) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboard(keyboardDto);
-        return MessageUtil.completeEditMessageReplyMarkup(keyboardDto.getChatId(), keyboardDto.getMessageId(), inlineKeyboardMarkup);
+        return MessageUtil.completeEditMessageReplyMarkup(
+                keyboardDto.getChatId(), keyboardDto.getMessageId(), inlineKeyboardMarkup
+        );
     }
 
     private static InlineKeyboardMarkup inlineKeyboard(KeyboardDto keyboardDto) {
-        return PageableInlineKeyboardMarkupBuilder.create().setPageNumber(keyboardDto.getPageNumber()).setButtonList(keyboardDto.getButtonDtoList()).build();
+        return PageableInlineKeyboardMarkupBuilder.create()
+                .setPageNumber(keyboardDto.getPageNumber())
+                .setButtonList(keyboardDto.getButtonDtoList())
+                .build();
     }
 
-    private static EditMessageReplyMarkup completeEditMessageReplyMarkup(long chatId, Integer messageId, InlineKeyboardMarkup inlineKeyboardMarkup) {
+    private static EditMessageReplyMarkup completeEditMessageReplyMarkup(
+            long chatId, Integer messageId, InlineKeyboardMarkup inlineKeyboardMarkup
+    ) {
         EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
         edit.setMessageId(messageId);
         edit.setReplyMarkup(inlineKeyboardMarkup);
@@ -79,7 +88,9 @@ public class MessageUtil {
         return edit;
     }
 
-    private static SendMessage completeSendMessage(String text, long chatId, InlineKeyboardMarkup inlineKeyboardMarkup) {
+    private static SendMessage completeSendMessageReplyMarkup(
+            String text, long chatId, InlineKeyboardMarkup inlineKeyboardMarkup
+    ) {
         SendMessage message = completeSendMessageText(text, chatId);
         message.setReplyMarkup(inlineKeyboardMarkup);
         return message;
@@ -93,7 +104,9 @@ public class MessageUtil {
     }
 
 
-    private static EditMessageText completeEditMessageText(long chatId, Integer messageId, String newText) {
+    private static EditMessageText completeEditMessageText(
+            long chatId, Integer messageId, String newText
+    ) {
         EditMessageText edit = new EditMessageText();
         edit.setMessageId(messageId);
         edit.setText(newText);
@@ -115,7 +128,7 @@ public class MessageUtil {
         return document;
     }
 
-    private static int sendMessage(SendMessage message, AbsSender sender) {
+    public static int sendMessage(SendMessage message, AbsSender sender) {
         try {
             message.enableHtml(true);
             return sender.execute(message).getMessageId();
@@ -156,7 +169,9 @@ public class MessageUtil {
     private static java.io.File downloadFile(File fileInfo, AbsSender sender) {
         try {
             String filePath = fileInfo.getFilePath();
-            return ((LongPoolingBot) sender).downloadFile(filePath, new java.io.File(STORAGE_PATH.concat(filePath)));
+            return ((LongPoolingBot) sender).downloadFile(
+                    filePath, new java.io.File(STORAGE_PATH.concat(filePath))
+            );
         } catch (TelegramApiException e) {
             log.error(EXCEPTION_MESSAGE_DOWNLOAD_FILE, e.getMessage());
         }
@@ -164,7 +179,7 @@ public class MessageUtil {
         return null;
     }
 
-    private static int sendDocument(SendDocument sendDocument, AbsSender sender) {
+    public static int sendDocument(SendDocument sendDocument, AbsSender sender) {
         try {
             return sender.execute(sendDocument).getMessageId();
         } catch (TelegramApiException e) {

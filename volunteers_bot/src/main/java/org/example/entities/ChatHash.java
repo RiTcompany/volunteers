@@ -1,4 +1,4 @@
-package org.example.pojo.entities;
+package org.example.entities;
 
 import jakarta.persistence.Id;
 import lombok.Getter;

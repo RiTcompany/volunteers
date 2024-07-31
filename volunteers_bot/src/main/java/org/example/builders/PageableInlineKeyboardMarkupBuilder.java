@@ -2,7 +2,7 @@ package org.example.builders;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.example.pojo.dto.ButtonDto;
+import org.example.dto.ButtonDto;
 import org.example.utils.ButtonUtil;
 
 import java.util.List;

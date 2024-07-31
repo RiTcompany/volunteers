@@ -2,11 +2,9 @@ package org.example.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.builders.PageableInlineKeyboardMarkupBuilder;
-import org.example.enums.PageMoveEnum;
-import org.example.pojo.dto.ButtonDto;
-import org.example.pojo.dto.KeyboardDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.enums.EPageMove;
+import org.example.dto.ButtonDto;
+import org.example.dto.KeyboardDto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -24,8 +22,8 @@ public class KeyboardUtil {
         }
     }
 
-    public static int movePage(PageMoveEnum pageMoveEnum, KeyboardDto keyboardDto, AbsSender sender) {
-        int newPageNumber = switch (pageMoveEnum) {
+    public static int movePage(EPageMove ePageMove, KeyboardDto keyboardDto, AbsSender sender) {
+        int newPageNumber = switch (ePageMove) {
             case NEXT -> incrementPageNumber(
                     keyboardDto.getPageNumber(),
                     getPageCount(keyboardDto.getButtonDtoList())
