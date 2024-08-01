@@ -57,6 +57,7 @@ public class MessageUtil {
     public static int sendMessage(SendMessage message, AbsSender sender) {
         try {
             message.enableHtml(true);
+            message.disableWebPagePreview();
             return sender.execute(message).getMessageId();
         } catch (TelegramApiException e) {
             log.error(EXCEPTION_MESSAGE_TEMPLATE, message.getChatId(), e.getMessage());

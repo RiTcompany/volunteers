@@ -102,10 +102,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     private void handleCommand(MessageDto messageDto) throws CommandException {
         if (EMessage.COMMAND.equals(messageDto.getEMessage())) {
-            throw new CommandException(
-                    "Trying to use command in command",
-                    "Вы не можете ввести другую команду, пока не завершите данный диалог"
-            );
+            throw new CommandException();
         }
     }
 }

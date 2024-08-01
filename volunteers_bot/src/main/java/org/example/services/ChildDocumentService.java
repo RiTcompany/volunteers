@@ -13,9 +13,9 @@ public interface ChildDocumentService {
 
     ChildDocument getCheckingDocument(long moderatorId) throws EntityNotFoundException;
 
-    ChildDocument accept(long moderatorId, AbsSender sender) throws EntityNotFoundException;
+    ChildDocument accept(long moderatorId) throws EntityNotFoundException;
 
-    ChildDocument fail(long moderatorId, String message, AbsSender sender) throws EntityNotFoundException;
+    ChildDocument fail(long moderatorId, String message) throws EntityNotFoundException;
 
     void saveAndFlush(ChildDocument childDocument);
 }

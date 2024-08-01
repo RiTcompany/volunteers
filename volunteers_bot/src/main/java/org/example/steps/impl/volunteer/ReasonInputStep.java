@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -26,8 +27,12 @@ public class ReasonInputStep extends InputStep {
     }
 
     @Override
-    protected ResultDto isValidData(String reason) {
-//        TODO : нужно ли ограничивать ответ по длине (255)
+    protected ResultDto isValidData(String data) {
+        if (ValidUtil.isLongDescriptionText(data)) {
+            String exceptionMessage = ValidUtil.getExceptionMessageText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
+            return new ResultDto(false, exceptionMessage);
+        }
+
         return new ResultDto(true);
     }
 

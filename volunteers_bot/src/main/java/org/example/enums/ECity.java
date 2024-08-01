@@ -7,9 +7,9 @@ public enum ECity {
     SPB("Санкт-Петербург"),
     OTHER("Другое");
 
-    private final String cityStr;
+    private final String string;
 
-    ECity(String cityStr) {
-        this.cityStr = cityStr;
+    ECity(String string) {
+        this.string = string;
     }
 }

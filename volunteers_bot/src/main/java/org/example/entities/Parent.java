@@ -14,7 +14,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "parent")
-@Getter @Setter
+@Getter
+@Setter
 public class Parent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

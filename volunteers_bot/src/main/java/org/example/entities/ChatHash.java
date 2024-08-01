@@ -10,7 +10,8 @@ import org.springframework.data.redis.core.RedisHash;
 import java.io.Serializable;
 
 @RedisHash("chat")
-@Getter @Setter
+@Getter
+@Setter
 public class ChatHash implements Serializable {
     @Id
     private Long id;

@@ -46,15 +46,16 @@ public class GenderChoiceStep extends ChoiceStep {
         try {
             EGender.valueOf(messageDto.getData());
             return new ResultDto(true);
-        } catch (IllegalArgumentException e) {
-            return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
+        } catch (IllegalArgumentException ignored) {
         }
+
+        return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
     }
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EGender eGender = EGender.valueOf(data);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getGender()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getString()));
         saveGender(chatHash.getId(), eGender);
         return 0;
     }
@@ -73,7 +74,7 @@ public class GenderChoiceStep extends ChoiceStep {
         EGender[] eGenderArray = EGender.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
         for (int i = 0; i < eGenderArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eGenderArray[i].toString(), eGenderArray[i].getGender(), i));
+            buttonDtoList.add(new ButtonDto(eGenderArray[i].toString(), eGenderArray[i].getString(), i));
         }
 
         return buttonDtoList;

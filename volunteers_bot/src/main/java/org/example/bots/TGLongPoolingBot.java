@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EMessage;
 import org.example.exceptions.AbstractException;
-import org.example.exceptions.ChatNotFoundException;
 import org.example.exceptions.CommandException;
 import org.example.services.ConversationService;
 import org.example.utils.MessageUtil;
@@ -66,7 +65,7 @@ public final class TGLongPoolingBot extends TelegramLongPollingBot {
         }
     }
 
-    private void executeCommand(Update update) throws CommandException, ChatNotFoundException {
+    private void executeCommand(Update update) throws CommandException {
         Message message = update.getMessage();
         executeConversationStep(update, EMessage.COMMAND);
         if (!commandRegistry.executeCommand(this, message)) {

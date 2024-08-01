@@ -12,9 +12,9 @@ public enum EClothingSize {
     XL("XL"),
     XXL("XXL");
 
-    private final String eClothingSizeStr;
+    private final String string;
 
     EClothingSize(String eClothingSize) {
-        this.eClothingSizeStr = eClothingSize;
+        this.string = eClothingSize;
     }
 }

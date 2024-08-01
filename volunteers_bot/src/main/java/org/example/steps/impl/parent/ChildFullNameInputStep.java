@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.ParentService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -18,7 +19,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 public class ChildFullNameInputStep extends InputStep {
     private final ParentService parentService;
     private static final String PREPARE_MESSAGE_TEXT = "Введите <b>ФИО</b> вашего ребёнка полностью:";
-    private static final int MAX_FULL_NAME_LENGTH = 100; // TODO: сменить на 511
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
@@ -26,11 +26,7 @@ public class ChildFullNameInputStep extends InputStep {
     }
     @Override
     protected ResultDto isValidData(String data) {
-        if (isLongFullName(data)) {
-            return new ResultDto(false, "Ваше ФИО слишком длинное, по нашим данным такого существовать не может");
-        }
-
-        return new ResultDto(true);
+        return ValidUtil.isValidFullName(data);
     }
 
     @Override
@@ -48,10 +44,5 @@ public class ChildFullNameInputStep extends InputStep {
 
     private String getAnswerMessageText(String answer) {
         return "ФИО вашего ребёнка: <b>".concat(answer).concat("</b>");
-    }
-
-    private boolean isLongFullName(String fullName) {
-        // TODO : хранить отдельно: фамилия, имя, отчество (если есть)
-        return fullName.length() > MAX_FULL_NAME_LENGTH;
     }
 }

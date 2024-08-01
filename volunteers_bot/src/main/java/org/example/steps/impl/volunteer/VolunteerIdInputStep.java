@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -26,8 +27,11 @@ public class VolunteerIdInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-//        TODO : будем ли проверить верность id (проверить на число и сделать запрос на регионалов, что такой существует + проверить имя)
-        return new ResultDto(true);
+        if (!ValidUtil.containsDigitsOnly(data)) {
+            return new ResultDto(false, "Номер должен состоять только из цифр");
+        }
+
+        return new ResultDto(true); // TODO : возможно надо запрашивать корректность номера с сайта (но тогда и просить ввести не надо)
     }
 
     @Override

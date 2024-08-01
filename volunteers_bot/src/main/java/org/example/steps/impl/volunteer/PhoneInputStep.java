@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 public class PhoneInputStep extends InputStep {
     private final VolunteerService volunteerService;
     private static final String PREPARE_MESSAGE_TEXT = "Введите ваш <b>номер телефона</b>:";
-    //    TODO : Проверить валидацию
     private static final Pattern pattern = Pattern.compile("^((8|\\+7)\\s?)?((\\(\\d{3}\\))|(\\d{3}))(\\s|-)?(\\d{3}-?\\d{2}-?\\d{2})$");
 
     @Override
@@ -40,17 +39,22 @@ public class PhoneInputStep extends InputStep {
     @Override
     protected void saveData(long chatId, String data) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatId);
-        volunteer.setPhone(data);
+        volunteer.setPhone(formatPhone(data));
         volunteerService.saveAndFlush(volunteer);
     }
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(formatPhone(data)));
         return 0;
     }
 
     private String getAnswerMessageText(String answer) {
         return "Ваш номер телефона: <b>".concat(answer).concat("</b>");
+    }
+
+    private String formatPhone(String phone) {
+        String newPhone = phone.replaceAll("[()\\-\\s+]", "");
+        return "8".concat(newPhone.substring(newPhone.length() - 10));
     }
 }

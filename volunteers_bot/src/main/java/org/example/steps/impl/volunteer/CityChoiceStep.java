@@ -54,7 +54,7 @@ public class CityChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         ECity eCity = ECity.valueOf(data);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eCity.getCityStr()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eCity.getString()));
         if (ECity.OTHER.equals(eCity)) {
             return 0;
         }
@@ -65,7 +65,7 @@ public class CityChoiceStep extends ChoiceStep {
 
     private void saveDefaultCity(ChatHash chatHash) throws EntityNotFoundException {
         Volunteer volunteer = volunteerService.getByChatId(chatHash.getId());
-        volunteer.setCity(ECity.SPB.getCityStr());
+        volunteer.setCity(ECity.SPB.getString());
         volunteerService.saveAndFlush(volunteer);
     }
 
@@ -77,7 +77,7 @@ public class CityChoiceStep extends ChoiceStep {
         ECity[] eCityArray = ECity.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
         for (int i = 0; i < eCityArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eCityArray[i].toString(), eCityArray[i].getCityStr(), i));
+            buttonDtoList.add(new ButtonDto(eCityArray[i].toString(), eCityArray[i].getString(), i));
         }
 
         return buttonDtoList;

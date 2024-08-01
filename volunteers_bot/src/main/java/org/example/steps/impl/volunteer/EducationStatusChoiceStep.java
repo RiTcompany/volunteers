@@ -46,16 +46,17 @@ public class EducationStatusChoiceStep extends ChoiceStep {
         try {
             EEducationStatus.valueOf(messageDto.getData());
             return new ResultDto(true);
-        } catch (IllegalArgumentException e) {
-            return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
+        } catch (IllegalArgumentException ignored) {
         }
+
+        return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
     }
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EEducationStatus eEducationStatus = EEducationStatus.valueOf(data);
         saveEducation(chatHash.getId(), eEducationStatus);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getEEducationStatusStr()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getString()));
         return 0;
     }
 
@@ -75,7 +76,7 @@ public class EducationStatusChoiceStep extends ChoiceStep {
         for (int i = 0; i < eEducationStatusArray.length; i++) {
             buttonDtoList.add(new ButtonDto(
                     eEducationStatusArray[i].toString(),
-                    eEducationStatusArray[i].getEEducationStatusStr(),
+                    eEducationStatusArray[i].getString(),
                     i
             ));
         }

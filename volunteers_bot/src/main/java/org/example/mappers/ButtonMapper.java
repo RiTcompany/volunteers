@@ -11,7 +11,7 @@ public class ButtonMapper {
     public ButtonDto buttonDto(ECity eCity, int row) {
         ButtonDto buttonDto = new ButtonDto();
         buttonDto.setCallback(eCity.toString());
-        buttonDto.setText(eCity.getCityStr());
+        buttonDto.setText(eCity.getString());
         buttonDto.setRow(row);
         return buttonDto;
     }
@@ -19,7 +19,7 @@ public class ButtonMapper {
     public ButtonDto buttonDto(EGender eGender, int row) {
         ButtonDto buttonDto = new ButtonDto();
         buttonDto.setCallback(eGender.toString());
-        buttonDto.setText(eGender.getGender());
+        buttonDto.setText(eGender.getString());
         buttonDto.setRow(row);
         return buttonDto;
     }
@@ -27,7 +27,7 @@ public class ButtonMapper {
     public ButtonDto buttonDto(EEducationStatus eEducationStatus, int row) {
         ButtonDto buttonDto = new ButtonDto();
         buttonDto.setCallback(eEducationStatus.toString());
-        buttonDto.setText(eEducationStatus.getEEducationStatusStr());
+        buttonDto.setText(eEducationStatus.getString());
         buttonDto.setRow(row);
         return buttonDto;
     }
