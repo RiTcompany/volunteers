@@ -10,9 +10,9 @@ public enum EEducationStatus {
     FINISHED_UNIVERSITY("Окончил ВУЗ"),
     FINISHED_SECONDARY_PROFESSIONAL("Окончил ОО СПО");
 
-    private final String eEducationStatusStr;
+    private final String string;
 
-    EEducationStatus(String eEducationStatusStr) {
-        this.eEducationStatusStr = eEducationStatusStr;
+    EEducationStatus(String string) {
+        this.string = string;
     }
 }

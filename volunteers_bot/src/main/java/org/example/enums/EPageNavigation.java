@@ -7,10 +7,10 @@ public enum EPageNavigation {
     PREV("◀"),
     NEXT("▶");
 
-    private final String description;
+    private final String string;
 
-    EPageNavigation(String description) {
-        this.description = description;
+    EPageNavigation(String string) {
+        this.string = string;
     }
 
 }

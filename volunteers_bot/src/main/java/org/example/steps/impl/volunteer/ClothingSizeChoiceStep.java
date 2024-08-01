@@ -46,16 +46,17 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
         try {
             EClothingSize.valueOf(messageDto.getData());
             return new ResultDto(true);
-        } catch (IllegalArgumentException e) {
-            return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
+        } catch (IllegalArgumentException ignored) {
         }
+
+        return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
     }
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EClothingSize eClothingSize = EClothingSize.valueOf(data);
         saveClothingSize(chatHash.getId(), eClothingSize);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eClothingSize.getEClothingSizeStr()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eClothingSize.getString()));
         return 0;
     }
 
@@ -73,7 +74,7 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
         EClothingSize[] eClothingSizeArray = EClothingSize.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
         for (int i = 0; i < eClothingSizeArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eClothingSizeArray[i].toString(), eClothingSizeArray[i].getEClothingSizeStr(), i));
+            buttonDtoList.add(new ButtonDto(eClothingSizeArray[i].toString(), eClothingSizeArray[i].getString(), i));
         }
 
         return buttonDtoList;

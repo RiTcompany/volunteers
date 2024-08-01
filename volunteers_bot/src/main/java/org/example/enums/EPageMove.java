@@ -7,10 +7,10 @@ public enum EPageMove {
     PREV("◀"),
     NEXT("▶");
 
-    private final String description;
+    private final String string;
 
-    EPageMove(String description) {
-        this.description = description;
+    EPageMove(String string) {
+        this.string = string;
     }
 
 }

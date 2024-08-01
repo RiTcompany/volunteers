@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -26,9 +27,16 @@ public class EducationInstitutionInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String educationInstitution) {
-        if (educationInstitution.isEmpty()) {
-            return new ResultDto(false, "Такого учебного заведения не существует");
-        } // TODO : нужна валидация, надо найти список
+        if (educationInstitution.isBlank()) {
+            return new ResultDto(false, "Вы ввели пустую строку. Введите название");
+        }
+
+        if (ValidUtil.isLongDescriptionText(educationInstitution)) {
+            String exceptionMessage = ValidUtil.getExceptionMessageText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
+            return new ResultDto(false, exceptionMessage);
+        }
+
+        // TODO : нужна валидация, надо найти список (хз возможно ли и надо ли)
 
         return new ResultDto(true);
     }

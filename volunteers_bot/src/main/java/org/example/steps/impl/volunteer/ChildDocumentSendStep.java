@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
+import org.example.exceptions.FileNotDownloadedException;
 import org.example.services.ChildDocumentService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
@@ -28,9 +29,8 @@ public class ChildDocumentSendStep extends FileSendStep {
                 4) Отправьте отсканированный документ в ответном сообщении
                 P.S. Документ должен быть в формате .doc или .pdf""";
     private static final String ANSWER_MESSAGE_TEXT = "Ваш документ был отправлен на проверку. Ожидайте ответа. А пока можете продолжить регистрацию";
-//    TODO : изменить путь на короткий
-    private static final File FILE = new File("C:\\Users\\User\\IdeaProjects\\volunteers\\volunteers_bot\\src\\main\\resources\\static\\Согласие.pdf");
-//    TODO : уточнить, какой макс размер файла должен быть
+    private static final File FILE = new File("volunteers_bot/src/main/resources/static/Согласие.pdf");
+    //    TODO : уточнить, какой макс размер файла должен быть
     private static final int MAX_DOCUMENT_SIZE_KB = 300;
 
     @Override
@@ -59,12 +59,13 @@ public class ChildDocumentSendStep extends FileSendStep {
     }
 
     @Override
-    protected void saveFile(long chatId, MessageDto messageDto, AbsSender sender) {
+    protected void downloadFile(long chatId, MessageDto messageDto, AbsSender sender) throws FileNotDownloadedException {
         File file = MessageUtil.downloadFile(messageDto.getDocument().getFileId(), sender);
         if (file != null) {
             childDocumentService.create(chatId, file.getPath());
+        } else {
+            throw new FileNotDownloadedException("ChatId=" + chatId + " не удалось скачать фото");
         }
-//        TODO : добавить что-то, если вдруг файл не скачан
     }
 
     @Override

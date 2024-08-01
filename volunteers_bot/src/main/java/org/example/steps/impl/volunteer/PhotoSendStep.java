@@ -7,6 +7,7 @@ import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.entities.Volunteer;
 import org.example.exceptions.EntityNotFoundException;
+import org.example.exceptions.FileNotDownloadedException;
 import org.example.services.VolunteerService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
@@ -59,14 +60,15 @@ public class PhotoSendStep extends FileSendStep {
     }
 
     @Override
-    protected void saveFile(long chatId, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException {
+    protected void downloadFile(long chatId, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException, FileNotDownloadedException {
         File file = downloadPhoto(messageDto.getPhotoList(), sender);
         if (file != null) {
             Volunteer volunteer = volunteerService.getByChatId(chatId);
             volunteer.setPhotoPath(file.getPath());
             volunteerService.saveAndFlush(volunteer);
+        } else {
+            throw new FileNotDownloadedException("ChatId=" + chatId + " не удалось скачать фото");
         }
-//        TODO : добавить что-то, если вдруг файл не скачан
     }
 
     @Override

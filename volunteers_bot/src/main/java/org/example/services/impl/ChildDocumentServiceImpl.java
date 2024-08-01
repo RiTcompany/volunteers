@@ -32,13 +32,12 @@ public class ChildDocumentServiceImpl implements ChildDocumentService {
         return childDocumentRepository
                 .findFirstByStatusAndModeratorId(ECheckDocumentStatus.CHECKING, moderatorId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Не существует документа с moderatorID = ".concat(String.valueOf(moderatorId)),
-                        "Что-то пошло не так, пожалуйста обратитесь в поддержку"
+                        "Не существует документа с moderatorID = %d".formatted(moderatorId)
                 ));
     }
 
     @Override
-    public ChildDocument accept(long moderatorId, AbsSender sender) throws EntityNotFoundException {
+    public ChildDocument accept(long moderatorId) throws EntityNotFoundException {
         ChildDocument childDocument = getCheckingDocument(moderatorId);
         childDocument.setStatus(ECheckDocumentStatus.ACCEPTED);
         saveAndFlush(childDocument);
@@ -46,7 +45,7 @@ public class ChildDocumentServiceImpl implements ChildDocumentService {
     }
 
     @Override
-    public ChildDocument fail(long moderatorId, String message, AbsSender sender) throws EntityNotFoundException {
+    public ChildDocument fail(long moderatorId, String message) throws EntityNotFoundException {
         ChildDocument childDocument = getCheckingDocument(moderatorId);
         childDocument.setStatus(ECheckDocumentStatus.FAILED);
         childDocument.setMessage(message);

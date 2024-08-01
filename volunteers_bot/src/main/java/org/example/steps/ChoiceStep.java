@@ -6,6 +6,7 @@ import org.example.entities.ChatHash;
 import org.example.enums.EMessage;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.utils.KeyboardUtil;
+import org.example.utils.ValidUtil;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public abstract class ChoiceStep extends ConversationStep {
@@ -37,6 +38,6 @@ public abstract class ChoiceStep extends ConversationStep {
     }
 
     protected boolean isCallback(EMessage eMessage) {
-        return EMessage.CALLBACK.equals(eMessage);
+        return ValidUtil.isCallback(eMessage);
     }
 }

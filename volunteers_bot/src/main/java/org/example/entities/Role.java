@@ -10,27 +10,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.enums.ECheckDocumentStatus;
+import org.example.enums.ERole;
 
 @Entity
-@Table(name = "child_document")
+@Table(name = "role")
 @Getter
 @Setter
-public class ChildDocument {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String path;
-
     @Enumerated(EnumType.STRING)
-    private ECheckDocumentStatus status;
-
-    @Column(name = "chat_id", nullable = false)
-    private Long chatId;
-
-    @Column(name = "moderator_id")
-    private Long moderatorId;
-
-    private String message;
+    @Column(name = "role_name")
+    private ERole roleName;
 }

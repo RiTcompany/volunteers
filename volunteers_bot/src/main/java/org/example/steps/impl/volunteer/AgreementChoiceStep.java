@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.enums.EAgreement;
 import org.example.enums.EMessage;
 import org.example.mappers.KeyboardMapper;
 import org.example.steps.ChoiceStep;
@@ -52,7 +51,7 @@ public class AgreementChoiceStep extends ChoiceStep {
 
     private boolean isValidData(EMessage eMessage, String data) {
         boolean isCallback = isCallback(eMessage);
-        boolean isCorrectChoice = EAgreement.OK.toString().equals(data);
+        boolean isCorrectChoice = ButtonUtil.OK_ANSWER.equals(data);
         return isCallback && isCorrectChoice;
     }
 }

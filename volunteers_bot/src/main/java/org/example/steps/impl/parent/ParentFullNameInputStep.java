@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.ParentService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -27,11 +28,7 @@ public class ParentFullNameInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-        if (isLongFullName(data)) {
-            return new ResultDto(false, "Ваше ФИО слишком длинное, по нашим данным такого существовать не может");
-        }
-
-        return new ResultDto(true);
+        return ValidUtil.isValidFullName(data);
     }
 
     @Override
@@ -49,10 +46,5 @@ public class ParentFullNameInputStep extends InputStep {
 
     private String getAnswerMessageText(String answer) {
         return "Ваше ФИО: <b>".concat(answer).concat("</b>");
-    }
-
-    private boolean isLongFullName(String fullName) {
-        // TODO : см в др классе
-        return fullName.length() > MAX_FULL_NAME_LENGTH;
     }
 }

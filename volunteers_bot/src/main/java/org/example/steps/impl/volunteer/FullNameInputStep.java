@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -27,11 +28,7 @@ public class FullNameInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-        if (data.length() > MAX_FULL_NAME_LENGTH) {
-            return new ResultDto(false, "Ваше ФИО слишком длинное, по нашим данным такого существовать не может");
-        }
-
-        return new ResultDto(true);
+        return ValidUtil.isValidFullName(data);
     }
 
     @Override
@@ -50,6 +47,4 @@ public class FullNameInputStep extends InputStep {
     private String getAnswerMessageText(String answer) {
         return "Ваше ФИО: <b>".concat(answer).concat("</b>");
     }
-
-    // TODO : возможно стоит добавить проверка на 1 или 2 пробела (если нет отчества)
 }

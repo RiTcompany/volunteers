@@ -1,6 +1,7 @@
 package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.exceptions.AbstractException;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.steps.ConversationStep;
 import org.example.dto.MessageDto;
@@ -59,7 +60,7 @@ public class ConversationStepServiceImpl implements ConversationStepService {
     private int executeStep(ConversationStep step, ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
         try {
             return step.execute(chatHash, messageDto, sender);
-        } catch (EntityNotFoundException e) {
+        } catch (AbstractException e) {
             MessageUtil.sendMessageText(e.getUserMessage(), chatHash.getId(), sender);
         }
 

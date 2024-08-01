@@ -9,6 +9,7 @@ import org.example.exceptions.EntityNotFoundException;
 import org.example.services.ParentService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
+import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -18,6 +19,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 public class ChildRegisterPlaceInputStep extends InputStep {
     private final ParentService parentService;
     private static final String PREPARE_MESSAGE_TEXT = "Укажите <b>место регистрации</b> вашего ребёнка:";
+    private static final int MAX_FULL_NAME_LENGTH = 511;
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
@@ -26,7 +28,11 @@ public class ChildRegisterPlaceInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-        return new ResultDto(true); // TODO : валидация на длину
+        if (ValidUtil.isLongRegisterPlace(data)) {
+            return new ResultDto(false, "Слишком длинные данные. Введи сокращённую версию");
+        }
+
+        return new ResultDto(true);
     }
 
     @Override
