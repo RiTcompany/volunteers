@@ -1,17 +1,18 @@
 package org.example.steps.impl.volunteer;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.ButtonDto;
-import org.example.enums.ECity;
-import org.example.exceptions.EntityNotFoundException;
+import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.entities.Volunteer;
+import org.example.enums.ECity;
+import org.example.exceptions.EntityNotFoundException;
+import org.example.mappers.KeyboardMapper;
 import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
-import org.example.utils.ButtonUtil;
+import org.example.utils.StepUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -23,22 +24,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CityChoiceStep extends ChoiceStep {
     private final VolunteerService volunteerService;
+    private final KeyboardMapper keyboardMapper;
     private static final String PREPARE_MESSAGE_TEXT = "Укажите ваш <b>город</b>:";
 
-    @PostConstruct
-    public void init() {
-        setButtonDtoList(getCityButtonDtoList());
+    @Override
+    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
+        StepUtil.sendPrepareMessageWithInlineKeyBoard(
+                chatHash,
+                PREPARE_MESSAGE_TEXT,
+                keyboardMapper.keyboardDto(chatHash, getCityButtonDtoList()),
+                sender
+        );
     }
 
     @Override
-    protected String getPrepareMessageText() {
-        return CityChoiceStep.PREPARE_MESSAGE_TEXT;
-    }
+    protected ResultDto isValidData(MessageDto messageDto) {
+        if (!isCallback(messageDto.getEMessage())) {
+            return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
+        }
 
-    @Override
-    protected ResultDto isValidData(String data) {
         try {
-            ECity.valueOf(data);
+            ECity.valueOf(messageDto.getData());
             return new ResultDto(true);
         } catch (IllegalArgumentException e) {
             return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);

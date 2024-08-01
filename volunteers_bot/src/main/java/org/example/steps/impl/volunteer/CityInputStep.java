@@ -2,13 +2,14 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceptions.EntityNotFoundException;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.entities.Volunteer;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.repositories.CityRepository;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
+import org.example.utils.StepUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -24,8 +25,8 @@ public class CityInputStep extends InputStep {
             Введите ваш <b>город</b>:""";
 
     @Override
-    protected String getPrepareMessageText() {
-        return CityInputStep.PREPARE_MESSAGE_TEXT;
+    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
+        StepUtil.sendPrepareMessage(chatHash, PREPARE_MESSAGE_TEXT, sender);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ButtonUtil {
         return pageMoveButtonList;
     }
 
-    public static List<ButtonDto> yesButtonList() {
+    public static List<ButtonDto> okButtonList() {
         if (yesList == null) {
             yesList = getYesButtonDtoList();
         }
@@ -52,7 +52,7 @@ public class ButtonUtil {
 
     private static List<ButtonDto> getYesButtonDtoList() {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        buttonDtoList.add(new ButtonDto(EAgreement.YES.toString(), EAgreement.YES.getAgreementStr(), 0));
+        buttonDtoList.add(new ButtonDto(EAgreement.OK.toString(), EAgreement.OK.getAgreementStr(), 0));
         return buttonDtoList;
     }
 

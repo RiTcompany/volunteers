@@ -1,9 +1,9 @@
 package org.example.steps;
 
 import org.example.builders.MessageBuilder;
-import org.example.exceptions.EntityNotFoundException;
 import org.example.dto.MessageDto;
 import org.example.entities.ChatHash;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.utils.MessageUtil;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -14,8 +14,6 @@ public abstract class ConversationStep {
     public abstract int execute(
             ChatHash chatHash, MessageDto messageDto, AbsSender sender
     ) throws EntityNotFoundException;
-
-    protected abstract String getPrepareMessageText();
 
     protected abstract int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException;
 
