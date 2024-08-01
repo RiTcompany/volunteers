@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
-public final class LongPoolingBot extends TelegramLongPollingBot {
+public final class TGLongPoolingBot extends TelegramLongPollingBot {
     @Getter
     private final String botUsername;
     @Autowired
@@ -24,17 +24,27 @@ public final class LongPoolingBot extends TelegramLongPollingBot {
     @Autowired
     private ConversationService conversationService;
 
-    public LongPoolingBot(String botUsername, String token) {
+    public TGLongPoolingBot(String botUsername, String token) {
         super(token);
         this.botUsername = botUsername;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
-            executeMessageRequest(update);
-        } else if (update.hasCallbackQuery()) {
+        if (update.hasCallbackQuery()) {
             executeCallbackRequest(update);
+        } else if (update.hasMessage()) {
+            executeMessageRequest(update);
+        }
+    }
+
+    private void executeCallbackRequest(Update update) {
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        try {
+            executeConversationStep(update, EMessage.CALLBACK);
+        } catch (AbstractException e) {
+            log.error(e.getMessage());
+            sendExceptionMessage(callbackQuery.getMessage().getChatId(), e.getUserMessage());
         }
     }
 
@@ -52,7 +62,7 @@ public final class LongPoolingBot extends TelegramLongPollingBot {
             }
         } catch (AbstractException e) {
             log.error(e.getMessage());
-            MessageUtil.sendMessageText(e.getUserMessage(), message.getChatId(), this);
+            sendExceptionMessage(message.getChatId(), e.getUserMessage());
         }
     }
 
@@ -60,21 +70,15 @@ public final class LongPoolingBot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         executeConversationStep(update, EMessage.COMMAND);
         if (!commandRegistry.executeCommand(this, message)) {
-            MessageUtil.sendMessageText("Такой команды не существует", message.getChatId(), this);
-        }
-    }
-
-    private void executeCallbackRequest(Update update) {
-        CallbackQuery callbackQuery = update.getCallbackQuery();
-        try {
-            executeConversationStep(update, EMessage.CALLBACK);
-        } catch (AbstractException e) {
-            log.error(e.getMessage());
-            MessageUtil.sendMessageText(e.getUserMessage(), callbackQuery.getMessage().getChatId(), this);
+            sendExceptionMessage(message.getChatId(), "Такой команды не существует");
         }
     }
 
     private void executeConversationStep(Update update, EMessage eMessage) throws CommandException {
         conversationService.executeConversationStep(update, eMessage, this);
+    }
+
+    private void sendExceptionMessage(long chatId, String message) {
+        MessageUtil.sendMessageText(message, chatId, this);
     }
 }

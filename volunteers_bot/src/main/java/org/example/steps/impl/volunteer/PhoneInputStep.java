@@ -2,12 +2,13 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceptions.EntityNotFoundException;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.entities.Volunteer;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
+import org.example.utils.StepUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -23,8 +24,8 @@ public class PhoneInputStep extends InputStep {
     private static final Pattern pattern = Pattern.compile("^((8|\\+7)\\s?)?((\\(\\d{3}\\))|(\\d{3}))(\\s|-)?(\\d{3}-?\\d{2}-?\\d{2})$");
 
     @Override
-    protected String getPrepareMessageText() {
-        return PREPARE_MESSAGE_TEXT;
+    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
+        StepUtil.sendPrepareMessage(chatHash, PREPARE_MESSAGE_TEXT, sender);
     }
 
     @Override

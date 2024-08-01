@@ -2,13 +2,10 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceptions.EntityNotFoundException;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
 import org.example.services.ChildDocumentService;
-import org.example.services.VolunteerService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Component;
@@ -22,7 +19,6 @@ import java.io.File;
 @Component
 @RequiredArgsConstructor
 public class ChildDocumentSendStep extends FileSendStep {
-    private final VolunteerService volunteerService;
     private final ChildDocumentService childDocumentService;
     private static final String PREPARE_MESSAGE_TEXT = """
             Вам необходимо согласие родителей. Для этого необходимо сделать следующие шаги:
@@ -39,13 +35,8 @@ public class ChildDocumentSendStep extends FileSendStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        int messageId = MessageUtil.sendFile(chatHash.getId(), FILE, getPrepareMessageText(), sender);
+        int messageId = MessageUtil.sendFile(chatHash.getId(), FILE, PREPARE_MESSAGE_TEXT, sender);
         chatHash.setPrevBotMessageId(messageId);
-    }
-
-    @Override
-    protected String getPrepareMessageText() {
-        return PREPARE_MESSAGE_TEXT;
     }
 
     @Override
@@ -72,10 +63,6 @@ public class ChildDocumentSendStep extends FileSendStep {
         File file = MessageUtil.downloadFile(messageDto.getDocument().getFileId(), sender);
         if (file != null) {
             childDocumentService.create(chatId, file.getPath());
-//            Volunteer volunteer = volunteerService.getByChatId(chatId);
-//            volunteer.setChildDocumentPath(file.getPath());
-//            volunteer.setCheckChildDocument(true);
-//            volunteerService.saveAndFlush(volunteer);
         }
 //        TODO : добавить что-то, если вдруг файл не скачан
     }

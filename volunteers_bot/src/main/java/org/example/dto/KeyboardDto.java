@@ -11,5 +11,4 @@ public class KeyboardDto {
     private int messageId;
     private int pageNumber;
     private List<ButtonDto> buttonDtoList;
-    private String messageText;
 }

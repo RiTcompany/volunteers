@@ -3,7 +3,6 @@ package org.example.commands;
 import org.example.enums.EConversation;
 import org.example.services.ConversationService;
 import org.example.services.VolunteerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -28,6 +27,7 @@ public class VolunteerRegisterCommand extends BotCommand {
 //        if (volunteerService.isVolunteerExists(chat.getId())) {
 //            MessageUtil.sendMessageText("Вы уже зарегистрированы", chat.getId(), absSender);
 //        }
+//        TODO : не забыть вернуть проверку на повторную регистрацию
 
         volunteerService.create(chat.getId(), chat.getUserName());
         conversationService.startConversation(chat.getId(), EConversation.VOLUNTEER_REGISTER, absSender);

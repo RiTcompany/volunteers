@@ -1,7 +1,7 @@
 package org.example.configs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.bots.LongPoolingBot;
+import org.example.bots.TGLongPoolingBot;
 import org.example.services.CommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,11 +23,11 @@ public class BotConfig {
     private String token;
 
     @Bean
-    public LongPoolingBot longPoolingBot() {
+    public TGLongPoolingBot tgLongPoolingBot() {
         if (isBotEnabled) {
-            LongPoolingBot longPoolingBot = new LongPoolingBot(name, token);
+            TGLongPoolingBot TGLongPoolingBot = new TGLongPoolingBot(name, token);
             log.info("Bot initialized");
-            return longPoolingBot;
+            return TGLongPoolingBot;
         }
 
         log.error("Bot was not initialized");
@@ -35,9 +35,9 @@ public class BotConfig {
     }
 
     @Bean
-    public TelegramBotsApi telegramBotsApi(LongPoolingBot myTelegramLongPoolingBot) throws TelegramApiException {
+    public TelegramBotsApi telegramBotsApi(TGLongPoolingBot myTelegramTGLongPoolingBot) throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        botsApi.registerBot(myTelegramLongPoolingBot);
+        botsApi.registerBot(myTelegramTGLongPoolingBot);
         return botsApi;
     }
 

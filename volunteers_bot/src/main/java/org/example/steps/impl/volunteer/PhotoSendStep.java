@@ -2,11 +2,11 @@ package org.example.steps.impl.volunteer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceptions.EntityNotFoundException;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.entities.Volunteer;
+import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
@@ -28,13 +28,8 @@ public class PhotoSendStep extends FileSendStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        int messageId = MessageUtil.sendMessageText(getPrepareMessageText(), chatHash.getId(), sender);
+        int messageId = MessageUtil.sendMessageText(PREPARE_MESSAGE_TEXT, chatHash.getId(), sender);
         chatHash.setPrevBotMessageId(messageId);
-    }
-
-    @Override
-    protected String getPrepareMessageText() {
-        return PREPARE_MESSAGE_TEXT;
     }
 
     @Override
