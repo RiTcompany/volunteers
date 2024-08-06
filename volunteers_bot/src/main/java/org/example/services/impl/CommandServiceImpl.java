@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.commands.ChildDocumentCheckCommand;
 import org.example.commands.InfoCommand;
 import org.example.commands.ParentRegisterCommand;
+import org.example.commands.SendBotMessageCommand;
 import org.example.commands.StartCommand;
 import org.example.commands.VolunteerRegisterCommand;
 import org.example.services.CommandService;
@@ -18,6 +19,7 @@ public class CommandServiceImpl implements CommandService {
     private final VolunteerRegisterCommand volunteerRegisterCommand;
     private final ParentRegisterCommand parentRegisterCommand;
     private final ChildDocumentCheckCommand childDocumentCheckCommand;
+    private final SendBotMessageCommand sendBotMessageCommand;
 
     public CommandRegistry registerCommands(String botName) {
         CommandRegistry commandRegistry = new CommandRegistry(true, () -> botName);
@@ -26,6 +28,7 @@ public class CommandServiceImpl implements CommandService {
         commandRegistry.register(volunteerRegisterCommand);
         commandRegistry.register(parentRegisterCommand);
         commandRegistry.register(childDocumentCheckCommand);
+        commandRegistry.register(sendBotMessageCommand);
         return commandRegistry;
     }
 }

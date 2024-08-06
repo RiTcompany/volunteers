@@ -1,7 +1,7 @@
 package org.example.mappers;
 
-import org.example.enums.EConversation;
 import org.example.entities.ChatHash;
+import org.example.enums.EConversation;
 import org.springframework.stereotype.Component;
 
 @Component

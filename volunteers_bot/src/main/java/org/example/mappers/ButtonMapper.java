@@ -1,9 +1,9 @@
 package org.example.mappers;
 
+import org.example.dto.ButtonDto;
 import org.example.enums.ECity;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
-import org.example.dto.ButtonDto;
 import org.springframework.stereotype.Component;
 
 @Component

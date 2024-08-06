@@ -31,7 +31,7 @@ public class VolunteerIdInputStep extends InputStep {
             return new ResultDto(false, "Номер должен состоять только из цифр");
         }
 
-        return new ResultDto(true); // TODO : возможно надо запрашивать корректность номера с сайта (но тогда и просить ввести не надо)
+        return new ResultDto(true);
     }
 
     @Override

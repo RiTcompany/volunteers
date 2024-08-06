@@ -10,10 +10,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "button_link")
+@Table(name = "bot_message_button")
 @Getter
 @Setter
-public class ButtonLink {
+public class BotMessageButton {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

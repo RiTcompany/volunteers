@@ -2,9 +2,9 @@ package org.example.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.builders.PageableInlineKeyboardMarkupBuilder;
-import org.example.enums.EPageMove;
 import org.example.dto.ButtonDto;
 import org.example.dto.KeyboardDto;
+import org.example.enums.EPageMove;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;

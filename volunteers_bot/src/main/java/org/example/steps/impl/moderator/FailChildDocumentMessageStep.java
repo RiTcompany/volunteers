@@ -46,7 +46,7 @@ public class FailChildDocumentMessageStep extends InputStep {
     @Override
     protected ResultDto isValidData(String data) {
         if (ValidUtil.isLongDescriptionText(data)) {
-            String exceptionMessage = ValidUtil.getExceptionMessageText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
+            String exceptionMessage = ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
             return new ResultDto(false, exceptionMessage);
         }
 

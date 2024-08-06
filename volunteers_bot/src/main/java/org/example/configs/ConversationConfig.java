@@ -29,6 +29,11 @@ import org.example.steps.impl.volunteer.PhotoSendStep;
 import org.example.steps.impl.volunteer.ReasonInputStep;
 import org.example.steps.impl.volunteer.VkInputStep;
 import org.example.steps.impl.volunteer.VolunteerIdInputStep;
+import org.example.steps.impl.writer.ButtonAddChoiceStep;
+import org.example.steps.impl.writer.ButtonInputStep;
+import org.example.steps.impl.writer.SendBotMessageChoiceStep;
+import org.example.steps.impl.writer.TextChoiceStep;
+import org.example.steps.impl.writer.TextInputStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +51,7 @@ public class ConversationConfig {
         conversationMap.put(EConversation.VOLUNTEER_REGISTER, volunteerRegisterConversationStepGraph());
         conversationMap.put(EConversation.PARENT_REGISTER, parentRegisterConversationStepGraph());
         conversationMap.put(EConversation.CHECK_DOCUMENT, checkChildDocumentConversationStepGraph());
+        conversationMap.put(EConversation.SEND_BOT_MESSAGE, sendBotMessageConversationStepGraph());
         return conversationMap;
     }
 
@@ -55,6 +61,7 @@ public class ConversationConfig {
         conversationStartStepMap.put(EConversation.VOLUNTEER_REGISTER, EConversationStep.CITY_CHOICE);
         conversationStartStepMap.put(EConversation.PARENT_REGISTER, EConversationStep.PARENT_FULL_NAME_INPUT);
         conversationStartStepMap.put(EConversation.CHECK_DOCUMENT, EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE);
+        conversationStartStepMap.put(EConversation.SEND_BOT_MESSAGE, EConversationStep.BOT_MESSAGE_TEXT_CHOICE);
         return conversationStartStepMap;
     }
 
@@ -85,7 +92,12 @@ public class ConversationConfig {
             @Autowired ParentBirthdayInputStep parentBirthdayInputStep,
             @Autowired ParentRegisterPlaceInputStep parentRegisterPlaceInputStep,
             @Autowired ChildDocumentCheckChoiceStep childDocumentCheckChoiceStep,
-            @Autowired FailChildDocumentMessageStep failChildDocumentMessageStep
+            @Autowired FailChildDocumentMessageStep failChildDocumentMessageStep,
+            @Autowired TextChoiceStep textChoiceStep,
+            @Autowired TextInputStep textInputStep,
+            @Autowired ButtonAddChoiceStep buttonAddChoiceStep,
+            @Autowired ButtonInputStep buttonInputStep,
+            @Autowired SendBotMessageChoiceStep sendBotMessageChoiceStep
             ) {
         return new HashMap<>() {{
             put(EConversationStep.CITY_CHOICE, cityChoiceStep);
@@ -109,6 +121,12 @@ public class ConversationConfig {
             put(EConversationStep.CHILD_FULL_NAME_INPUT, childFullNameInputStep);
             put(EConversationStep.CHILD_BIRTHDAY_INPUT, childBirthdayInputStep);
             put(EConversationStep.CHILD_REGISTER_PLACE_INPUT, childRegisterPlaceInputStep);
+            put(EConversationStep.BOT_MESSAGE_TEXT_CHOICE, textChoiceStep);
+            put(EConversationStep.BOT_MESSAGE_TEXT_INPUT, textInputStep);
+            put(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE, buttonAddChoiceStep);
+            put(EConversationStep.BOT_MESSAGE_BUTTON_INPUT, buttonInputStep);
+            put(EConversationStep.SEND_BOT_MESSAGE_CHOICE, sendBotMessageChoiceStep);
+
             put(EConversationStep.PARENT_FULL_NAME_INPUT, parentFullNameInputStep);
             put(EConversationStep.PARENT_BIRTHDAY_INPUT, parentBirthdayInputStep);
             put(EConversationStep.PARENT_REGISTER_PLACE_INPUT, parentRegisterPlaceInputStep);
@@ -209,6 +227,28 @@ public class ConversationConfig {
                 add(null);
             }});
             put(EConversationStep.FAIL_CHILD_DOCUMENT_MESSAGE_INPUT, new ArrayList<>() {{
+                add(null);
+            }});
+        }};
+    }
+
+    private Map<EConversationStep, List<EConversationStep>> sendBotMessageConversationStepGraph() {
+        return new HashMap<>() {{
+            put(EConversationStep.BOT_MESSAGE_TEXT_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.BOT_MESSAGE_TEXT_INPUT);
+                add(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE);
+            }});
+            put(EConversationStep.BOT_MESSAGE_TEXT_INPUT, new ArrayList<>() {{
+                add(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE);
+            }});
+            put(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.BOT_MESSAGE_BUTTON_INPUT);
+                add(EConversationStep.SEND_BOT_MESSAGE_CHOICE);
+            }});
+            put(EConversationStep.BOT_MESSAGE_BUTTON_INPUT, new ArrayList<>() {{
+                add(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE);
+            }});
+            put(EConversationStep.SEND_BOT_MESSAGE_CHOICE, new ArrayList<>() {{
                 add(null);
             }});
         }};

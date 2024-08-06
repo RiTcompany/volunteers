@@ -9,6 +9,9 @@ import org.example.repositories.VolunteerRepository;
 import org.example.services.VolunteerService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,12 @@ public class VolunteerServiceImpl implements VolunteerService {
         if (!volunteerRepository.existsByChatId(chatId)) {
             volunteerRepository.saveAndFlush(volunteerMapper.volunteer(chatId, tgUserName));
         }
+    }
+
+    @Override
+    public List<Long> getVolunteerChatIdList() {
+        return volunteerRepository.findAll().stream()
+                .map(Volunteer::getChatId)
+                .toList();
     }
 }

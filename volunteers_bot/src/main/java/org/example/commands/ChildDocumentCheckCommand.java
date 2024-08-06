@@ -2,7 +2,6 @@ package org.example.commands;
 
 import org.example.entities.BotUser;
 import org.example.entities.ChildDocument;
-import org.example.enums.ECheckDocumentStatus;
 import org.example.enums.EConversation;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
@@ -39,20 +38,13 @@ public class ChildDocumentCheckCommand extends BotCommand {
             BotUser botUser = userService.getByChatIdAndRole(chat.getId(), ERole.ROLE_WRITER);
             ChildDocument document = childDocumentService.getToCheck();
             if (document != null) {
-                updateDocument(document, botUser.getId());
+                childDocumentService.update(document, botUser.getId());
                 conversationService.startConversation(chat.getId(), EConversation.CHECK_DOCUMENT, absSender);
             } else {
                 MessageUtil.sendMessageText(NO_DOCS_MESSAGE_TEXT, chat.getId(), absSender);
             }
-        } catch (EntityNotFoundException ignored) {
+        } catch (EntityNotFoundException e) {
+            MessageUtil.sendMessageText("Такой команды не существует", chat.getId(), absSender);
         }
-
-        MessageUtil.sendMessageText("Такой команды не существует", chat.getId(), absSender);
-    }
-
-    private void updateDocument(ChildDocument document, long botUserId) {
-        document.setModeratorId(botUserId);
-        document.setStatus(ECheckDocumentStatus.CHECKING);
-        childDocumentService.saveAndFlush(document);
     }
 }

@@ -12,6 +12,4 @@ public interface EducationInstitutionRepository extends JpaRepository<EducationI
     List<EducationInstitution> findAllByType(EEducationInstitution educationInstitution);
 
     boolean existsByNameAndType(String name, EEducationInstitution type);
-
-    boolean existsByIdAndType(Integer id, EEducationInstitution type);
 }

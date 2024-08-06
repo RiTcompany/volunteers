@@ -8,7 +8,6 @@ import org.example.mappers.ChildDocumentMapper;
 import org.example.repositories.ChildDocumentRepository;
 import org.example.services.ChildDocumentService;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class ChildDocumentServiceImpl implements ChildDocumentService {
     public ChildDocument accept(long moderatorId) throws EntityNotFoundException {
         ChildDocument childDocument = getCheckingDocument(moderatorId);
         childDocument.setStatus(ECheckDocumentStatus.ACCEPTED);
-        saveAndFlush(childDocument);
+        childDocumentRepository.saveAndFlush(childDocument);
         return childDocument;
     }
 
@@ -49,12 +48,14 @@ public class ChildDocumentServiceImpl implements ChildDocumentService {
         ChildDocument childDocument = getCheckingDocument(moderatorId);
         childDocument.setStatus(ECheckDocumentStatus.FAILED);
         childDocument.setMessage(message);
-        saveAndFlush(childDocument);
+        childDocumentRepository.saveAndFlush(childDocument);
         return childDocument;
     }
 
     @Override
-    public void saveAndFlush(ChildDocument childDocument) {
-        childDocumentRepository.saveAndFlush(childDocument);
+    public void update(ChildDocument document, long botUserId) {
+        document.setModeratorId(botUserId);
+        document.setStatus(ECheckDocumentStatus.CHECKING);
+        childDocumentRepository.saveAndFlush(document);
     }
 }

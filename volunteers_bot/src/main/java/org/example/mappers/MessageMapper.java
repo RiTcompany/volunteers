@@ -1,8 +1,8 @@
 package org.example.mappers;
 
 import org.example.dto.MessageDto;
-import org.example.enums.EMessage;
 import org.example.entities.ChatHash;
+import org.example.enums.EMessage;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
