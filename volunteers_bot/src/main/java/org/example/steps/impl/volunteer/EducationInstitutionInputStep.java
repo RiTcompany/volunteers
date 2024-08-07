@@ -32,11 +32,9 @@ public class EducationInstitutionInputStep extends InputStep {
         }
 
         if (ValidUtil.isLongDescriptionText(educationInstitution)) {
-            String exceptionMessage = ValidUtil.getExceptionMessageText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
+            String exceptionMessage = ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
             return new ResultDto(false, exceptionMessage);
         }
-
-        // TODO : нужна валидация, надо найти список (хз возможно ли и надо ли)
 
         return new ResultDto(true);
     }

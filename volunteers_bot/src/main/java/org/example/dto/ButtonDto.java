@@ -25,6 +25,13 @@ public class ButtonDto {
         this.row = row;
     }
 
+    public ButtonDto(String callback, String text, String url, int row) {
+        this.callback = callback;
+        this.text = text;
+        this.url = url;
+        this.row = row;
+    }
+
     public InlineKeyboardButton toKeyboardButton() {
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setCallbackData(callback);

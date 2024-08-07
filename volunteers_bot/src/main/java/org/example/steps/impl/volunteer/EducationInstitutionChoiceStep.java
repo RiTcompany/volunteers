@@ -98,7 +98,7 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     private List<ButtonDto> getButtonList(List<EducationInstitution> educationInstitutionList) {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
         for (int i = 0; i < educationInstitutionList.size(); i++) {
-            String name = educationInstitutionList.get(i).getId().toString();
+            String name = educationInstitutionList.get(i).getShortName();
             buttonDtoList.add(new ButtonDto(name, name, i));
         }
 
@@ -109,10 +109,7 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     private boolean isCorrectAnswer(String data, long chatId, EMessage eMessage) throws EntityNotFoundException {
         boolean isCallback = isCallback(eMessage);
         boolean isOtherChoice = ButtonUtil.OTHER_CHOICE.equals(data);
-//        boolean isCorrectChoice = educationInstitutionRepository.existsByNameAndType(data, educationInstitution);
-        boolean isCorrectChoice = educationInstitutionRepository.existsByIdAndType(
-                Integer.valueOf(data), getType(chatId)
-        );
+        boolean isCorrectChoice = educationInstitutionRepository.existsByNameAndType(data, getType(chatId));
         return isCallback && (isOtherChoice || isCorrectChoice);
-    } // TODO: Нужно решить, что делать со слишком длинными надписями на кнопках
+    }
 }

@@ -1,17 +1,14 @@
 package org.example.steps.impl.writer;
 
 import lombok.RequiredArgsConstructor;
-import org.example.builders.MessageBuilder;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.enums.EMessage;
 import org.example.enums.EYesNo;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
-import org.example.utils.MessageUtil;
 import org.example.utils.StepUtil;
 import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
@@ -40,6 +37,10 @@ public class TextChoiceStep extends ChoiceStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
-        return 0;
+        if (EYesNo.YES.toString().equals(data)) {
+            return 0;
+        }
+
+        return 1;
     }
 }

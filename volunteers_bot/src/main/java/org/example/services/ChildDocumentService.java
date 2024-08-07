@@ -3,7 +3,6 @@ package org.example.services;
 import org.example.entities.ChildDocument;
 import org.example.exceptions.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Service
 public interface ChildDocumentService {
@@ -17,5 +16,5 @@ public interface ChildDocumentService {
 
     ChildDocument fail(long moderatorId, String message) throws EntityNotFoundException;
 
-    void saveAndFlush(ChildDocument childDocument);
+    void update(ChildDocument childDocument, long botUserId);
 }

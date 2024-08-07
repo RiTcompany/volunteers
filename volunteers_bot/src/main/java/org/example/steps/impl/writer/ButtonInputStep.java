@@ -2,6 +2,8 @@ package org.example.steps.impl.writer;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ResultDto;
+import org.example.entities.BotMessage;
+import org.example.entities.BotMessageButton;
 import org.example.entities.ChatHash;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
@@ -16,10 +18,14 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
 @RequiredArgsConstructor
-public class TextInputStep extends InputStep {
+public class ButtonInputStep extends InputStep {
+    private final BotMessageButtonService botMessageButtonService;
     private final BotMessageService botMessageService;
     private final UserService userService;
-    private static final String PREPARE_MESSAGE_TEXT = "Введите текст, который необходимо отобразить в сообщении";
+    private static final String PREPARE_MESSAGE_TEXT = """
+            1) Введите текст для кнопки
+            2) Введите перенос на другую строку
+            3) Введите ссылку""";
     private static final String ANSWER_MESSAGE_TEXT = "Текст добавлен";
 
     @Override
@@ -35,9 +41,14 @@ public class TextInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-        if (ValidUtil.isLongBotMessage(data)) {
-            String exceptionMessage = ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_BOT_MESSAGE_LENGTH);
-            return new ResultDto(false, exceptionMessage);
+        String[] dataPartArray = data.split("\n");
+
+        if (dataPartArray.length != 2) {
+            return new ResultDto(false, "Вы неверно ввели данные\n".concat(PREPARE_MESSAGE_TEXT));
+        }
+
+        if (ValidUtil.isLongButtonText(dataPartArray[0].length())) {
+            return new ResultDto(false, ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_BOT_MESSAGE_LENGTH));
         }
 
         return new ResultDto(true);
@@ -46,6 +57,12 @@ public class TextInputStep extends InputStep {
     @Override
     protected void saveData(long chatId, String data) throws EntityNotFoundException {
         long userId = userService.getByChatIdAndRole(chatId, ERole.ROLE_WRITER).getId();
-        botMessageService.saveText(userId, data);
+        BotMessage botMessage = botMessageService.getProcessedMessageByUserId(userId);
+
+        String[] dataPartArray = data.split("\n");
+        String buttonName = dataPartArray[0];
+        String buttonLink = dataPartArray[1];
+
+        botMessageButtonService.create(botMessage.getId(), buttonName, buttonLink);
     }
 }
