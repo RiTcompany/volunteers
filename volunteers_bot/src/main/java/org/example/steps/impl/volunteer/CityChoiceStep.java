@@ -6,7 +6,6 @@ import org.example.dto.ButtonDto;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
 import org.example.enums.ECity;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
@@ -54,19 +53,13 @@ public class CityChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         ECity eCity = ECity.valueOf(data);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eCity.getString()));
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eCity.getValue()));
         if (ECity.OTHER.equals(eCity)) {
             return 0;
         }
 
-        saveDefaultCity(chatHash);
+        volunteerService.saveCity(chatHash.getId(), ECity.SPB.getValue());
         return 1;
-    }
-
-    private void saveDefaultCity(ChatHash chatHash) throws EntityNotFoundException {
-        Volunteer volunteer = volunteerService.getByChatId(chatHash.getId());
-        volunteer.setCity(ECity.SPB.getString());
-        volunteerService.saveAndFlush(volunteer);
     }
 
     private String getAnswerMessageText(String answer) {
@@ -76,8 +69,8 @@ public class CityChoiceStep extends ChoiceStep {
     private List<ButtonDto> getCityButtonDtoList() {
         ECity[] eCityArray = ECity.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eCityArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eCityArray[i].toString(), eCityArray[i].getString(), i));
+        for (ECity eCity : eCityArray) {
+            buttonDtoList.add(new ButtonDto(eCity.toString(), eCity.getValue()));
         }
 
         return buttonDtoList;

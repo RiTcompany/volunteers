@@ -6,41 +6,46 @@ import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.BotUser;
 import org.example.entities.ChatHash;
-import org.example.entities.ChildDocument;
+import org.example.entities.DocumentToCheck;
+import org.example.enums.EDocument;
 import org.example.enums.ERole;
 import org.example.enums.EYesNo;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
-import org.example.services.ChildDocumentService;
+import org.example.services.DocumentService;
 import org.example.services.UserService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.example.utils.MessageUtil;
 import org.example.utils.ValidUtil;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.File;
 
-@Component
 @RequiredArgsConstructor
-public class ChildDocumentCheckChoiceStep extends ChoiceStep {
-    private final ChildDocumentService childDocumentService;
+public abstract class DocumentCheckChoiceStep extends ChoiceStep {
+    private final DocumentService documentService;
     private final KeyboardMapper keyboardMapper;
     private final UserService userService;
-    private static final String PREPARE_MESSAGE_TEXT = "Проверьте документ. Если он удовлетворяет всем критериям - нажмите ДА, иначе - НЕТ";
-    private static final String ACCEPT_MESSAGE_TEXT = "Модератор принял ваш документ";
 
+    protected abstract String getPrepareMessageText();
+
+    protected abstract String getAcceptMessageText();
+
+    protected abstract EDocument getDocumentType();
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
+        System.out.println();
         BotUser botUser = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR);
-        ChildDocument document = childDocumentService.getCheckingDocument(botUser.getId());
+        DocumentToCheck documentToCheck = documentService.getCheckingDocument(
+                botUser.getId(), getDocumentType()
+        );
 
         int messageId = MessageUtil.sendDocument(
                 MessageBuilder.create()
-                        .setFile(new File(document.getPath()))
-                        .setText(PREPARE_MESSAGE_TEXT)
+                        .setFile(new File(documentToCheck.getPath()))
+                        .setText(getPrepareMessageText())
                         .setInlineKeyBoard(keyboardMapper.keyboardDto(chatHash, ButtonUtil.yesNoButtonList()))
                         .sendDocument(chatHash.getId()),
                 sender
@@ -61,8 +66,10 @@ public class ChildDocumentCheckChoiceStep extends ChoiceStep {
         }
 
         long moderatorId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR).getId();
-        ChildDocument childDocument = childDocumentService.accept(moderatorId);
-        sendMessageToVolunteer(sender, childDocument.getChatId());
+        DocumentToCheck documentToCheck = documentService.saveAcceptResponse(
+                moderatorId, getDocumentType()
+        );
+        sendMessageToVolunteer(sender, documentToCheck.getChatId());
         return 1;
 
     }
@@ -70,7 +77,7 @@ public class ChildDocumentCheckChoiceStep extends ChoiceStep {
     private void sendMessageToVolunteer(AbsSender sender, long chatId) {
         MessageUtil.sendMessage(
                 MessageBuilder.create()
-                        .setText(ChildDocumentCheckChoiceStep.ACCEPT_MESSAGE_TEXT)
+                        .setText(getAcceptMessageText())
                         .sendMessage(chatId),
                 sender
         );

@@ -27,4 +27,9 @@ public class BotMessageButtonServiceImpl implements BotMessageButtonService {
     public List<BotMessageButton> getListByMessageId(long botMessageId) {
         return botMessageButtonRepository.findAllByBotMessageId(botMessageId);
     }
+
+    @Override
+    public void deleteButtons(long botMessageId) {
+        botMessageButtonRepository.deleteAllByBotMessageId(botMessageId);
+    }
 }

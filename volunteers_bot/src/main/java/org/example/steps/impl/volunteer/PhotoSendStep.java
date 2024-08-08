@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
-import org.example.exceptions.EntityNotFoundException;
+import org.example.enums.EDocument;
 import org.example.exceptions.FileNotDownloadedException;
-import org.example.services.VolunteerService;
+import org.example.services.DocumentService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class PhotoSendStep extends FileSendStep {
-    private final VolunteerService volunteerService;
+    private final DocumentService documentService;
     private static final String PREPARE_MESSAGE_TEXT = "Отправьте ваше <b>фото</b> форматом 3x4 на нейтральном фоне:";
     private static final String ANSWER_MESSAGE_TEXT = "Ваш документ был отправлен на проверку. Ожидайте ответа. А пока можете продолжить регистрацию";
     private static final int MAX_PHOTO_SIZE_MB = 10;
@@ -60,23 +59,8 @@ public class PhotoSendStep extends FileSendStep {
     }
 
     @Override
-    protected void downloadFile(long chatId, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException, FileNotDownloadedException {
-        File file = downloadPhoto(messageDto.getPhotoList(), sender);
-        if (file != null) {
-            Volunteer volunteer = volunteerService.getByChatId(chatId);
-            volunteer.setPhotoPath(file.getPath());
-            volunteerService.saveAndFlush(volunteer);
-        } else {
-            throw new FileNotDownloadedException("ChatId=" + chatId + " не удалось скачать фото");
-        }
-    }
-
-    @Override
-    protected String getAnswerMessageText() {
-        return ANSWER_MESSAGE_TEXT;
-    }
-
-    private File downloadPhoto(List<PhotoSize> photoList, AbsSender sender) {
+    protected File download(MessageDto messageDto, AbsSender sender) {
+        List<PhotoSize> photoList = messageDto.getPhotoList();
         for (int i = 1; i < photoList.size(); i++) {
             if (photoList.get(i).getFileSize() > MAX_PHOTO_SIZE_MB * 1024 * 1024) {
                 return MessageUtil.downloadFile(photoList.get(i - 1).getFileId(), sender);
@@ -84,5 +68,15 @@ public class PhotoSendStep extends FileSendStep {
         }
 
         return MessageUtil.downloadFile(photoList.get(photoList.size() - 1).getFileId(), sender);
+    }
+
+    @Override
+    protected void saveDocument(long chatId, String path) {
+        documentService.create(chatId, path, EDocument.VOLUNTEER_PHOTO);
+    }
+
+    @Override
+    protected String getAnswerMessageText() {
+        return ANSWER_MESSAGE_TEXT;
     }
 }

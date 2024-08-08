@@ -10,13 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.enums.ECheckDocumentStatus;
+import org.example.enums.ECheckStatus;
+import org.example.enums.EDocument;
 
 @Entity
-@Table(name = "child_document")
+@Table(name = "document_to_check")
 @Getter
 @Setter
-public class ChildDocument {
+public class DocumentToCheck {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +25,7 @@ public class ChildDocument {
     private String path;
 
     @Enumerated(EnumType.STRING)
-    private ECheckDocumentStatus status;
+    private ECheckStatus status;
 
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
@@ -33,4 +34,8 @@ public class ChildDocument {
     private Long moderatorId;
 
     private String message;
+
+    @Column(name = "document_type")
+    @Enumerated(EnumType.STRING)
+    private EDocument documentType;
 }

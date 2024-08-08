@@ -24,16 +24,14 @@ public class InlineKeyboardMarkupBuilder {
     }
 
     public InlineKeyboardMarkupBuilder setButtonList(List<ButtonDto> buttonDtoList) {
-        buttonDtoList.forEach(this::addButton);
+        for (int i = 0; i < buttonDtoList.size(); i++) {
+            addButton(buttonDtoList.get(i), i);
+        }
+
         return this;
     }
 
-    protected void addButton(ButtonDto button) {
-        int row = button.getRow();
-        addButton(row, button);
-    }
-
-    protected void addButton(int row, ButtonDto buttonDto) {
+    protected void addButton(ButtonDto buttonDto, int row) {
         while (rowButtonList.size() <= row) {
             rowButtonList.add(new ArrayList<>());
         }

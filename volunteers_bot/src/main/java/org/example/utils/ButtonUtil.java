@@ -17,7 +17,7 @@ public class ButtonUtil {
     private static List<ButtonDto> yesNoList;
 
     public static void addOtherChoice(List<ButtonDto> buttonDtoList) {
-        buttonDtoList.add(new ButtonDto(OTHER_CHOICE, OTHER_CHOICE, buttonDtoList.size()));
+        buttonDtoList.add(new ButtonDto(OTHER_CHOICE, OTHER_CHOICE));
     }
 
     public static List<InlineKeyboardButton> pageMoveButtonList() {
@@ -46,22 +46,22 @@ public class ButtonUtil {
 
     private static List<InlineKeyboardButton> getPageMoveButtonList() {
         return Arrays.asList(
-                (new ButtonDto(EPageMove.PREV.name(), EPageMove.PREV.getString())).toKeyboardButton(),
-                (new ButtonDto(EPageMove.NEXT.name(), EPageMove.NEXT.getString())).toKeyboardButton()
+                (new ButtonDto(EPageMove.PREV.name(), EPageMove.PREV.getValue())).toKeyboardButton(),
+                (new ButtonDto(EPageMove.NEXT.name(), EPageMove.NEXT.getValue())).toKeyboardButton()
         );
     }
 
     private static List<ButtonDto> getOkButtonDtoList() {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        buttonDtoList.add(new ButtonDto(OK_ANSWER, OK_ANSWER, 0));
+        buttonDtoList.add(new ButtonDto(OK_ANSWER, OK_ANSWER));
         return buttonDtoList;
     }
 
     private static List<ButtonDto> getYesNoButtonDtoList() {
         EYesNo[] eYesNoArray = EYesNo.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eYesNoArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eYesNoArray[i].toString(), eYesNoArray[i].getString(), i));
+        for (EYesNo eYesNo : eYesNoArray) {
+            buttonDtoList.add(new ButtonDto(eYesNo.toString(), eYesNo.getValue()));
         }
 
         return buttonDtoList;

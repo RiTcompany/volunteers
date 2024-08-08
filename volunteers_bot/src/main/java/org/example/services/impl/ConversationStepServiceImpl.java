@@ -1,6 +1,7 @@
 package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.MessageDto;
 import org.example.entities.ChatHash;
 import org.example.enums.EConversation;
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConversationStepServiceImpl implements ConversationStepService {
@@ -49,6 +51,7 @@ public class ConversationStepServiceImpl implements ConversationStepService {
         try {
             step.prepare(chatHash, sender);
         } catch (EntityNotFoundException e) {
+            log.error(e.getMessage());
             MessageUtil.sendMessageText(e.getUserMessage(), chatHash.getId(), sender);
         }
     }
@@ -61,6 +64,7 @@ public class ConversationStepServiceImpl implements ConversationStepService {
         try {
             return step.execute(chatHash, messageDto, sender);
         } catch (AbstractException e) {
+            log.error(e.getMessage());
             MessageUtil.sendMessageText(e.getUserMessage(), chatHash.getId(), sender);
         }
 

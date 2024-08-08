@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
@@ -24,7 +23,7 @@ public class EmailInputStep extends InputStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        StepUtil.sendPrepareMessage(chatHash, PREPARE_MESSAGE_TEXT, sender);
+        StepUtil.sendPrepareMessageOnlyText(chatHash, PREPARE_MESSAGE_TEXT, sender);
     }
 
     @Override
@@ -37,14 +36,8 @@ public class EmailInputStep extends InputStep {
     }
 
     @Override
-    protected void saveData(long chatId, String data) throws EntityNotFoundException {
-        Volunteer volunteer = volunteerService.getByChatId(chatId);
-        volunteer.setEmail(data);
-        volunteerService.saveAndFlush(volunteer);
-    }
-
-    @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
+        volunteerService.saveEmail(chatHash.getId(), data);
         sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         return 0;
     }

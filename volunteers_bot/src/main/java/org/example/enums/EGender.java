@@ -7,9 +7,9 @@ public enum EGender {
     MALE("Мужской"),
     FEMALE("Женский");
 
-    private final String string;
+    private final String value;
 
-    EGender(String string) {
-        this.string = string;
+    EGender(String value) {
+        this.value = value;
     }
 }

@@ -1,16 +1,18 @@
 package org.example.mappers;
 
-import org.example.entities.ChildDocument;
-import org.example.enums.ECheckDocumentStatus;
+import org.example.entities.DocumentToCheck;
+import org.example.enums.ECheckStatus;
+import org.example.enums.EDocument;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChildDocumentMapper {
-    public ChildDocument childDocument(long chatId, String path) {
-        ChildDocument childDocument = new ChildDocument();
-        childDocument.setChatId(chatId);
-        childDocument.setPath(path);
-        childDocument.setStatus(ECheckDocumentStatus.NEW);
-        return childDocument;
+    public DocumentToCheck childDocument(long chatId, String path, EDocument eDocument) {
+        DocumentToCheck documentToCheck = new DocumentToCheck();
+        documentToCheck.setChatId(chatId);
+        documentToCheck.setPath(path);
+        documentToCheck.setStatus(ECheckStatus.NEW);
+        documentToCheck.setDocumentType(eDocument);
+        return documentToCheck;
     }
 }

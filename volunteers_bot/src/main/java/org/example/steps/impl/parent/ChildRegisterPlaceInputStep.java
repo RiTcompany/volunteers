@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Parent;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.services.ParentService;
 import org.example.steps.InputStep;
@@ -23,7 +22,7 @@ public class ChildRegisterPlaceInputStep extends InputStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        StepUtil.sendPrepareMessage(chatHash, PREPARE_MESSAGE_TEXT, sender);
+        StepUtil.sendPrepareMessageOnlyText(chatHash, PREPARE_MESSAGE_TEXT, sender);
     }
 
     @Override
@@ -36,14 +35,8 @@ public class ChildRegisterPlaceInputStep extends InputStep {
     }
 
     @Override
-    protected void saveData(long chatId, String registerPlace) throws EntityNotFoundException {
-        Parent parent = parentService.getByChatId(chatId);
-        parent.setChildRegisterPlace(registerPlace);
-        parentService.saveAndFlush(parent);
-    }
-
-    @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) {
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
+        parentService.saveChildRegisterPlace(chatHash.getId(), data);
         sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
         return 0;
     }

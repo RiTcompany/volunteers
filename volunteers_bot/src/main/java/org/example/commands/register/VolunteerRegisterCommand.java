@@ -1,4 +1,4 @@
-package org.example.commands;
+package org.example.commands.register;
 
 import org.example.enums.EConversation;
 import org.example.services.ConversationService;

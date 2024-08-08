@@ -8,9 +8,9 @@ public enum EEducationInstitution {
     UNIVERSITY("UNIVERSITY"),
     SECONDARY_PROFESSIONAL("SECONDARY_PROFESSIONAL");
 
-    private final String string;
+    private final String value;
 
-    EEducationInstitution(String string) {
-        this.string = string;
+    EEducationInstitution(String value) {
+        this.value = value;
     }
 }

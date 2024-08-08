@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public class StepUtil {
-    public static void sendPrepareMessage(ChatHash chatHash, String message, AbsSender sender) {
+    public static void sendPrepareMessageOnlyText(ChatHash chatHash, String message, AbsSender sender) {
         SendMessage sendMessage = MessageBuilder.create()
                 .setText(message)
                 .sendMessage(chatHash.getId());

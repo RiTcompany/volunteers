@@ -5,6 +5,7 @@ import org.example.dto.ResultDto;
 import org.example.enums.EMessage;
 import org.example.enums.EYesNo;
 
+import java.util.Date;
 import java.util.regex.Pattern;
 
 public class ValidUtil {
@@ -12,6 +13,7 @@ public class ValidUtil {
     public static final int MAX_BOT_MESSAGE_LENGTH = 2047;
     public static final int MAX_BUTTON_TEXT_LENGTH = 20;
     private static final String EXCEPTION_MESSAGE_TEXT = "Слишком длинное сообщение. Постарайтесь уложиться в %d символов";
+    private static final int MAX_AGE = 122;
     private static final int MAX_FULL_NAME_LENGTH = 511;
     private static final int SURNAME_INDEX = 0;
     private static final int NAME_INDEX = 1;
@@ -45,6 +47,19 @@ public class ValidUtil {
 
     public static boolean isLongRegisterPlace(String registerPlace) {
         return registerPlace.length() > MAX_REGISTER_PLACE_LENGTH;
+    }
+
+    public static ResultDto isValidBirthday(String birthdayStr) {
+        Date date = DateUtil.convertDate(birthdayStr);
+        if (date == null) {
+            return new ResultDto(false, "Некорректный формат даты. Введите данные по шаблону <b>дд.мм.гггг</b>");
+        }
+
+        if (!isRealBirthday(date)) {
+            return new ResultDto(false, "Вы ввели невозможную дату рождения. Введите свои настоящие данные");
+        }
+
+        return new ResultDto(true);
     }
 
     public static ResultDto isValidYesNoChoice(MessageDto messageDto, String exceptionMessage) {
@@ -104,5 +119,10 @@ public class ValidUtil {
 
     private static boolean fullNamePartContainsLettersOnly(String fullNamePart) {
         return letterPattern.matcher(fullNamePart).matches();
+    }
+
+    private static boolean isRealBirthday(Date birthday) {
+        int yearCount = DateUtil.getYearCountByDate(birthday);
+        return new Date().after(birthday) && yearCount < MAX_AGE;
     }
 }

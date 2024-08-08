@@ -1,10 +1,22 @@
 package org.example.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class DateUtil {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+
+    public static Date convertDate(String birthdayStr) {
+        try {
+            return DATE_FORMAT.parse(birthdayStr);
+        } catch (ParseException ignored) {
+            return null;
+        }
+    }
+
     public static int getYearCountByDate(Date date) {
         TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
         Calendar calDate = Calendar.getInstance(timeZone);

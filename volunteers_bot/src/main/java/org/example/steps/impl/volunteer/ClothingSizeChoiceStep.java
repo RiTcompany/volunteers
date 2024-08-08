@@ -6,7 +6,6 @@ import org.example.dto.ButtonDto;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
 import org.example.enums.EClothingSize;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
@@ -55,15 +54,9 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EClothingSize eClothingSize = EClothingSize.valueOf(data);
-        saveClothingSize(chatHash.getId(), eClothingSize);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eClothingSize.getString()));
+        volunteerService.saveClothingSize(chatHash.getId(), eClothingSize);
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eClothingSize.getValue()));
         return 0;
-    }
-
-    private void saveClothingSize(long chatId, EClothingSize eClothingSize) throws EntityNotFoundException {
-        Volunteer volunteer = volunteerService.getByChatId(chatId);
-        volunteer.setClothingSize(eClothingSize);
-        volunteerService.saveAndFlush(volunteer);
     }
 
     private String getAnswerMessageText(String clothingSize) {
@@ -73,8 +66,8 @@ public class ClothingSizeChoiceStep extends ChoiceStep {
     private List<ButtonDto> getClothingSizeButtonDtoList() {
         EClothingSize[] eClothingSizeArray = EClothingSize.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eClothingSizeArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eClothingSizeArray[i].toString(), eClothingSizeArray[i].getString(), i));
+        for (EClothingSize eClothingSize : eClothingSizeArray) {
+            buttonDtoList.add(new ButtonDto(eClothingSize.toString(), eClothingSize.getValue()));
         }
 
         return buttonDtoList;

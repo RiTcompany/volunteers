@@ -12,7 +12,6 @@ import org.example.enums.ERole;
 import org.example.enums.EYesNo;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
-import org.example.services.BotMessageButtonService;
 import org.example.services.BotMessageService;
 import org.example.services.UserService;
 import org.example.services.VolunteerService;
@@ -31,7 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SendBotMessageChoiceStep extends ChoiceStep {
     private final VolunteerService volunteerService;
-    private final BotMessageButtonService botMessageButtonService;
     private final BotMessageService botMessageService;
     private final UserService userService;
     private final KeyboardMapper keyboardMapper;
@@ -58,10 +56,12 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
         long userId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_WRITER).getId();
         BotMessage botMessage = botMessageService.getProcessedMessageByUserId(userId);
 
+        System.out.println(data);
         if (EYesNo.NO.toString().equals(data)) {
+            botMessageService.deleteButtons(botMessage);
             botMessageService.delete(botMessage);
         } else {
-            sendMessage(botMessage, chatHash, sender);
+            sendMessages(botMessage, chatHash, sender);
         }
 
         return 0;
@@ -80,17 +80,16 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
     }
 
     private List<ButtonDto> collectButtonList(BotMessage botMessage) {
-        List<BotMessageButton> botMessageButtonList = botMessageButtonService.getListByMessageId(botMessage.getId());
+        List<BotMessageButton> botMessageButtonList = botMessageService.getButtonList(botMessage);
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < botMessageButtonList.size(); i++) {
-            BotMessageButton button = botMessageButtonList.get(i);
-            buttonDtoList.add(new ButtonDto(button.getButtonName(), button.getButtonName(), button.getButtonLink(), i));
+        for (BotMessageButton button : botMessageButtonList) {
+            buttonDtoList.add(new ButtonDto(button.getButtonName(), button.getButtonName(), button.getButtonLink()));
         }
 
         return buttonDtoList;
     }
 
-    private void sendMessage(BotMessage botMessage, ChatHash chatHash, AbsSender sender) {
+    private void sendMessages(BotMessage botMessage, ChatHash chatHash, AbsSender sender) {
         MessageBuilder messageBuilder = MessageBuilder.create()
                 .setText(botMessage.getText())
                 .setInlineKeyBoard(keyboardMapper.keyboardDto(chatHash, collectButtonList(botMessage)));

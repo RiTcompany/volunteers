@@ -8,7 +8,6 @@ import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.entities.EducationInstitution;
-import org.example.entities.Volunteer;
 import org.example.enums.EEducationInstitution;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EMessage;
@@ -76,7 +75,7 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
             return 0;
         }
 
-        saveEducationInstitution(chatHash.getId(), data);
+        volunteerService.saveEducationInstitution(chatHash.getId(), data);
         return 1;
     }
 
@@ -85,21 +84,15 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
         return EducationUtil.getInstitutionType(eEducationStatus);
     }
 
-    private void saveEducationInstitution(long chatId, String educationInstitution) throws EntityNotFoundException {
-        Volunteer volunteer = volunteerService.getByChatId(chatId);
-        volunteer.setEducationInstitution(educationInstitution);
-        volunteerService.saveAndFlush(volunteer);
-    }
-
     private String getAnswerMessageText(String answer) {
         return "Ваше учебное заведение: <b>".concat(answer).concat("</b>");
     }
 
     private List<ButtonDto> getButtonList(List<EducationInstitution> educationInstitutionList) {
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < educationInstitutionList.size(); i++) {
-            String name = educationInstitutionList.get(i).getShortName();
-            buttonDtoList.add(new ButtonDto(name, name, i));
+        for (EducationInstitution educationInstitution : educationInstitutionList) {
+            String name = educationInstitution.getShortName();
+            buttonDtoList.add(new ButtonDto(name, name));
         }
 
         ButtonUtil.addOtherChoice(buttonDtoList);
@@ -109,7 +102,7 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     private boolean isCorrectAnswer(String data, long chatId, EMessage eMessage) throws EntityNotFoundException {
         boolean isCallback = isCallback(eMessage);
         boolean isOtherChoice = ButtonUtil.OTHER_CHOICE.equals(data);
-        boolean isCorrectChoice = educationInstitutionRepository.existsByNameAndType(data, getType(chatId));
+        boolean isCorrectChoice = educationInstitutionRepository.existsByShortNameAndType(data, getType(chatId));
         return isCallback && (isOtherChoice || isCorrectChoice);
     }
 }
