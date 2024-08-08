@@ -1,6 +1,6 @@
 package org.example.enums;
 
-public enum ECheckDocumentStatus {
+public enum ECheckStatus {
     NEW,
     CHECKING,
     ACCEPTED,

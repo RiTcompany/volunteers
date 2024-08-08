@@ -20,7 +20,7 @@ public class PageableInlineKeyboardMarkupBuilder extends InlineKeyboardMarkupBui
         }
 
         return pageCount;
-    } // TODO : неверно, если несколько кнопок на одном ряду
+    }
 
     public static PageableInlineKeyboardMarkupBuilder create() {
         return new PageableInlineKeyboardMarkupBuilder();
@@ -28,23 +28,17 @@ public class PageableInlineKeyboardMarkupBuilder extends InlineKeyboardMarkupBui
 
     @Override
     public InlineKeyboardMarkupBuilder setButtonList(List<ButtonDto> buttonDtoList) {
-        buttonDtoList.forEach(buttonDto -> {
-            if (isCorrectRowForCurrentPage(pageNumber, buttonDto.getRow())) {
-                addButton(buttonDto);
+        for (int i = 0; i < buttonDtoList.size(); i++) {
+            if (isCorrectRowForCurrentPage(pageNumber, i)) {
+                addButton(buttonDtoList.get(i), i);
             }
-        });
+        }
 
         if (buttonDtoList.size() > MAX_ROW_COUNT_IN_PAGE) {
             addMoveButtons();
         }
 
         return this;
-    }
-
-    @Override
-    protected void addButton(ButtonDto button) {
-        int row = button.getRow() % MAX_ROW_COUNT_IN_PAGE;
-        addButton(row, button);
     }
 
     private void addMoveButtons() {

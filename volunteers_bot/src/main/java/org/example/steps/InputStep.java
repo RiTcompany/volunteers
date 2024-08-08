@@ -15,12 +15,8 @@ public abstract class InputStep extends ConversationStep {
             return handleIllegalUserAction(messageDto, sender, result.getMessage());
         }
 
-
-        saveData(chatHash.getId(), data);
         return finishStep(chatHash, sender, data);
     }
 
     protected abstract ResultDto isValidData(String data);
-
-    protected abstract void saveData(long chatId, String data) throws EntityNotFoundException;
 }

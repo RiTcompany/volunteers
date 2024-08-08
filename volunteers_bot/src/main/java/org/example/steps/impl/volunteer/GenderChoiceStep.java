@@ -6,7 +6,6 @@ import org.example.dto.ButtonDto;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
 import org.example.enums.EGender;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
@@ -55,15 +54,9 @@ public class GenderChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EGender eGender = EGender.valueOf(data);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getString()));
-        saveGender(chatHash.getId(), eGender);
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eGender.getValue()));
+        volunteerService.saveGender(chatHash.getId(), eGender);
         return 0;
-    }
-
-    private void saveGender(long chatId, EGender eGender) throws EntityNotFoundException {
-        Volunteer volunteer = volunteerService.getByChatId(chatId);
-        volunteer.setGender(eGender);
-        volunteerService.saveAndFlush(volunteer);
     }
 
     private String getAnswerMessageText(String answer) {
@@ -73,8 +66,8 @@ public class GenderChoiceStep extends ChoiceStep {
     private List<ButtonDto> getGenderButtonDtoList() {
         EGender[] eGenderArray = EGender.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eGenderArray.length; i++) {
-            buttonDtoList.add(new ButtonDto(eGenderArray[i].toString(), eGenderArray[i].getString(), i));
+        for (EGender eGender : eGenderArray) {
+            buttonDtoList.add(new ButtonDto(eGender.toString(), eGender.getValue()));
         }
 
         return buttonDtoList;

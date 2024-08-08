@@ -5,7 +5,6 @@ import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.services.BotMessageButtonService;
 import org.example.services.BotMessageService;
 import org.example.services.UserService;
 import org.example.steps.InputStep;
@@ -29,6 +28,7 @@ public class TextInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
+        saveMessageText(chatHash.getId(), data);
         MessageUtil.sendMessageText(ANSWER_MESSAGE_TEXT, chatHash.getId(), sender);
         return 0;
     }
@@ -43,8 +43,7 @@ public class TextInputStep extends InputStep {
         return new ResultDto(true);
     }
 
-    @Override
-    protected void saveData(long chatId, String data) throws EntityNotFoundException {
+    private void saveMessageText(long chatId, String data) throws EntityNotFoundException {
         long userId = userService.getByChatIdAndRole(chatId, ERole.ROLE_WRITER).getId();
         botMessageService.saveText(userId, data);
     }

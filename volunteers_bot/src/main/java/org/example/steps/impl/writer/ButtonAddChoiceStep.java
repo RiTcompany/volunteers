@@ -3,15 +3,10 @@ package org.example.steps.impl.writer;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
-import org.example.entities.BotMessage;
 import org.example.entities.ChatHash;
-import org.example.enums.ERole;
 import org.example.enums.EYesNo;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
-import org.example.services.BotMessageButtonService;
-import org.example.services.BotMessageService;
-import org.example.services.UserService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.example.utils.StepUtil;
@@ -23,9 +18,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @RequiredArgsConstructor
 public class ButtonAddChoiceStep extends ChoiceStep {
     private final KeyboardMapper keyboardMapper;
-    private final BotMessageButtonService botMessageButtonService;
-    private final BotMessageService botMessageService;
-    private final UserService userService;
     private static final String PREPARE_MESSAGE_TEXT = "Вы хотите добавить кнопку-ссылку?";
 
     @Override

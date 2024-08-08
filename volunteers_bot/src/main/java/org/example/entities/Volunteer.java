@@ -60,9 +60,6 @@ public class Volunteer {
 
     private String experience;
 
-    @Column(name = "photo_path")
-    private String photoPath;
-
     private String email;
 
     @Column(name = "volunteer_id")

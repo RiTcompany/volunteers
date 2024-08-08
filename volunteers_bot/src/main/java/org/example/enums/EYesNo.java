@@ -7,9 +7,9 @@ public enum EYesNo {
     YES("ДА"),
     NO("НЕТ");
 
-    private final String string;
+    private final String value;
 
-    EYesNo(String string) {
-        this.string = string;
+    EYesNo(String value) {
+        this.value = value;
     }
 }

@@ -8,7 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 public class MessageDto {
     private long chatId;
     private String data;

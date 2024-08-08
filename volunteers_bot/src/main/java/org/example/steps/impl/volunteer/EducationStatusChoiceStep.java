@@ -6,7 +6,6 @@ import org.example.dto.ButtonDto;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.Volunteer;
 import org.example.enums.EEducationStatus;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
@@ -55,15 +54,9 @@ public class EducationStatusChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EEducationStatus eEducationStatus = EEducationStatus.valueOf(data);
-        saveEducation(chatHash.getId(), eEducationStatus);
-        sendFinishMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getString()));
+        volunteerService.saveEducation(chatHash.getId(), eEducationStatus);
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getValue()));
         return 0;
-    }
-
-    private void saveEducation(long chatId, EEducationStatus eEducationStatus) throws EntityNotFoundException {
-        Volunteer volunteer = volunteerService.getByChatId(chatId);
-        volunteer.setEducationStatus(eEducationStatus);
-        volunteerService.saveAndFlush(volunteer);
     }
 
     private String getAnswerMessageText(String answer) {
@@ -73,11 +66,10 @@ public class EducationStatusChoiceStep extends ChoiceStep {
     private List<ButtonDto> getEducationStatusButtonDtoList() {
         EEducationStatus[] eEducationStatusArray = EEducationStatus.values();
         List<ButtonDto> buttonDtoList = new ArrayList<>();
-        for (int i = 0; i < eEducationStatusArray.length; i++) {
+        for (EEducationStatus eEducationStatus : eEducationStatusArray) {
             buttonDtoList.add(new ButtonDto(
-                    eEducationStatusArray[i].toString(),
-                    eEducationStatusArray[i].getString(),
-                    i
+                    eEducationStatus.toString(),
+                    eEducationStatus.getValue()
             ));
         }
 

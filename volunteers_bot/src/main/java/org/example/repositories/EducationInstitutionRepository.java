@@ -11,5 +11,5 @@ import java.util.List;
 public interface EducationInstitutionRepository extends JpaRepository<EducationInstitution, Integer> {
     List<EducationInstitution> findAllByType(EEducationInstitution educationInstitution);
 
-    boolean existsByNameAndType(String name, EEducationInstitution type);
+    boolean existsByShortNameAndType(String name, EEducationInstitution type);
 }

@@ -10,4 +10,6 @@ public interface BotMessageButtonService {
     BotMessageButton create(long botMessageId, String buttonName, String buttonLink);
 
     List<BotMessageButton> getListByMessageId(long botMessageId);
+
+    void deleteButtons(long botMessageId);
 }

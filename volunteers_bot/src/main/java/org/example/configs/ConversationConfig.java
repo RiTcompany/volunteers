@@ -3,8 +3,10 @@ package org.example.configs;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.steps.ConversationStep;
-import org.example.steps.impl.moderator.ChildDocumentCheckChoiceStep;
-import org.example.steps.impl.moderator.FailChildDocumentMessageStep;
+import org.example.steps.impl.moderator.impl.ChildDocumentCheckChoiceStep;
+import org.example.steps.impl.moderator.impl.ChildDocumentFailMessageInputStep;
+import org.example.steps.impl.moderator.impl.VolunteerPhotoCheckChoiceStep;
+import org.example.steps.impl.moderator.impl.VolunteerPhotoFailMessageInputStep;
 import org.example.steps.impl.parent.ChildBirthdayInputStep;
 import org.example.steps.impl.parent.ChildFullNameInputStep;
 import org.example.steps.impl.parent.ChildRegisterPlaceInputStep;
@@ -50,7 +52,8 @@ public class ConversationConfig {
         Map<EConversation, Map<EConversationStep, List<EConversationStep>>> conversationMap = new HashMap<>();
         conversationMap.put(EConversation.VOLUNTEER_REGISTER, volunteerRegisterConversationStepGraph());
         conversationMap.put(EConversation.PARENT_REGISTER, parentRegisterConversationStepGraph());
-        conversationMap.put(EConversation.CHECK_DOCUMENT, checkChildDocumentConversationStepGraph());
+        conversationMap.put(EConversation.CHECK_CHILD_DOCUMENT, checkChildDocumentConversationStepGraph());
+        conversationMap.put(EConversation.CHECK_VOLUNTEER_PHOTO, checkVolunteerPhotoConversationStepGraph());
         conversationMap.put(EConversation.SEND_BOT_MESSAGE, sendBotMessageConversationStepGraph());
         return conversationMap;
     }
@@ -60,7 +63,8 @@ public class ConversationConfig {
         Map<EConversation, EConversationStep> conversationStartStepMap = new HashMap<>();
         conversationStartStepMap.put(EConversation.VOLUNTEER_REGISTER, EConversationStep.CITY_CHOICE);
         conversationStartStepMap.put(EConversation.PARENT_REGISTER, EConversationStep.PARENT_FULL_NAME_INPUT);
-        conversationStartStepMap.put(EConversation.CHECK_DOCUMENT, EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE);
+        conversationStartStepMap.put(EConversation.CHECK_CHILD_DOCUMENT, EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE);
+        conversationStartStepMap.put(EConversation.CHECK_VOLUNTEER_PHOTO, EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE);
         conversationStartStepMap.put(EConversation.SEND_BOT_MESSAGE, EConversationStep.BOT_MESSAGE_TEXT_CHOICE);
         return conversationStartStepMap;
     }
@@ -92,13 +96,15 @@ public class ConversationConfig {
             @Autowired ParentBirthdayInputStep parentBirthdayInputStep,
             @Autowired ParentRegisterPlaceInputStep parentRegisterPlaceInputStep,
             @Autowired ChildDocumentCheckChoiceStep childDocumentCheckChoiceStep,
-            @Autowired FailChildDocumentMessageStep failChildDocumentMessageStep,
+            @Autowired ChildDocumentFailMessageInputStep childDocumentFailMessageInputStep,
+            @Autowired VolunteerPhotoCheckChoiceStep volunteerPhotoCheckChoiceStep,
+            @Autowired VolunteerPhotoFailMessageInputStep volunteerPhotoFailMessageInputStep,
             @Autowired TextChoiceStep textChoiceStep,
             @Autowired TextInputStep textInputStep,
             @Autowired ButtonAddChoiceStep buttonAddChoiceStep,
             @Autowired ButtonInputStep buttonInputStep,
             @Autowired SendBotMessageChoiceStep sendBotMessageChoiceStep
-            ) {
+    ) {
         return new HashMap<>() {{
             put(EConversationStep.CITY_CHOICE, cityChoiceStep);
             put(EConversationStep.CITY_INPUT, cityInputStep);
@@ -126,12 +132,13 @@ public class ConversationConfig {
             put(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE, buttonAddChoiceStep);
             put(EConversationStep.BOT_MESSAGE_BUTTON_INPUT, buttonInputStep);
             put(EConversationStep.SEND_BOT_MESSAGE_CHOICE, sendBotMessageChoiceStep);
-
             put(EConversationStep.PARENT_FULL_NAME_INPUT, parentFullNameInputStep);
             put(EConversationStep.PARENT_BIRTHDAY_INPUT, parentBirthdayInputStep);
             put(EConversationStep.PARENT_REGISTER_PLACE_INPUT, parentRegisterPlaceInputStep);
             put(EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE, childDocumentCheckChoiceStep);
-            put(EConversationStep.FAIL_CHILD_DOCUMENT_MESSAGE_INPUT, failChildDocumentMessageStep);
+            put(EConversationStep.CHILD_DOCUMENT_FAIL_MESSAGE_INPUT, childDocumentFailMessageInputStep);
+            put(EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE, volunteerPhotoCheckChoiceStep);
+            put(EConversationStep.VOLUNTEER_PHOTO_FAIL_MESSAGE_INPUT, volunteerPhotoFailMessageInputStep);
         }};
     }
 
@@ -223,10 +230,22 @@ public class ConversationConfig {
     private Map<EConversationStep, List<EConversationStep>> checkChildDocumentConversationStepGraph() {
         return new HashMap<>() {{
             put(EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.FAIL_CHILD_DOCUMENT_MESSAGE_INPUT);
+                add(EConversationStep.CHILD_DOCUMENT_FAIL_MESSAGE_INPUT);
                 add(null);
             }});
-            put(EConversationStep.FAIL_CHILD_DOCUMENT_MESSAGE_INPUT, new ArrayList<>() {{
+            put(EConversationStep.CHILD_DOCUMENT_FAIL_MESSAGE_INPUT, new ArrayList<>() {{
+                add(null);
+            }});
+        }};
+    }
+
+    private Map<EConversationStep, List<EConversationStep>> checkVolunteerPhotoConversationStepGraph() {
+        return new HashMap<>() {{
+            put(EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.VOLUNTEER_PHOTO_FAIL_MESSAGE_INPUT);
+                add(null);
+            }});
+            put(EConversationStep.VOLUNTEER_PHOTO_FAIL_MESSAGE_INPUT, new ArrayList<>() {{
                 add(null);
             }});
         }};

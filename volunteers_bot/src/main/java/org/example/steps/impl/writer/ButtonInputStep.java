@@ -2,12 +2,9 @@ package org.example.steps.impl.writer;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ResultDto;
-import org.example.entities.BotMessage;
-import org.example.entities.BotMessageButton;
 import org.example.entities.ChatHash;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.services.BotMessageButtonService;
 import org.example.services.BotMessageService;
 import org.example.services.UserService;
 import org.example.steps.InputStep;
@@ -19,7 +16,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Component
 @RequiredArgsConstructor
 public class ButtonInputStep extends InputStep {
-    private final BotMessageButtonService botMessageButtonService;
     private final BotMessageService botMessageService;
     private final UserService userService;
     private static final String PREPARE_MESSAGE_TEXT = """
@@ -35,6 +31,7 @@ public class ButtonInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
+        createButton(chatHash.getId(), data);
         MessageUtil.sendMessageText(ANSWER_MESSAGE_TEXT, chatHash.getId(), sender);
         return 0;
     }
@@ -54,15 +51,13 @@ public class ButtonInputStep extends InputStep {
         return new ResultDto(true);
     }
 
-    @Override
-    protected void saveData(long chatId, String data) throws EntityNotFoundException {
+    private void createButton(long chatId, String data) throws EntityNotFoundException {
         long userId = userService.getByChatIdAndRole(chatId, ERole.ROLE_WRITER).getId();
-        BotMessage botMessage = botMessageService.getProcessedMessageByUserId(userId);
 
         String[] dataPartArray = data.split("\n");
         String buttonName = dataPartArray[0];
         String buttonLink = dataPartArray[1];
 
-        botMessageButtonService.create(botMessage.getId(), buttonName, buttonLink);
+        botMessageService.createButton(userId, buttonName, buttonLink);
     }
 }

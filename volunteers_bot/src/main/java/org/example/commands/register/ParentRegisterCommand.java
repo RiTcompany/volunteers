@@ -1,4 +1,4 @@
-package org.example.commands;
+package org.example.commands.register;
 
 import org.example.enums.EConversation;
 import org.example.services.ConversationService;
@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
-public class ParentRegisterCommand extends BotCommand  {
+public class ParentRegisterCommand extends BotCommand {
     private final ConversationService conversationService;
     private final ParentService parentService;
 

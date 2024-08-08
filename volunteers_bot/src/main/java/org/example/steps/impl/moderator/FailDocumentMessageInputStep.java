@@ -5,29 +5,32 @@ import org.example.builders.MessageBuilder;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.entities.ChildDocument;
+import org.example.entities.DocumentToCheck;
+import org.example.enums.EDocument;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.services.ChildDocumentService;
+import org.example.services.DocumentService;
 import org.example.services.UserService;
 import org.example.steps.InputStep;
 import org.example.utils.MessageUtil;
 import org.example.utils.StepUtil;
 import org.example.utils.ValidUtil;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-@Component
 @RequiredArgsConstructor
-public class FailChildDocumentMessageStep extends InputStep {
-    private final ChildDocumentService childDocumentService;
+public abstract class FailDocumentMessageInputStep extends InputStep {
+    private final DocumentService documentService;
     private final UserService userService;
-    private static final String PREPARE_MESSAGE_TEXT = "Укажите <b>комментарий</b> почему вы отклонили данный документ. данное сообщение будет отправлено кандидату";
-    private static final String FAIL_MESSAGE_TEXT = "Модератор не принял ваш документ. Комментарий:\n";
+
+    protected abstract String getPrepareMessageText();
+
+    protected abstract String getFailMessageText();
+
+    protected abstract EDocument getDocumentType();
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        StepUtil.sendPrepareMessage(chatHash, PREPARE_MESSAGE_TEXT, sender);
+        StepUtil.sendPrepareMessageOnlyText(chatHash, getPrepareMessageText(), sender);
     }
 
     @Override
@@ -38,8 +41,10 @@ public class FailChildDocumentMessageStep extends InputStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         long moderatorId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR).getId();
-        ChildDocument childDocument = childDocumentService.fail(moderatorId, data);
-        sendMessageToVolunteer(sender, FAIL_MESSAGE_TEXT.concat(data), childDocument.getChatId());
+        DocumentToCheck documentToCheck = documentService.saveFailResponse(
+                moderatorId, data, getDocumentType()
+        );
+        sendMessageToVolunteer(sender, getFailMessageText().concat(data), documentToCheck.getChatId());
         return 0;
     }
 
@@ -53,10 +58,6 @@ public class FailChildDocumentMessageStep extends InputStep {
         return new ResultDto(true);
     }
 
-    @Override
-    protected void saveData(long chatId, String data) throws EntityNotFoundException {
-    } // TODO : да, не нравится
-
     private void sendMessageToVolunteer(AbsSender sender, String message, long chatId) {
         MessageUtil.sendMessage(
                 MessageBuilder.create()
@@ -66,3 +67,4 @@ public class FailChildDocumentMessageStep extends InputStep {
         );
     }
 }
+
