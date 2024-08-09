@@ -3,7 +3,6 @@ package org.example.steps;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.enums.EDocument;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.exceptions.FileNotDownloadedException;
 import org.telegram.telegrambots.meta.bots.AbsSender;

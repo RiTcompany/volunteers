@@ -18,6 +18,7 @@ import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.example.utils.MessageUtil;
 import org.example.utils.ValidUtil;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.File;
@@ -36,13 +37,13 @@ public abstract class DocumentCheckChoiceStep extends ChoiceStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        System.out.println();
+        System.out.println(123);
         BotUser botUser = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR);
         DocumentToCheck documentToCheck = documentService.getCheckingDocument(
                 botUser.getId(), getDocumentType()
         );
 
-        int messageId = MessageUtil.sendDocument(
+        Message message = MessageUtil.sendDocument(
                 MessageBuilder.create()
                         .setFile(new File(documentToCheck.getPath()))
                         .setText(getPrepareMessageText())
@@ -50,6 +51,8 @@ public abstract class DocumentCheckChoiceStep extends ChoiceStep {
                         .sendDocument(chatHash.getId()),
                 sender
         );
+
+        int messageId = message != null ? message.getMessageId() : -1;
         chatHash.setPrevBotMessageId(messageId);
     }
 

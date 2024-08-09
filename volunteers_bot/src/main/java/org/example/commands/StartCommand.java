@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
 public class StartCommand extends BotCommand {
-    private final String MESSAGE = "Приветствую";
+    private final String MESSAGE = "Здравствуй, дорогой друг! Мы рады, что ты захотел стать частью команды \"Волонтёры Победы\" в Санкт-Петербурге. Для регистрации в системе - перейди в панель \"меню\" и выбери \"зарегистрироваться волонтеру\".";
 
     public StartCommand() {
         super("start", "Start command");
@@ -17,6 +17,6 @@ public class StartCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        MessageUtil.sendMessageText(MESSAGE, chat.getId(), absSender);
+        MessageUtil.sendMessageText(chat.getId(), MESSAGE, absSender);
     }
 }

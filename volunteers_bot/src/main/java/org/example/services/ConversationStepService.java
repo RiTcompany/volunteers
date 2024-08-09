@@ -14,4 +14,6 @@ public interface ConversationStepService {
     void prepareStep(ChatHash chatHash, AbsSender sender);
 
     EConversationStep executeStep(ChatHash chatHash, MessageDto messageDto, AbsSender sender);
+
+    String getFinishMessageText(EConversation eConversation);
 }

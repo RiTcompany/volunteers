@@ -23,13 +23,13 @@ public class TextInputStep extends InputStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        MessageUtil.sendMessageText(PREPARE_MESSAGE_TEXT, chatHash.getId(), sender);
+        MessageUtil.sendMessageText(chatHash.getId(), PREPARE_MESSAGE_TEXT, sender);
     }
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         saveMessageText(chatHash.getId(), data);
-        MessageUtil.sendMessageText(ANSWER_MESSAGE_TEXT, chatHash.getId(), sender);
+        MessageUtil.sendMessageText(chatHash.getId(), ANSWER_MESSAGE_TEXT, sender);
         return 0;
     }
 

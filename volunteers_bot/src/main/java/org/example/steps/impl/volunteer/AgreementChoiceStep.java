@@ -21,7 +21,7 @@ public class AgreementChoiceStep extends ChoiceStep {
     private static final String PREPARE_MESSAGE_TEXT = """
             На данном шаге от вас требуются следующие шаги:
                 1) Ознакомьтесь с нашей политикой конфиденциальности: https://волонтёрыпобеды.рф/policy
-                2) Нажмите кнопку ДА для соглашения с данной политикой, а так же для получения уведомлений через бота""";
+                2) Нажмите кнопку ОК для соглашения с данной политикой, а так же для получения уведомлений через бота""";
     private static final String ANSWER_MESSAGE_TEXT = "Ваше согласие принято";
 
     @Override

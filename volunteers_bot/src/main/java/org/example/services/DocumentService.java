@@ -17,5 +17,5 @@ public interface DocumentService {
 
     DocumentToCheck saveFailResponse(long moderatorId, String message, EDocument eDocument) throws EntityNotFoundException;
 
-    void update(DocumentToCheck documentToCheck, long botUserId);
+    void setModerator(DocumentToCheck documentToCheck, long botUserId);
 }

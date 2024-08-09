@@ -1,5 +1,11 @@
 package org.example.configs;
 
+import org.example.conversation.AConversation;
+import org.example.conversation.impl.CheckChildDocumentConversation;
+import org.example.conversation.impl.CheckVolunteerPhotoConversation;
+import org.example.conversation.impl.ParentRegistrationConversation;
+import org.example.conversation.impl.SendBotMessageConversation;
+import org.example.conversation.impl.VolunteerRegistrationConversation;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.steps.ConversationStep;
@@ -34,39 +40,31 @@ import org.example.steps.impl.volunteer.VolunteerIdInputStep;
 import org.example.steps.impl.writer.ButtonAddChoiceStep;
 import org.example.steps.impl.writer.ButtonInputStep;
 import org.example.steps.impl.writer.SendBotMessageChoiceStep;
-import org.example.steps.impl.writer.TextChoiceStep;
 import org.example.steps.impl.writer.TextInputStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class ConversationConfig {
     @Bean
-    public Map<EConversation, Map<EConversationStep, List<EConversationStep>>> conversationStepGraph() {
-        Map<EConversation, Map<EConversationStep, List<EConversationStep>>> conversationMap = new HashMap<>();
-        conversationMap.put(EConversation.VOLUNTEER_REGISTER, volunteerRegisterConversationStepGraph());
-        conversationMap.put(EConversation.PARENT_REGISTER, parentRegisterConversationStepGraph());
-        conversationMap.put(EConversation.CHECK_CHILD_DOCUMENT, checkChildDocumentConversationStepGraph());
-        conversationMap.put(EConversation.CHECK_VOLUNTEER_PHOTO, checkVolunteerPhotoConversationStepGraph());
-        conversationMap.put(EConversation.SEND_BOT_MESSAGE, sendBotMessageConversationStepGraph());
+    public Map<EConversation, AConversation> conversationMap(
+            @Autowired VolunteerRegistrationConversation volunteerRegistrationConversation,
+            @Autowired ParentRegistrationConversation parentRegistrationConversation,
+            @Autowired CheckChildDocumentConversation checkChildDocumentConversation,
+            @Autowired CheckVolunteerPhotoConversation checkVolunteerPhotoConversation,
+            @Autowired SendBotMessageConversation sendBotMessageConversation
+    ) {
+        Map<EConversation, AConversation> conversationMap = new HashMap<>();
+        conversationMap.put(EConversation.VOLUNTEER_REGISTER, volunteerRegistrationConversation);
+        conversationMap.put(EConversation.PARENT_REGISTER, parentRegistrationConversation);
+        conversationMap.put(EConversation.CHECK_CHILD_DOCUMENT, checkChildDocumentConversation);
+        conversationMap.put(EConversation.CHECK_VOLUNTEER_PHOTO, checkVolunteerPhotoConversation);
+        conversationMap.put(EConversation.SEND_BOT_MESSAGE, sendBotMessageConversation);
         return conversationMap;
-    }
-
-    @Bean
-    public Map<EConversation, EConversationStep> conversationStartStepMap() {
-        Map<EConversation, EConversationStep> conversationStartStepMap = new HashMap<>();
-        conversationStartStepMap.put(EConversation.VOLUNTEER_REGISTER, EConversationStep.CITY_CHOICE);
-        conversationStartStepMap.put(EConversation.PARENT_REGISTER, EConversationStep.PARENT_FULL_NAME_INPUT);
-        conversationStartStepMap.put(EConversation.CHECK_CHILD_DOCUMENT, EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE);
-        conversationStartStepMap.put(EConversation.CHECK_VOLUNTEER_PHOTO, EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE);
-        conversationStartStepMap.put(EConversation.SEND_BOT_MESSAGE, EConversationStep.BOT_MESSAGE_TEXT_CHOICE);
-        return conversationStartStepMap;
     }
 
     @Bean
@@ -99,7 +97,6 @@ public class ConversationConfig {
             @Autowired ChildDocumentFailMessageInputStep childDocumentFailMessageInputStep,
             @Autowired VolunteerPhotoCheckChoiceStep volunteerPhotoCheckChoiceStep,
             @Autowired VolunteerPhotoFailMessageInputStep volunteerPhotoFailMessageInputStep,
-            @Autowired TextChoiceStep textChoiceStep,
             @Autowired TextInputStep textInputStep,
             @Autowired ButtonAddChoiceStep buttonAddChoiceStep,
             @Autowired ButtonInputStep buttonInputStep,
@@ -127,7 +124,6 @@ public class ConversationConfig {
             put(EConversationStep.CHILD_FULL_NAME_INPUT, childFullNameInputStep);
             put(EConversationStep.CHILD_BIRTHDAY_INPUT, childBirthdayInputStep);
             put(EConversationStep.CHILD_REGISTER_PLACE_INPUT, childRegisterPlaceInputStep);
-            put(EConversationStep.BOT_MESSAGE_TEXT_CHOICE, textChoiceStep);
             put(EConversationStep.BOT_MESSAGE_TEXT_INPUT, textInputStep);
             put(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE, buttonAddChoiceStep);
             put(EConversationStep.BOT_MESSAGE_BUTTON_INPUT, buttonInputStep);
@@ -139,137 +135,6 @@ public class ConversationConfig {
             put(EConversationStep.CHILD_DOCUMENT_FAIL_MESSAGE_INPUT, childDocumentFailMessageInputStep);
             put(EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE, volunteerPhotoCheckChoiceStep);
             put(EConversationStep.VOLUNTEER_PHOTO_FAIL_MESSAGE_INPUT, volunteerPhotoFailMessageInputStep);
-        }};
-    }
-
-    private Map<EConversationStep, List<EConversationStep>> volunteerRegisterConversationStepGraph() {
-        return new HashMap<>() {{
-            put(EConversationStep.CITY_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.CITY_INPUT);
-                add(EConversationStep.BIRTHDAY_INPUT);
-            }});
-            put(EConversationStep.CITY_INPUT, new ArrayList<>() {{
-                add(EConversationStep.BIRTHDAY_INPUT);
-            }});
-            put(EConversationStep.BIRTHDAY_INPUT, new ArrayList<>() {{
-                add(EConversationStep.CHILD_DOCUMENT_SEND);
-                add(EConversationStep.FULL_NAME_INPUT);
-            }});
-            put(EConversationStep.CHILD_DOCUMENT_SEND, new ArrayList<>() {{
-                add(EConversationStep.FULL_NAME_INPUT);
-            }});
-            put(EConversationStep.FULL_NAME_INPUT, new ArrayList<>() {{
-                add(EConversationStep.GENDER_CHOICE);
-            }});
-            put(EConversationStep.GENDER_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.PHONE_INPUT);
-            }});
-            put(EConversationStep.PHONE_INPUT, new ArrayList<>() {{
-                add(EConversationStep.EDUCATION_STATUS_CHOICE);
-            }});
-            put(EConversationStep.EDUCATION_STATUS_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.EDUCATION_INSTITUTION_CHOICE);
-            }});
-            put(EConversationStep.EDUCATION_INSTITUTION_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.EDUCATION_INSTITUTION_INPUT);
-                add(EConversationStep.AGREEMENT_CHOICE);
-            }});
-            put(EConversationStep.EDUCATION_INSTITUTION_INPUT, new ArrayList<>() {{
-                add(EConversationStep.AGREEMENT_CHOICE);
-            }});
-            put(EConversationStep.AGREEMENT_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.VK_INPUT);
-            }});
-            put(EConversationStep.VK_INPUT, new ArrayList<>() {{
-                add(EConversationStep.CLOTHING_SIZE_CHOICE);
-            }});
-            put(EConversationStep.CLOTHING_SIZE_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.REASON_INPUT);
-            }});
-            put(EConversationStep.REASON_INPUT, new ArrayList<>() {{
-                add(EConversationStep.EXPERIENCE_INPUT);
-            }});
-            put(EConversationStep.EXPERIENCE_INPUT, new ArrayList<>() {{
-                add(EConversationStep.PHOTO_SEND);
-            }});
-            put(EConversationStep.PHOTO_SEND, new ArrayList<>() {{
-                add(EConversationStep.EMAIL_INPUT);
-            }});
-            put(EConversationStep.EMAIL_INPUT, new ArrayList<>() {{
-                add(EConversationStep.VOLUNTEER_ID_INPUT);
-            }});
-            put(EConversationStep.VOLUNTEER_ID_INPUT, new ArrayList<>() {{
-                add(null);
-            }});
-        }};
-    }
-
-    private Map<EConversationStep, List<EConversationStep>> parentRegisterConversationStepGraph() {
-        return new HashMap<>() {{
-            put(EConversationStep.PARENT_FULL_NAME_INPUT, new ArrayList<>() {{
-                add(EConversationStep.PARENT_BIRTHDAY_INPUT);
-            }});
-            put(EConversationStep.PARENT_BIRTHDAY_INPUT, new ArrayList<>() {{
-                add(EConversationStep.PARENT_REGISTER_PLACE_INPUT);
-            }});
-            put(EConversationStep.PARENT_REGISTER_PLACE_INPUT, new ArrayList<>() {{
-                add(EConversationStep.CHILD_FULL_NAME_INPUT);
-            }});
-            put(EConversationStep.CHILD_FULL_NAME_INPUT, new ArrayList<>() {{
-                add(EConversationStep.CHILD_BIRTHDAY_INPUT);
-            }});
-            put(EConversationStep.CHILD_BIRTHDAY_INPUT, new ArrayList<>() {{
-                add(EConversationStep.CHILD_REGISTER_PLACE_INPUT);
-            }});
-            put(EConversationStep.CHILD_REGISTER_PLACE_INPUT, new ArrayList<>() {{
-                add(null);
-            }});
-        }};
-    }
-
-    private Map<EConversationStep, List<EConversationStep>> checkChildDocumentConversationStepGraph() {
-        return new HashMap<>() {{
-            put(EConversationStep.CHILD_DOCUMENT_CHECK_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.CHILD_DOCUMENT_FAIL_MESSAGE_INPUT);
-                add(null);
-            }});
-            put(EConversationStep.CHILD_DOCUMENT_FAIL_MESSAGE_INPUT, new ArrayList<>() {{
-                add(null);
-            }});
-        }};
-    }
-
-    private Map<EConversationStep, List<EConversationStep>> checkVolunteerPhotoConversationStepGraph() {
-        return new HashMap<>() {{
-            put(EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.VOLUNTEER_PHOTO_FAIL_MESSAGE_INPUT);
-                add(null);
-            }});
-            put(EConversationStep.VOLUNTEER_PHOTO_FAIL_MESSAGE_INPUT, new ArrayList<>() {{
-                add(null);
-            }});
-        }};
-    }
-
-    private Map<EConversationStep, List<EConversationStep>> sendBotMessageConversationStepGraph() {
-        return new HashMap<>() {{
-            put(EConversationStep.BOT_MESSAGE_TEXT_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.BOT_MESSAGE_TEXT_INPUT);
-                add(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE);
-            }});
-            put(EConversationStep.BOT_MESSAGE_TEXT_INPUT, new ArrayList<>() {{
-                add(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE);
-            }});
-            put(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE, new ArrayList<>() {{
-                add(EConversationStep.BOT_MESSAGE_BUTTON_INPUT);
-                add(EConversationStep.SEND_BOT_MESSAGE_CHOICE);
-            }});
-            put(EConversationStep.BOT_MESSAGE_BUTTON_INPUT, new ArrayList<>() {{
-                add(EConversationStep.BOT_MESSAGE_BUTTON_ADD_CHOICE);
-            }});
-            put(EConversationStep.SEND_BOT_MESSAGE_CHOICE, new ArrayList<>() {{
-                add(null);
-            }});
         }};
     }
 }

@@ -4,18 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.example.entities.BotUser;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
-import org.example.repositories.UserRepository;
+import org.example.repositories.BotUserRepository;
 import org.example.services.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final BotUserRepository botUserRepository;
 
     @Override
     public BotUser getByChatIdAndRole(long chatId, ERole eRole) throws EntityNotFoundException {
-        BotUser botUser = userRepository.findByChatId(chatId)
+        BotUser botUser = botUserRepository.findByTgId(chatId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Не существует %s с ID = %d".formatted(eRole, chatId)
                 ));
@@ -25,14 +25,6 @@ public class UserServiceImpl implements UserService {
         }
 
         return botUser;
-    }
-
-    @Override
-    public boolean existsByChatIdAndRole(long chatId, ERole eRole) {
-        return userRepository.findByChatId(chatId)
-                .filter(botUser -> hasRole(botUser, eRole))
-                .isPresent();
-
     }
 
     @Override

@@ -21,6 +21,7 @@ import java.util.List;
 public class VolunteerServiceImpl implements VolunteerService {
     private final VolunteerRepository volunteerRepository;
     private final VolunteerMapper volunteerMapper;
+    private static final String TG_LINK_TEMPLATE = "https://t.me/";
 
     @Override
     public Volunteer getByChatId(long chatId) throws EntityNotFoundException {
@@ -33,15 +34,15 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public void create(long chatId, String tgUserName) {
         if (!volunteerRepository.existsByChatId(chatId)) {
-            volunteerRepository.saveAndFlush(volunteerMapper.volunteer(chatId, tgUserName));
+            volunteerRepository.saveAndFlush(
+                    volunteerMapper.volunteer(chatId, TG_LINK_TEMPLATE.concat(tgUserName))
+            );
         }
     }
 
     @Override
-    public List<Long> getVolunteerChatIdList() {
-        return volunteerRepository.findAll().stream()
-                .map(Volunteer::getChatId)
-                .toList();
+    public List<Volunteer> getVolunteerList() {
+        return volunteerRepository.findAll();
     }
 
     @Override
@@ -133,5 +134,19 @@ public class VolunteerServiceImpl implements VolunteerService {
         Volunteer volunteer = getByChatId(chatId);
         volunteer.setVolunteerId(data);
         volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void updateTgLink(Volunteer volunteer, String tgUserName) {
+        String tgLink = TG_LINK_TEMPLATE.concat(tgUserName);
+        if (!volunteer.getTgLink().equals(tgLink)) {
+            volunteer.setTgLink(tgLink);
+            volunteerRepository.save(volunteer);
+        }
+    }
+
+    @Override
+    public void flush() {
+        volunteerRepository.flush();
     }
 }

@@ -6,17 +6,15 @@ import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.enums.EDocument;
-import org.example.exceptions.FileNotDownloadedException;
 import org.example.services.DocumentService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Document;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.File;
-import java.util.List;
 
 
 @Slf4j
@@ -37,7 +35,8 @@ public class ChildDocumentSendStep extends FileSendStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        int messageId = MessageUtil.sendFile(chatHash.getId(), FILE, PREPARE_MESSAGE_TEXT, sender);
+        Message message = MessageUtil.sendFile(chatHash.getId(), FILE, PREPARE_MESSAGE_TEXT, sender);
+        int messageId = message != null ? message.getMessageId() : -1;
         chatHash.setPrevBotMessageId(messageId);
     }
 

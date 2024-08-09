@@ -1,5 +1,6 @@
 package org.example.commands.check_document;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.entities.BotUser;
 import org.example.entities.DocumentToCheck;
 import org.example.enums.EConversation;
@@ -15,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
+@Slf4j
 public abstract class CheckDocumentCommand extends BotCommand {
     private final ConversationService conversationService;
     private final UserService userService;
@@ -46,13 +48,14 @@ public abstract class CheckDocumentCommand extends BotCommand {
             DocumentToCheck documentToCheck = documentService.getToCheck(getDocumentType());
 
             if (documentToCheck != null) {
-                documentService.update(documentToCheck, botUser.getId());
+                documentService.setModerator(documentToCheck, botUser.getId());
                 conversationService.startConversation(chat.getId(), getConversationType(), absSender);
             } else {
-                MessageUtil.sendMessageText(getNoDocsMessageText(), chat.getId(), absSender);
+                MessageUtil.sendMessageText(chat.getId(), getNoDocsMessageText(), absSender);
             }
         } catch (EntityNotFoundException e) {
-            MessageUtil.sendMessageText("Нет доступа", chat.getId(), absSender);
+            log.error(e.getMessage());
+            MessageUtil.sendMessageText(chat.getId(), "Недостаточно прав", absSender);
         }
     }
 }

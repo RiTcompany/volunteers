@@ -11,8 +11,9 @@ import org.example.mappers.ChatHashMapper;
 import org.example.mappers.MessageMapper;
 import org.example.repositories.ChatHashRepository;
 import org.example.services.ConversationService;
-import org.example.utils.ChatUtil;
+import org.example.services.ConversationStepService;
 import org.example.utils.MessageUtil;
+import org.example.utils.UpdateUtil;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -20,7 +21,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Service
 @RequiredArgsConstructor
 public class ConversationServiceImpl implements ConversationService {
-    private final ConversationStepServiceImpl conversationStepService;
+    private final ConversationStepService conversationStepService;
     private final ChatHashRepository chatHashRepository;
     private final MessageMapper messageMapper;
     private final ChatHashMapper chatHashMapper;
@@ -32,7 +33,7 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     public void executeConversationStep(Update update, EMessage eMessage, AbsSender sender) throws CommandException {
-        long chatId = ChatUtil.getChatId(update, eMessage);
+        long chatId = UpdateUtil.getChatId(update);
         ChatHash chatHash = getChatById(chatId);
         if (chatHash != null) {
             MessageDto messageDto = messageMapper.messageDto(update, eMessage, chatHash);
@@ -83,7 +84,8 @@ public class ConversationServiceImpl implements ConversationService {
 
     private void handleConversationEnd(ChatHash chatHash, AbsSender sender) {
         if (isConversationFinished(chatHash)) {
-            MessageUtil.sendMessageText("Данный диалог успешно завершен", chatHash.getId(), sender);
+            String finishMessageText = conversationStepService.getFinishMessageText(chatHash.getEConversation());
+            MessageUtil.sendMessageText(chatHash.getId(), finishMessageText, sender);
             deleteChatHash(chatHash);
         }
     }
@@ -102,7 +104,10 @@ public class ConversationServiceImpl implements ConversationService {
 
     private void handleCommand(MessageDto messageDto) throws CommandException {
         if (EMessage.COMMAND.equals(messageDto.getEMessage())) {
-            throw new CommandException();
+            throw new CommandException(
+                    "Попытка вызвать команду во время действующего диалога",
+                    "Вы не можете ввести другую команду, пока не завершите данный диалог"
+            );
         }
     }
 }

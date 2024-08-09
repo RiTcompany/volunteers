@@ -3,10 +3,9 @@ package org.example.mappers;
 import org.example.dto.MessageDto;
 import org.example.entities.ChatHash;
 import org.example.enums.EMessage;
+import org.example.utils.UpdateUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.Objects;
 
 @Component
 public class MessageMapper {
@@ -14,12 +13,7 @@ public class MessageMapper {
         MessageDto messageDto = new MessageDto();
         messageDto.setChatId(chatHash.getId());
         messageDto.setEMessage(eMessage);
-
-        if (Objects.requireNonNull(eMessage) == EMessage.CALLBACK) {
-            messageDto.setData(update.getCallbackQuery().getData());
-        } else {
-            messageDto.setData(update.getMessage().getText());
-        }
+        messageDto.setData(UpdateUtil.getUserInputText(update));
 
         switch (eMessage) {
             case DOCUMENT -> messageDto.setDocument(update.getMessage().getDocument());

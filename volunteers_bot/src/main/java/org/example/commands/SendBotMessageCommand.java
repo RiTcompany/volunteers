@@ -1,5 +1,6 @@
 package org.example.commands;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.entities.BotUser;
 import org.example.enums.EConversation;
 import org.example.enums.ERole;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
+@Slf4j
 @Component
 public class SendBotMessageCommand extends BotCommand {
     private final ConversationService conversationService;
@@ -40,7 +42,8 @@ public class SendBotMessageCommand extends BotCommand {
                     chat.getId(), EConversation.SEND_BOT_MESSAGE, absSender
             );
         } catch (EntityNotFoundException e) {
-            MessageUtil.sendMessageText("Такой команды не существует", chat.getId(), absSender);
+            log.error(e.getMessage());
+            MessageUtil.sendMessageText(chat.getId(), "Недостаточно прав", absSender);
         }
     }
 }

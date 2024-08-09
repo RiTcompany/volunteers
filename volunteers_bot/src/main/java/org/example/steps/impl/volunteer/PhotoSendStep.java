@@ -6,11 +6,11 @@ import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
 import org.example.enums.EDocument;
-import org.example.exceptions.FileNotDownloadedException;
 import org.example.services.DocumentService;
 import org.example.steps.FileSendStep;
 import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -23,12 +23,13 @@ import java.util.List;
 public class PhotoSendStep extends FileSendStep {
     private final DocumentService documentService;
     private static final String PREPARE_MESSAGE_TEXT = "Отправьте ваше <b>фото</b> форматом 3x4 на нейтральном фоне:";
-    private static final String ANSWER_MESSAGE_TEXT = "Ваш документ был отправлен на проверку. Ожидайте ответа. А пока можете продолжить регистрацию";
+    private static final String ANSWER_MESSAGE_TEXT = "Ваше фото было отправлено на модерацию. Ожидайте ответа. А пока давайте продолжим регистрацию.";
     private static final int MAX_PHOTO_SIZE_MB = 10;
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) {
-        int messageId = MessageUtil.sendMessageText(PREPARE_MESSAGE_TEXT, chatHash.getId(), sender);
+        Message message = MessageUtil.sendMessageText(chatHash.getId(), PREPARE_MESSAGE_TEXT, sender);
+        int messageId = message != null ? message.getMessageId() : -1;
         chatHash.setPrevBotMessageId(messageId);
     }
 
@@ -61,13 +62,15 @@ public class PhotoSendStep extends FileSendStep {
     @Override
     protected File download(MessageDto messageDto, AbsSender sender) {
         List<PhotoSize> photoList = messageDto.getPhotoList();
+        String fieldId = photoList.get(photoList.size() - 1).getFileId();
         for (int i = 1; i < photoList.size(); i++) {
             if (photoList.get(i).getFileSize() > MAX_PHOTO_SIZE_MB * 1024 * 1024) {
-                return MessageUtil.downloadFile(photoList.get(i - 1).getFileId(), sender);
+                fieldId = photoList.get(i - 1).getFileId();
+                break;
             }
         }
 
-        return MessageUtil.downloadFile(photoList.get(photoList.size() - 1).getFileId(), sender);
+        return MessageUtil.downloadFile(fieldId, sender);
     }
 
     @Override

@@ -9,7 +9,5 @@ import org.springframework.stereotype.Service;
 public interface UserService {
     BotUser getByChatIdAndRole(long chatId, ERole eRole) throws EntityNotFoundException;
 
-    boolean existsByChatIdAndRole(long chatId, ERole eRole);
-
     boolean hasRole(BotUser botUser, ERole eRole);
 }

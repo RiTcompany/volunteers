@@ -21,6 +21,7 @@ import org.example.utils.MessageUtil;
 import org.example.utils.StepUtil;
 import org.example.utils.ValidUtil;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
         long userId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_WRITER).getId();
         BotMessage botMessage = botMessageService.getProcessedMessageByUserId(userId);
 
-        System.out.println(data);
         if (EYesNo.NO.toString().equals(data)) {
             botMessageService.deleteButtons(botMessage);
             botMessageService.delete(botMessage);
@@ -94,9 +94,16 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
                 .setText(botMessage.getText())
                 .setInlineKeyBoard(keyboardMapper.keyboardDto(chatHash, collectButtonList(botMessage)));
 
-        volunteerService.getVolunteerChatIdList().forEach(chatId ->
-                MessageUtil.sendMessage(messageBuilder.sendMessage(chatId), sender)
+        volunteerService.getVolunteerList().forEach(volunteer -> {
+                    Message message = MessageUtil.sendMessage(
+                            messageBuilder.sendMessage(volunteer.getChatId()), sender
+                    );
+                    if (message != null) {
+                        volunteerService.updateTgLink(volunteer, message.getChat().getUserName());
+                    }
+                }
         );
+        volunteerService.flush();
 
         botMessageService.saveSentStatus(botMessage);
     }
