@@ -45,9 +45,10 @@ public class CityChoiceStep extends ChoiceStep {
         try {
             ECity.valueOf(messageDto.getData());
             return new ResultDto(true);
-        } catch (IllegalArgumentException e) {
-            return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
+        } catch (IllegalArgumentException ignored) {
         }
+
+        return new ResultDto(false, EXCEPTION_MESSAGE_TEXT);
     }
 
     @Override

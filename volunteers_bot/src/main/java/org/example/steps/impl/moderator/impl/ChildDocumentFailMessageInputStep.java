@@ -1,8 +1,8 @@
 package org.example.steps.impl.moderator.impl;
 
 import org.example.enums.EDocument;
+import org.example.services.BotUserService;
 import org.example.services.DocumentService;
-import org.example.services.UserService;
 import org.example.steps.impl.moderator.FailDocumentMessageInputStep;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +13,9 @@ public class ChildDocumentFailMessageInputStep extends FailDocumentMessageInputS
     private static final EDocument DOCUMENT_TYPE = EDocument.CHILD_DOCUMENT;
 
     public ChildDocumentFailMessageInputStep(
-            DocumentService documentService, UserService userService
+            DocumentService documentService, BotUserService botUserService
     ) {
-        super(documentService, userService);
+        super(documentService, botUserService);
     }
 
     @Override

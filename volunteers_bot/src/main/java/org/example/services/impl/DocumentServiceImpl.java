@@ -30,8 +30,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentToCheck getCheckingDocument(long moderatorId, EDocument eDocument) throws EntityNotFoundException {
-        return documentRepository
-                .findFirstByStatusAndModeratorIdAndDocumentType(
+        return documentRepository.findFirstByStatusAndModeratorIdAndDocumentType(
                         ECheckStatus.CHECKING, moderatorId, eDocument
                 )
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -58,7 +57,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public void update(DocumentToCheck documentToCheck, long botUserId) {
+    public void setModerator(DocumentToCheck documentToCheck, long botUserId) {
         documentToCheck.setModeratorId(botUserId);
         documentToCheck.setStatus(ECheckStatus.CHECKING);
         documentRepository.saveAndFlush(documentToCheck);

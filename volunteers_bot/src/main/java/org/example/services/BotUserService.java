@@ -6,10 +6,10 @@ import org.example.exceptions.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface UserService {
+public interface BotUserService {
     BotUser getByChatIdAndRole(long chatId, ERole eRole) throws EntityNotFoundException;
 
-    boolean existsByChatIdAndRole(long chatId, ERole eRole);
-
     boolean hasRole(BotUser botUser, ERole eRole);
+
+    boolean existsByTgId(long chatId);
 }

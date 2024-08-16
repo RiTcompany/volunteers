@@ -2,9 +2,9 @@ package org.example.commands.check_document;
 
 import org.example.enums.EConversation;
 import org.example.enums.EDocument;
+import org.example.services.BotUserService;
 import org.example.services.ConversationService;
 import org.example.services.DocumentService;
-import org.example.services.UserService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,10 +17,10 @@ public class CheckChildDocumentCommand extends CheckDocumentCommand {
 
     public CheckChildDocumentCommand(
             ConversationService conversationService,
-            UserService userService,
+            BotUserService botUserService,
             DocumentService documentService
     ) {
-        super(COMMAND_MODIFIER, COMMAND_DESCRIPTION, conversationService, userService, documentService);
+        super(COMMAND_MODIFIER, COMMAND_DESCRIPTION, conversationService, botUserService, documentService);
     }
 
     @Override

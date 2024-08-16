@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<BotUser, Long> {
-    boolean existsByChatId(long chatId);
+public interface BotUserRepository extends JpaRepository<BotUser, Long> {
+    boolean existsByTgId(long tgId);
 
-    Optional<BotUser> findByChatId(long chatId);
+    Optional<BotUser> findByTgId(long tgId);
 }

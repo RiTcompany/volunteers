@@ -2,8 +2,8 @@ package org.example.steps.impl.moderator.impl;
 
 import org.example.enums.EDocument;
 import org.example.mappers.KeyboardMapper;
+import org.example.services.BotUserService;
 import org.example.services.DocumentService;
-import org.example.services.UserService;
 import org.example.steps.impl.moderator.DocumentCheckChoiceStep;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ public class ChildDocumentCheckChoiceStep extends DocumentCheckChoiceStep {
     private static final EDocument DOCUMENT_TYPE = EDocument.CHILD_DOCUMENT;
 
     public ChildDocumentCheckChoiceStep(
-            DocumentService documentService, KeyboardMapper keyboardMapper, UserService userService
+            DocumentService documentService, KeyboardMapper keyboardMapper, BotUserService botUserService
     ) {
-        super(documentService, keyboardMapper, userService);
+        super(documentService, keyboardMapper, botUserService);
     }
 
     @Override

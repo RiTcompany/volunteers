@@ -3,6 +3,7 @@ package org.example.configs;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bots.TGLongPoolingBot;
 import org.example.services.CommandService;
+import org.example.services.UpdateHandleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +24,11 @@ public class BotConfig {
     private String token;
 
     @Bean
-    public TGLongPoolingBot tgLongPoolingBot() {
+    public TGLongPoolingBot tgLongPoolingBot(@Autowired UpdateHandleService updateHandleService) {
         if (isBotEnabled) {
-            TGLongPoolingBot TGLongPoolingBot = new TGLongPoolingBot(name, token);
+            TGLongPoolingBot TGLongPoolingBot = new TGLongPoolingBot(
+                    name, token, updateHandleService
+            );
             log.info("Bot initialized");
             return TGLongPoolingBot;
         }

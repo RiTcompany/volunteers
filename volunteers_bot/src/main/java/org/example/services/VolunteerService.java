@@ -16,7 +16,7 @@ public interface VolunteerService {
 
     void create(long chatId, String tgUserName);
 
-    List<Long> getVolunteerChatIdList();
+    List<Volunteer> findAll();
 
     void saveBirthday(long chatId, Date birthday) throws EntityNotFoundException;
 
@@ -43,4 +43,8 @@ public interface VolunteerService {
     void saveVk(long chatId, String vk) throws EntityNotFoundException;
 
     void saveVolunteerId(long chatId, String data) throws EntityNotFoundException;
+
+    void updateTgLink(Volunteer volunteer, String tgUserName);
+
+    void flush();
 }

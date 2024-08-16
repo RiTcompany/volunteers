@@ -5,6 +5,8 @@ import org.example.dto.ResultDto;
 import org.example.enums.EMessage;
 import org.example.enums.EYesNo;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,15 @@ public class ValidUtil {
     private static final int MAX_REGISTER_PLACE_LENGTH = 511;
     private static final Pattern digitPattern = Pattern.compile("^[0-9]+$");
     private static final Pattern letterPattern = Pattern.compile("^[а-яА-ЯёЁa-zA-Z]+$");
+
+    public static boolean isValidURL(String urlString) {
+        try {
+            new URL(urlString);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+    }
 
     public static boolean isLongButtonText(int length) {
         return length >= MAX_BUTTON_TEXT_LENGTH;
@@ -63,8 +74,7 @@ public class ValidUtil {
     }
 
     public static ResultDto isValidYesNoChoice(MessageDto messageDto, String exceptionMessage) {
-        EMessage eMessage = messageDto.getEMessage();
-        if (!isCallback(eMessage)) {
+        if (!isCallback(messageDto.getEMessage())) {
             return new ResultDto(false, exceptionMessage);
         }
 
@@ -87,16 +97,16 @@ public class ValidUtil {
             return new ResultDto(false, "Ваше ФИО должно содержать только фамилию из 1 слова, имя из одного слова и отчество из одного слова при наличии");
         }
 
-        if (!fullNamePartContainsLettersOnly(fullNamePartArray[SURNAME_INDEX])) {
+        if (fullNameContainsIncorrectSymbols(fullNamePartArray[SURNAME_INDEX])) {
             return new ResultDto(false, "Фамилия должна содержать только буквы");
         }
 
-        if (!fullNamePartContainsLettersOnly(fullNamePartArray[NAME_INDEX])) {
+        if (fullNameContainsIncorrectSymbols(fullNamePartArray[NAME_INDEX])) {
             return new ResultDto(false, "Имя должно содержать только буквы");
         }
 
         if (fullNamePartArray.length == FULL_NAME_PART_NUMBER_WITH_PATRONYMIC
-                && !fullNamePartContainsLettersOnly(fullNamePartArray[PATRONYMIC_INDEX])
+                && fullNameContainsIncorrectSymbols(fullNamePartArray[PATRONYMIC_INDEX])
         ) {
             return new ResultDto(false, "Отчество должно содержать только буквы");
         }
@@ -117,8 +127,8 @@ public class ValidUtil {
                 && fullNamePartArray.length != FULL_NAME_PART_NUMBER_WITH_PATRONYMIC;
     }
 
-    private static boolean fullNamePartContainsLettersOnly(String fullNamePart) {
-        return letterPattern.matcher(fullNamePart).matches();
+    private static boolean fullNameContainsIncorrectSymbols(String fullNamePart) {
+        return !letterPattern.matcher(fullNamePart).matches();
     }
 
     private static boolean isRealBirthday(Date birthday) {

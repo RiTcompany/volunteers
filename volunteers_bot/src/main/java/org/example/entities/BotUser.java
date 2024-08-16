@@ -24,12 +24,14 @@ public class BotUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chat_id")
-    private Long chatId;
+    @Column(name = "tg_id")
+    private Long tgId;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(
+            name = "bot_user_to_roles",
+            joinColumns = @JoinColumn(name = "bot_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private List<Role> roleList;
 }

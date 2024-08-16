@@ -10,14 +10,16 @@ import org.example.entities.DocumentToCheck;
 import org.example.enums.EDocument;
 import org.example.enums.ERole;
 import org.example.enums.EYesNo;
+import org.example.exceptions.AbstractException;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
+import org.example.services.BotUserService;
 import org.example.services.DocumentService;
-import org.example.services.UserService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
 import org.example.utils.MessageUtil;
 import org.example.utils.ValidUtil;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.io.File;
@@ -26,7 +28,7 @@ import java.io.File;
 public abstract class DocumentCheckChoiceStep extends ChoiceStep {
     private final DocumentService documentService;
     private final KeyboardMapper keyboardMapper;
-    private final UserService userService;
+    private final BotUserService botUserService;
 
     protected abstract String getPrepareMessageText();
 
@@ -35,14 +37,13 @@ public abstract class DocumentCheckChoiceStep extends ChoiceStep {
     protected abstract EDocument getDocumentType();
 
     @Override
-    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        System.out.println();
-        BotUser botUser = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR);
+    public void prepare(ChatHash chatHash, AbsSender sender) throws AbstractException {
+        BotUser botUser = botUserService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR);
         DocumentToCheck documentToCheck = documentService.getCheckingDocument(
                 botUser.getId(), getDocumentType()
         );
 
-        int messageId = MessageUtil.sendDocument(
+        Message message = MessageUtil.sendDocument(
                 MessageBuilder.create()
                         .setFile(new File(documentToCheck.getPath()))
                         .setText(getPrepareMessageText())
@@ -50,6 +51,8 @@ public abstract class DocumentCheckChoiceStep extends ChoiceStep {
                         .sendDocument(chatHash.getId()),
                 sender
         );
+
+        int messageId = message != null ? message.getMessageId() : -1;
         chatHash.setPrevBotMessageId(messageId);
     }
 
@@ -65,7 +68,7 @@ public abstract class DocumentCheckChoiceStep extends ChoiceStep {
             return 0;
         }
 
-        long moderatorId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR).getId();
+        long moderatorId = botUserService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR).getId();
         DocumentToCheck documentToCheck = documentService.saveAcceptResponse(
                 moderatorId, getDocumentType()
         );

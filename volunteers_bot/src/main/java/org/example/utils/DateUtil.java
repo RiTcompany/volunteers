@@ -13,8 +13,9 @@ public class DateUtil {
         try {
             return DATE_FORMAT.parse(birthdayStr);
         } catch (ParseException ignored) {
-            return null;
         }
+
+        return null;
     }
 
     public static int getYearCountByDate(Date date) {
