@@ -3,7 +3,7 @@ package org.example.steps;
 import org.example.dto.MessageDto;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.exceptions.EntityNotFoundException;
+import org.example.exceptions.AbstractException;
 import org.example.exceptions.FileNotDownloadedException;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -11,7 +11,7 @@ import java.io.File;
 
 public abstract class FileSendStep extends ConversationStep {
     @Override
-    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) throws FileNotDownloadedException, EntityNotFoundException {
+    public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) throws AbstractException {
         ResultDto result = isValidFile(messageDto, sender);
         if (!result.isDone()) {
             return handleIllegalUserAction(messageDto, sender, result.getMessage());

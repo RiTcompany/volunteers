@@ -9,8 +9,8 @@ import org.example.entities.DocumentToCheck;
 import org.example.enums.EDocument;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
+import org.example.services.BotUserService;
 import org.example.services.DocumentService;
-import org.example.services.UserService;
 import org.example.steps.InputStep;
 import org.example.utils.MessageUtil;
 import org.example.utils.StepUtil;
@@ -20,7 +20,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @RequiredArgsConstructor
 public abstract class FailDocumentMessageInputStep extends InputStep {
     private final DocumentService documentService;
-    private final UserService userService;
+    private final BotUserService botUserService;
 
     protected abstract String getPrepareMessageText();
 
@@ -40,7 +40,7 @@ public abstract class FailDocumentMessageInputStep extends InputStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
-        long moderatorId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR).getId();
+        long moderatorId = botUserService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_MODERATOR).getId();
         DocumentToCheck documentToCheck = documentService.saveFailResponse(
                 moderatorId, data, getDocumentType()
         );

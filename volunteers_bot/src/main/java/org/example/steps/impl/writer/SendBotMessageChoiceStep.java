@@ -13,7 +13,8 @@ import org.example.enums.EYesNo;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.mappers.KeyboardMapper;
 import org.example.services.BotMessageService;
-import org.example.services.UserService;
+import org.example.services.BotUserService;
+import org.example.services.GroupChatService;
 import org.example.services.VolunteerService;
 import org.example.steps.ChoiceStep;
 import org.example.utils.ButtonUtil;
@@ -32,9 +33,12 @@ import java.util.List;
 public class SendBotMessageChoiceStep extends ChoiceStep {
     private final VolunteerService volunteerService;
     private final BotMessageService botMessageService;
-    private final UserService userService;
+    private final BotUserService botUserService;
     private final KeyboardMapper keyboardMapper;
-    private static final String PREPARE_MESSAGE_TEXT = "Вы хотите отправить данное сообщение?";
+    private final GroupChatService groupChatService;
+    private static final String PREPARE_MESSAGE_TEXT = "Ваше сообщение:";
+    private static final String CHOICE_MESSAGE_TEXT = "Вы хотите отправить данное сообщение?";
+
 
     @Override
     protected ResultDto isValidData(MessageDto messageDto) throws EntityNotFoundException {
@@ -43,10 +47,11 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
 
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
+        StepUtil.sendPrepareMessageOnlyText(chatHash, PREPARE_MESSAGE_TEXT, sender);
         sendMessageToCheck(chatHash, sender);
         StepUtil.sendPrepareMessageWithInlineKeyBoard(
                 chatHash,
-                PREPARE_MESSAGE_TEXT,
+                CHOICE_MESSAGE_TEXT,
                 keyboardMapper.keyboardDto(chatHash, ButtonUtil.yesNoButtonList()),
                 sender
         );
@@ -54,7 +59,7 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
-        long userId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_WRITER).getId();
+        long userId = botUserService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_WRITER).getId();
         BotMessage botMessage = botMessageService.getProcessedMessageByUserId(userId);
 
         if (EYesNo.NO.toString().equals(data)) {
@@ -68,7 +73,7 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
     }
 
     private void sendMessageToCheck(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
-        long userId = userService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_WRITER).getId();
+        long userId = botUserService.getByChatIdAndRole(chatHash.getId(), ERole.ROLE_WRITER).getId();
         BotMessage botMessage = botMessageService.getProcessedMessageByUserId(userId);
 
         StepUtil.sendPrepareMessageWithInlineKeyBoard(
@@ -94,7 +99,14 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
                 .setText(botMessage.getText())
                 .setInlineKeyBoard(keyboardMapper.keyboardDto(chatHash, collectButtonList(botMessage)));
 
-        volunteerService.getVolunteerList().forEach(volunteer -> {
+//        sendMessageToGroups(messageBuilder, sender);
+        sendMessageToVolunteers(messageBuilder, sender);
+
+        botMessageService.saveSentStatus(botMessage);
+    }
+
+    private void sendMessageToVolunteers(MessageBuilder messageBuilder, AbsSender sender) {
+        volunteerService.findAll().forEach(volunteer -> {
                     Message message = MessageUtil.sendMessage(
                             messageBuilder.sendMessage(volunteer.getChatId()), sender
                     );
@@ -104,7 +116,11 @@ public class SendBotMessageChoiceStep extends ChoiceStep {
                 }
         );
         volunteerService.flush();
+    }
 
-        botMessageService.saveSentStatus(botMessage);
+    private void sendMessageToGroups(MessageBuilder messageBuilder, AbsSender sender) {
+        groupChatService.findAll().forEach(groupChat -> MessageUtil.sendMessage(
+                messageBuilder.sendMessage(groupChat.getChatId()), sender
+        ));
     }
 }

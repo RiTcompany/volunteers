@@ -16,7 +16,7 @@ public interface VolunteerService {
 
     void create(long chatId, String tgUserName);
 
-    List<Volunteer> getVolunteerList();
+    List<Volunteer> findAll();
 
     void saveBirthday(long chatId, Date birthday) throws EntityNotFoundException;
 

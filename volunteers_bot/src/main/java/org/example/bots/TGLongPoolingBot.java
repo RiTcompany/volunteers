@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.AbstractException;
 import org.example.services.UpdateHandleService;
+import org.example.utils.LogUtil;
 import org.example.utils.MessageUtil;
 import org.example.utils.UpdateUtil;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
@@ -34,32 +34,9 @@ public final class TGLongPoolingBot extends TelegramLongPollingBot {
             } else if (update.hasMyChatMember()) {
                 updateHandleService.handleMyChatMember(update);
             }
-
-            log.info(getLog(update));
         } catch (AbstractException e) {
-            log.error(getExceptionLog(update, e.getMessage()));
+            log.error(LogUtil.getExceptionLog(update, e.getMessage()));
             MessageUtil.sendMessageText(UpdateUtil.getChatId(update), e.getUserMessage(), this);
         }
-    }
-
-    private String getLog(Update update) {
-        Chat chat = UpdateUtil.getChat(update);
-        return "Chat ID - %d  Username - %s   Input - %s"
-                .formatted(
-                        chat.getId(),
-                        chat.getUserName(),
-                        UpdateUtil.getUserInputText(update)
-                );
-    }
-
-    private String getExceptionLog(Update update, String exceptionMessage) {
-        Chat chat = UpdateUtil.getChat(update);
-        return "Chat ID - %d  Username - %s   Input - %s    Exception - %s"
-                .formatted(
-                        chat.getId(),
-                        chat.getUserName(),
-                        UpdateUtil.getUserInputText(update),
-                        exceptionMessage
-                );
     }
 }

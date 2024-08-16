@@ -6,7 +6,7 @@ import org.example.entities.ChatHash;
 import org.example.enums.ERole;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.services.BotMessageService;
-import org.example.services.UserService;
+import org.example.services.BotUserService;
 import org.example.steps.InputStep;
 import org.example.utils.MessageUtil;
 import org.example.utils.ValidUtil;
@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @RequiredArgsConstructor
 public class ButtonInputStep extends InputStep {
     private final BotMessageService botMessageService;
-    private final UserService userService;
+    private final BotUserService botUserService;
     private static final String PREPARE_MESSAGE_TEXT = """
             1) Введите текст для кнопки
             2) Введите перенос на другую строку
@@ -56,7 +56,7 @@ public class ButtonInputStep extends InputStep {
     }
 
     private void createButton(long chatId, String data) throws EntityNotFoundException {
-        long userId = userService.getByChatIdAndRole(chatId, ERole.ROLE_WRITER).getId();
+        long userId = botUserService.getByChatIdAndRole(chatId, ERole.ROLE_WRITER).getId();
 
         String[] dataPartArray = data.split("\n");
         String buttonName = dataPartArray[0];

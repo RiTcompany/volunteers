@@ -6,10 +6,11 @@ import org.example.entities.DocumentToCheck;
 import org.example.enums.EConversation;
 import org.example.enums.EDocument;
 import org.example.enums.ERole;
+import org.example.exceptions.AbstractException;
 import org.example.exceptions.EntityNotFoundException;
+import org.example.services.BotUserService;
 import org.example.services.ConversationService;
 import org.example.services.DocumentService;
-import org.example.services.UserService;
 import org.example.utils.MessageUtil;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -19,19 +20,19 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Slf4j
 public abstract class CheckDocumentCommand extends BotCommand {
     private final ConversationService conversationService;
-    private final UserService userService;
+    private final BotUserService botUserService;
     private final DocumentService documentService;
 
     public CheckDocumentCommand(
             String commandModifier,
             String commandDescription,
             ConversationService conversationService,
-            UserService userService,
+            BotUserService botUserService,
             DocumentService documentService
     ) {
         super(commandModifier, commandDescription);
         this.conversationService = conversationService;
-        this.userService = userService;
+        this.botUserService = botUserService;
         this.documentService = documentService;
     }
 
@@ -44,10 +45,10 @@ public abstract class CheckDocumentCommand extends BotCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         try {
-            BotUser botUser = userService.getByChatIdAndRole(chat.getId(), ERole.ROLE_MODERATOR);
             DocumentToCheck documentToCheck = documentService.getToCheck(getDocumentType());
 
             if (documentToCheck != null) {
+                BotUser botUser = botUserService.getByChatIdAndRole(chat.getId(), ERole.ROLE_MODERATOR);
                 documentService.setModerator(documentToCheck, botUser.getId());
                 conversationService.startConversation(chat.getId(), getConversationType(), absSender);
             } else {
@@ -56,6 +57,8 @@ public abstract class CheckDocumentCommand extends BotCommand {
         } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
             MessageUtil.sendMessageText(chat.getId(), "Недостаточно прав", absSender);
+        } catch (AbstractException e) {
+            throw new RuntimeException(e);
         }
     }
 }

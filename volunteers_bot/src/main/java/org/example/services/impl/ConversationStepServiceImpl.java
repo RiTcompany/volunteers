@@ -8,10 +8,8 @@ import org.example.entities.ChatHash;
 import org.example.enums.EConversation;
 import org.example.enums.EConversationStep;
 import org.example.exceptions.AbstractException;
-import org.example.exceptions.EntityNotFoundException;
 import org.example.services.ConversationStepService;
 import org.example.steps.ConversationStep;
-import org.example.utils.MessageUtil;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -30,18 +28,17 @@ public class ConversationStepServiceImpl implements ConversationStepService {
     }
 
     @Override
-    public void prepareStep(ChatHash chatHash, AbsSender sender) {
+    public void prepareStep(ChatHash chatHash, AbsSender sender) throws AbstractException {
         ConversationStep step = getConversationStep(chatHash);
-        if (step != null) {
-            prepareStep(step, chatHash, sender);
-        }
+        step.prepare(chatHash, sender);
     }
 
     @Override
-    public EConversationStep executeStep(ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
+    public EConversationStep executeStep(
+            ChatHash chatHash, MessageDto messageDto, AbsSender sender
+    ) throws AbstractException {
         ConversationStep step = getConversationStep(chatHash);
-        int stepIndex = executeStep(step, chatHash, messageDto, sender);
-
+        int stepIndex = step.execute(chatHash, messageDto, sender);
         if (stepIndex == -1) {
             return chatHash.getEConversationStep();
         }
@@ -54,28 +51,8 @@ public class ConversationStepServiceImpl implements ConversationStepService {
         return conversationMap.get(eConversation).getFinishMessageText();
     }
 
-    private void prepareStep(ConversationStep step, ChatHash chatHash, AbsSender sender) {
-        try {
-            step.prepare(chatHash, sender);
-        } catch (EntityNotFoundException e) {
-            log.error(e.getMessage());
-            MessageUtil.sendMessageText(chatHash.getId(), e.getUserMessage(), sender);
-        }
-    }
-
     private ConversationStep getConversationStep(ChatHash chatHash) {
         return conversationStepMap.get(chatHash.getEConversationStep());
-    }
-
-    private int executeStep(ConversationStep step, ChatHash chatHash, MessageDto messageDto, AbsSender sender) {
-        try {
-            return step.execute(chatHash, messageDto, sender);
-        } catch (AbstractException e) {
-            log.error(e.getMessage());
-            MessageUtil.sendMessageText(chatHash.getId(), e.getUserMessage(), sender);
-        }
-
-        return -1;
     }
 
     private EConversationStep getNextEStep(ChatHash chatHash, int stepIndex) {
