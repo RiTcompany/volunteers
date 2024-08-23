@@ -3,6 +3,7 @@ package org.example.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entities.Volunteer;
+import org.example.enums.EAnorak;
 import org.example.enums.EClothingSize;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
@@ -130,9 +131,37 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    public void saveVolunteerId(long chatId, String data) throws EntityNotFoundException {
+    public void saveVolunteerId(long chatId, String volunteerId) throws EntityNotFoundException {
         Volunteer volunteer = getByChatId(chatId);
-        volunteer.setVolunteerId(data);
+        volunteer.setVolunteerId(volunteerId);
+        volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void saveAnorakExists(long chatId, Boolean hasAnorak) throws EntityNotFoundException {
+        Volunteer volunteer = getByChatId(chatId);
+        volunteer.setHasAnorak(hasAnorak);
+        volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void saveAnorakType(long chatId, EAnorak anorakType) throws EntityNotFoundException {
+        Volunteer volunteer = getByChatId(chatId);
+        volunteer.setAnorakType(anorakType);
+        volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void saveSweatshirtExists(long chatId, Boolean hasSweatshirt) throws EntityNotFoundException {
+        Volunteer volunteer = getByChatId(chatId);
+        volunteer.setHasSweatshirt(hasSweatshirt);
+        volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void saveTShirtExists(long chatId, Boolean hasTShirt) throws EntityNotFoundException {
+        Volunteer volunteer = getByChatId(chatId);
+        volunteer.setHasTShirt(hasTShirt);
         volunteerRepository.saveAndFlush(volunteer);
     }
 
