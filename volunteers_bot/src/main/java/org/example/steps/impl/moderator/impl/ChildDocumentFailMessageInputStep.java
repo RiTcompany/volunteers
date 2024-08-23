@@ -9,7 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChildDocumentFailMessageInputStep extends FailDocumentMessageInputStep {
     private static final String PREPARE_MESSAGE_TEXT = "Укажите <b>комментарий</b> почему вы отклонили данный документ. Это сообщение будет отправлено кандидату";
-    private static final String FAIL_MESSAGE_TEXT = "Модератор не принял ваш документ. Комментарий:\n";
+    private static final String FAIL_MESSAGE_TEXT = """
+            Модератор не принял ваш документ.
+            Пожалуйста прочтите комментарий, учтите все поправки и введите команду /change_child_document
+            Комментарий:
+            """;
     private static final EDocument DOCUMENT_TYPE = EDocument.CHILD_DOCUMENT;
 
     public ChildDocumentFailMessageInputStep(

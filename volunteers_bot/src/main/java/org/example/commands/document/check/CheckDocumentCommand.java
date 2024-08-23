@@ -1,4 +1,4 @@
-package org.example.commands.check_document;
+package org.example.commands.document.check;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.entities.BotUser;
@@ -58,7 +58,8 @@ public abstract class CheckDocumentCommand extends BotCommand {
             log.error(e.getMessage());
             MessageUtil.sendMessageText(chat.getId(), "Недостаточно прав", absSender);
         } catch (AbstractException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
+            MessageUtil.sendMessageText(chat.getId(), "Что-то пошло не так, обратитесь в поддержку", absSender);
         }
     }
 }

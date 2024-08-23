@@ -1,5 +1,6 @@
-package org.example.commands.check_document;
+package org.example.commands.document.check.impl;
 
+import org.example.commands.document.check.CheckDocumentCommand;
 import org.example.enums.EConversation;
 import org.example.enums.EDocument;
 import org.example.services.BotUserService;
@@ -8,14 +9,14 @@ import org.example.services.DocumentService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CheckChildDocumentCommand extends CheckDocumentCommand {
-    private static final String COMMAND_MODIFIER = "check_child_document";
-    private static final String COMMAND_DESCRIPTION = "Check child's document command";
-    private static final String NO_DOCS_MESSAGE_TEXT = "Сейчас нет документов для проверки";
-    private static final EDocument DOCUMENT_TYPE = EDocument.CHILD_DOCUMENT;
-    private static final EConversation CONVERSATION_TYPE = EConversation.CHECK_CHILD_DOCUMENT;
+public class CheckVolunteerPhotoCommand extends CheckDocumentCommand {
+    private static final String COMMAND_MODIFIER = "check_volunteer_photo";
+    private static final String COMMAND_DESCRIPTION = "Check volunteer's photo command";
+    private static final String NO_DOCS_MESSAGE_TEXT = "Сейчас нет фото для проверки";
+    private static final EDocument DOCUMENT_TYPE = EDocument.VOLUNTEER_PHOTO;
+    private static final EConversation CONVERSATION_TYPE = EConversation.CHECK_VOLUNTEER_PHOTO;
 
-    public CheckChildDocumentCommand(
+    public CheckVolunteerPhotoCommand(
             ConversationService conversationService,
             BotUserService botUserService,
             DocumentService documentService

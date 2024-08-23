@@ -11,12 +11,11 @@ import java.util.Map;
 
 @Component
 public class ParentRegistrationConversation extends AConversation {
+    private static final EConversationStep START_STEP = EConversationStep.PARENT_FULL_NAME_INPUT;
+    private static final String FINISH_MESSAGE = "Благодарим вас за регистрацию!";
+
     public ParentRegistrationConversation() {
-        super(
-                completeStepGraph(),
-                EConversationStep.PARENT_FULL_NAME_INPUT,
-                "Благодарим вас за регистрацию!"
-        );
+        super(completeStepGraph(), START_STEP, FINISH_MESSAGE);
     }
 
     private static Map<EConversationStep, List<EConversationStep>> completeStepGraph() {

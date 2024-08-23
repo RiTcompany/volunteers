@@ -11,12 +11,11 @@ import java.util.Map;
 
 @Component
 public class SendBotMessageConversation extends AConversation {
+    private static final EConversationStep START_STEP = EConversationStep.BOT_MESSAGE_TEXT_INPUT;
+    private static final String FINISH_MESSAGE = "Проверка документа завершена";
+
     public SendBotMessageConversation() {
-        super(
-                completeStepGraph(),
-                EConversationStep.BOT_MESSAGE_TEXT_INPUT,
-                "Вы успешно отправили сообщение"
-        );
+        super(completeStepGraph(), START_STEP, FINISH_MESSAGE);
     }
 
     private static Map<EConversationStep, List<EConversationStep>> completeStepGraph() {
