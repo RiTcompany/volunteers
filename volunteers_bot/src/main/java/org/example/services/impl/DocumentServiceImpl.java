@@ -62,4 +62,9 @@ public class DocumentServiceImpl implements DocumentService {
         documentToCheck.setStatus(ECheckStatus.CHECKING);
         documentRepository.saveAndFlush(documentToCheck);
     }
+
+    @Override
+    public boolean mayChangeDocument(long chatId, EDocument eDocument) {
+        return documentRepository.isNotExistByChatIdAndDocumentTypeAndNotFinishedStatus(chatId, eDocument);
+    }
 }

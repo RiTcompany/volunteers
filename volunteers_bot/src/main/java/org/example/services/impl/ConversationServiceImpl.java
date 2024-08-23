@@ -85,7 +85,10 @@ public class ConversationServiceImpl implements ConversationService {
         String finishMessageText = conversationStepService.getFinishMessageText(
                 chatHash.getEConversation()
         );
-        MessageUtil.sendMessageText(chatHash.getId(), finishMessageText, sender);
+        if (finishMessageText != null) {
+            MessageUtil.sendMessageText(chatHash.getId(), finishMessageText, sender);
+        }
+
         chatHashService.delete(chatHash);
     }
 

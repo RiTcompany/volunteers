@@ -29,7 +29,7 @@ public class ChildDocumentSendStep extends FileSendStep {
                 3) Отсканируйте заполненный документ.
                 4) Отправьте отсканированный документ в ответном сообщении
                 P.S. Документ должен быть в формате .doc или .pdf""";
-    private static final String ANSWER_MESSAGE_TEXT = "Ваш документ был отправлен на проверку. Ожидайте ответа. А пока можете продолжить регистрацию";
+    private static final String ANSWER_MESSAGE_TEXT = "Ваш документ был отправлен на проверку. Ожидайте ответа.";
     private static final File FILE = new File("volunteers_bot/src/main/resources/static/Согласие.pdf");
     private static final long MAX_DOCUMENT_SIZE_KB = getMaxDocumentSize();
 

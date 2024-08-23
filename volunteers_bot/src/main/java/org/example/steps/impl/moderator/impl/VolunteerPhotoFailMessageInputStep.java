@@ -9,7 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class VolunteerPhotoFailMessageInputStep extends FailDocumentMessageInputStep {
     private static final String PREPARE_MESSAGE_TEXT = "Укажите <b>комментарий</b> почему вы отклонили данное фото. Это сообщение будет отправлено кандидату";
-    private static final String FAIL_MESSAGE_TEXT = "Модератор не принял ваше фото. Комментарий:\n";
+    private static final String FAIL_MESSAGE_TEXT = """
+            Модератор не принял ваше фото.
+            Пожалуйста прочтите комментарий, учтите все поправки и введите команду /change_volunteer_photo
+            Комментарий:
+            """;
     private static final EDocument DOCUMENT_TYPE = EDocument.VOLUNTEER_PHOTO;
 
     public VolunteerPhotoFailMessageInputStep(

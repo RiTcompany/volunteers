@@ -15,4 +15,22 @@ public interface DocumentRepository extends JpaRepository<DocumentToCheck, Long>
     Optional<DocumentToCheck> findFirstByStatusAndModeratorIdAndDocumentType(
             ECheckStatus status, Long moderatorId, EDocument eDocument
     );
+
+    default boolean isNotExistByChatIdAndDocumentTypeAndNotFinishedStatus(
+            Long chatId, EDocument documentType
+    ) {
+        boolean noNewDocument = findFirstByChatIdAndDocumentTypeAndStatus(
+                chatId, documentType, ECheckStatus.NEW
+        ).isEmpty();
+
+        boolean noCheckingDocument = findFirstByChatIdAndDocumentTypeAndStatus(
+                chatId, documentType, ECheckStatus.CHECKING
+        ).isEmpty();
+
+        return noNewDocument && noCheckingDocument;
+    }
+
+    Optional<DocumentToCheck> findFirstByChatIdAndDocumentTypeAndStatus(
+            long chatId, EDocument eDocument, ECheckStatus status
+    );
 }

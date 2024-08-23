@@ -1,6 +1,8 @@
 package org.example.configs;
 
 import org.example.conversation.AConversation;
+import org.example.conversation.impl.ChangeChildDocumentConversation;
+import org.example.conversation.impl.ChangeVolunteerPhotoConversation;
 import org.example.conversation.impl.CheckChildDocumentConversation;
 import org.example.conversation.impl.CheckVolunteerPhotoConversation;
 import org.example.conversation.impl.ParentRegistrationConversation;
@@ -60,6 +62,8 @@ public class ConversationConfig {
             @Autowired ParentRegistrationConversation parentRegistrationConversation,
             @Autowired CheckChildDocumentConversation checkChildDocumentConversation,
             @Autowired CheckVolunteerPhotoConversation checkVolunteerPhotoConversation,
+            @Autowired ChangeChildDocumentConversation changeChildDocumentConversation,
+            @Autowired ChangeVolunteerPhotoConversation changeVolunteerPhotoConversation,
             @Autowired SendBotMessageConversation sendBotMessageConversation
     ) {
         Map<EConversation, AConversation> conversationMap = new HashMap<>();
@@ -67,6 +71,8 @@ public class ConversationConfig {
         conversationMap.put(EConversation.PARENT_REGISTER, parentRegistrationConversation);
         conversationMap.put(EConversation.CHECK_CHILD_DOCUMENT, checkChildDocumentConversation);
         conversationMap.put(EConversation.CHECK_VOLUNTEER_PHOTO, checkVolunteerPhotoConversation);
+        conversationMap.put(EConversation.CHANGE_CHILD_DOCUMENT, changeChildDocumentConversation);
+        conversationMap.put(EConversation.CHANGE_VOLUNTEER_PHOTO, changeVolunteerPhotoConversation);
         conversationMap.put(EConversation.SEND_BOT_MESSAGE, sendBotMessageConversation);
         return conversationMap;
     }

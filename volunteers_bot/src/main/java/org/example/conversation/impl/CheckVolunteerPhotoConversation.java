@@ -11,12 +11,11 @@ import java.util.Map;
 
 @Component
 public class CheckVolunteerPhotoConversation extends AConversation {
+    private static final EConversationStep START_STEP = EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE;
+    private static final String FINISH_MESSAGE = "Проверка фотографии завершена";
+
     public CheckVolunteerPhotoConversation() {
-        super(
-                completeStepGraph(),
-                EConversationStep.VOLUNTEER_PHOTO_CHECK_CHOICE,
-                "Проверка фотографии завершена"
-        );
+        super(completeStepGraph(), START_STEP, FINISH_MESSAGE);
     }
 
     private static Map<EConversationStep, List<EConversationStep>> completeStepGraph() {

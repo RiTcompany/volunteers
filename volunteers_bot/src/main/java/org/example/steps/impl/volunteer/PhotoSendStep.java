@@ -23,7 +23,7 @@ import java.util.List;
 public class PhotoSendStep extends FileSendStep {
     private final DocumentService documentService;
     private static final String PREPARE_MESSAGE_TEXT = "Отправьте ваше <b>фото</b> форматом 3x4 на нейтральном фоне:";
-    private static final String ANSWER_MESSAGE_TEXT = "Ваше фото было отправлено на модерацию. Ожидайте ответа. А пока давайте продолжим регистрацию.";
+    private static final String ANSWER_MESSAGE_TEXT = "Ваше фото было отправлено на модерацию. Ожидайте ответа.";
     private static final int MAX_PHOTO_SIZE_MB = 10;
 
     @Override
