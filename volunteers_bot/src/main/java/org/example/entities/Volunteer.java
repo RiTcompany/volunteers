@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.enums.EAnorak;
 import org.example.enums.EClothingSize;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
@@ -55,6 +56,19 @@ public class Volunteer {
     @Column(name = "clothing_size")
     @Enumerated(EnumType.STRING)
     private EClothingSize clothingSize;
+
+    @Column(name = "has_anorak")
+    private Boolean hasAnorak;
+
+    @Column(name = "anorak_type")
+    @Enumerated(EnumType.STRING)
+    private EAnorak anorakType;
+
+    @Column(name = "has_sweatshirt")
+    private Boolean hasSweatshirt;
+
+    @Column(name = "has_t_shirt")
+    private Boolean hasTShirt;
 
     private String reason;
 

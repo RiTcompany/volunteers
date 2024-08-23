@@ -20,6 +20,8 @@ import org.example.steps.impl.parent.ParentBirthdayInputStep;
 import org.example.steps.impl.parent.ParentFullNameInputStep;
 import org.example.steps.impl.parent.ParentRegisterPlaceInputStep;
 import org.example.steps.impl.volunteer.AgreementChoiceStep;
+import org.example.steps.impl.volunteer.AnorakExistChoiceStep;
+import org.example.steps.impl.volunteer.AnorakTypeChoiceStep;
 import org.example.steps.impl.volunteer.BirthdayInputStep;
 import org.example.steps.impl.volunteer.ChildDocumentSendStep;
 import org.example.steps.impl.volunteer.CityChoiceStep;
@@ -35,6 +37,8 @@ import org.example.steps.impl.volunteer.GenderChoiceStep;
 import org.example.steps.impl.volunteer.PhoneInputStep;
 import org.example.steps.impl.volunteer.PhotoSendStep;
 import org.example.steps.impl.volunteer.ReasonInputStep;
+import org.example.steps.impl.volunteer.SweatshirtExistChoiceStep;
+import org.example.steps.impl.volunteer.TShirtExistChoiceStep;
 import org.example.steps.impl.volunteer.VkInputStep;
 import org.example.steps.impl.volunteer.VolunteerIdInputStep;
 import org.example.steps.impl.writer.ButtonAddChoiceStep;
@@ -82,6 +86,10 @@ public class ConversationConfig {
             @Autowired AgreementChoiceStep agreementChoiceStep,
             @Autowired VkInputStep vkInputStep,
             @Autowired ClothingSizeChoiceStep clothingSizeChoiceStep,
+            @Autowired AnorakExistChoiceStep anorakExistChoiceStep,
+            @Autowired AnorakTypeChoiceStep anorakTypeChoiceStep,
+            @Autowired SweatshirtExistChoiceStep sweatshirtExistChoiceStep,
+            @Autowired TShirtExistChoiceStep tShirtExistChoiceStep,
             @Autowired ReasonInputStep reasonInputStep,
             @Autowired ExperienceInputStep experienceInputStep,
             @Autowired PhotoSendStep photoSendStep,
@@ -116,6 +124,10 @@ public class ConversationConfig {
             put(EConversationStep.AGREEMENT_CHOICE, agreementChoiceStep);
             put(EConversationStep.VK_INPUT, vkInputStep);
             put(EConversationStep.CLOTHING_SIZE_CHOICE, clothingSizeChoiceStep);
+            put(EConversationStep.ANORAK_EXIST_CHOICE, anorakExistChoiceStep);
+            put(EConversationStep.ANORAK_TYPE_CHOICE, anorakTypeChoiceStep);
+            put(EConversationStep.SWEATSHIRT_EXIST_CHOICE, sweatshirtExistChoiceStep);
+            put(EConversationStep.T_SHIRT_EXIST_CHOICE, tShirtExistChoiceStep);
             put(EConversationStep.REASON_INPUT, reasonInputStep);
             put(EConversationStep.EXPERIENCE_INPUT, experienceInputStep);
             put(EConversationStep.PHOTO_SEND, photoSendStep);

@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.entities.Volunteer;
+import org.example.enums.EAnorak;
 import org.example.enums.EClothingSize;
 import org.example.enums.EEducationStatus;
 import org.example.enums.EGender;
@@ -42,7 +43,15 @@ public interface VolunteerService {
 
     void saveVk(long chatId, String vk) throws EntityNotFoundException;
 
-    void saveVolunteerId(long chatId, String data) throws EntityNotFoundException;
+    void saveVolunteerId(long chatId, String volunteerId) throws EntityNotFoundException;
+
+    void saveAnorakExists(long chatId, Boolean hasAnorak) throws EntityNotFoundException;
+
+    void saveAnorakType(long chatId, EAnorak anorakType) throws EntityNotFoundException;
+
+    void saveSweatshirtExists(long chatId, Boolean hasSweatshirt) throws EntityNotFoundException;
+
+    void saveTShirtExists(long chatId, Boolean hasTShirt) throws EntityNotFoundException;
 
     void updateTgLink(Volunteer volunteer, String tgUserName);
 

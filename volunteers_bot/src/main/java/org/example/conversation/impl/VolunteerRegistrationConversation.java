@@ -61,6 +61,19 @@ public class VolunteerRegistrationConversation extends AConversation {
                 add(EConversationStep.CLOTHING_SIZE_CHOICE);
             }});
             put(EConversationStep.CLOTHING_SIZE_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.ANORAK_EXIST_CHOICE);
+            }});
+            put(EConversationStep.ANORAK_EXIST_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.ANORAK_TYPE_CHOICE);
+                add(EConversationStep.SWEATSHIRT_EXIST_CHOICE);
+            }});
+            put(EConversationStep.ANORAK_TYPE_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.SWEATSHIRT_EXIST_CHOICE);
+            }});
+            put(EConversationStep.SWEATSHIRT_EXIST_CHOICE, new ArrayList<>() {{
+                add(EConversationStep.T_SHIRT_EXIST_CHOICE);
+            }});
+            put(EConversationStep.T_SHIRT_EXIST_CHOICE, new ArrayList<>() {{
                 add(EConversationStep.REASON_INPUT);
             }});
             put(EConversationStep.REASON_INPUT, new ArrayList<>() {{
