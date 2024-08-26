@@ -9,7 +9,8 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
 public class InfoCommand extends BotCommand {
-    private final String MESSAGE = "Данный бот позволяет пройти регистрацию для участия в волонтёрских событиях Санкт-Петербурга";
+    private final String MESSAGE = """
+            🕊 Бот Санкт-Петербургского регионального отделения ВОД «Волонтёры Победы»""";
 
     public InfoCommand() {
         super("info", "Information command");

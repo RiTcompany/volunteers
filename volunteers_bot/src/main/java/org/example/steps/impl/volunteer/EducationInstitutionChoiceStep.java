@@ -37,21 +37,13 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
     @Override
     public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
         StepUtil.sendPrepareMessageWithPageableKeyBoard(
-                chatHash,
-                PREPARE_MESSAGE_TEXT,
-                keyboardMapper.keyboardDto(chatHash, getButtonList(
-                        educationInstitutionRepository.findAllByType(getType(chatHash.getId()))
-                )),
-                sender
+                chatHash, PREPARE_MESSAGE_TEXT, keyboardDto(chatHash), sender
         );
     }
 
     @Override
     public int execute(ChatHash chatHash, MessageDto messageDto, AbsSender sender) throws EntityNotFoundException {
-        KeyboardDto keyboardDto = keyboardMapper.keyboardDto(chatHash, getButtonList(
-                educationInstitutionRepository.findAllByType(getType(chatHash.getId()))
-        ));
-
+        KeyboardDto keyboardDto = keyboardDto(chatHash);
         if (StepUtil.isMovePageAction(chatHash, messageDto, keyboardDto, sender)) {
             return -1;
         }
@@ -76,7 +68,12 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
         }
 
         volunteerService.saveEducationInstitution(chatHash.getId(), data);
-        return 1;
+
+        if (hasSpeciality(chatHash.getId())) {
+            return 1;
+        }
+
+        return 2;
     }
 
     private EEducationInstitution getType(long chatId) throws EntityNotFoundException {
@@ -86,6 +83,12 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
 
     private String getAnswerMessageText(String answer) {
         return "Ваше учебное заведение: <b>".concat(answer).concat("</b>");
+    }
+
+    private KeyboardDto keyboardDto(ChatHash chatHash) {
+        return keyboardMapper.keyboardDto(chatHash, getButtonList(
+                educationInstitutionRepository.findAllByType(getType(chatHash.getId()))
+        ));
     }
 
     private List<ButtonDto> getButtonList(List<EducationInstitution> educationInstitutionList) {
@@ -104,5 +107,12 @@ public class EducationInstitutionChoiceStep extends ChoiceStep {
         boolean isOtherChoice = ButtonUtil.OTHER_CHOICE.equals(data);
         boolean isCorrectChoice = educationInstitutionRepository.existsByShortNameAndType(data, getType(chatId));
         return isCallback && (isOtherChoice || isCorrectChoice);
+    }
+
+    private boolean hasSpeciality(long chatId) {
+        EEducationStatus educationStatus = volunteerService.getByChatId(chatId).getEducationStatus();
+        boolean finishSecondaryProfessional = EEducationStatus.FINISHED_SECONDARY_PROFESSIONAL.equals(educationStatus);
+        boolean finishUniversity = EEducationStatus.FINISHED_UNIVERSITY.equals(educationStatus);
+        return finishSecondaryProfessional || finishUniversity;
     }
 }

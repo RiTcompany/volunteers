@@ -27,12 +27,7 @@ public class ExperienceInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String data) {
-        if (ValidUtil.isLongDescriptionText(data)) {
-            String exceptionMessage = ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
-            return new ResultDto(false, exceptionMessage);
-        }
-
-        return new ResultDto(true);
+        return ValidUtil.isValidShortString(data);
     }
 
     @Override

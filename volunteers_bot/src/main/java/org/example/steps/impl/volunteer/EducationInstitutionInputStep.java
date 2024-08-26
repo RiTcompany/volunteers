@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
+import org.example.enums.EEducationStatus;
 import org.example.exceptions.EntityNotFoundException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
@@ -26,26 +27,29 @@ public class EducationInstitutionInputStep extends InputStep {
 
     @Override
     protected ResultDto isValidData(String educationInstitution) {
-        if (educationInstitution.isBlank()) {
-            return new ResultDto(false, "Вы ввели пустую строку. Введите название");
-        }
-
-        if (ValidUtil.isLongDescriptionText(educationInstitution)) {
-            String exceptionMessage = ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
-            return new ResultDto(false, exceptionMessage);
-        }
-
-        return new ResultDto(true);
+        return ValidUtil.isValidShortString(educationInstitution);
     }
 
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         volunteerService.saveEducationInstitution(chatHash.getId(), data);
         sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
-        return 0;
+
+        if (hasSpeciality(chatHash.getId())) {
+            return 0;
+        }
+
+        return 1;
     }
 
     private String getAnswerMessageText(String answer) {
         return "Ваше учебное заведение: <b>".concat(answer).concat("</b>");
+    }
+
+    private boolean hasSpeciality(long chatId) {
+        EEducationStatus educationStatus = volunteerService.getByChatId(chatId).getEducationStatus();
+        boolean finishSecondaryProfessional = EEducationStatus.FINISHED_SECONDARY_PROFESSIONAL.equals(educationStatus);
+        boolean finishUniversity = EEducationStatus.FINISHED_UNIVERSITY.equals(educationStatus);
+        return finishSecondaryProfessional || finishUniversity;
     }
 }

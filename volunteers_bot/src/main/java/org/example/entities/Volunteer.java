@@ -51,6 +51,9 @@ public class Volunteer {
     @Column(name = "educational_specialty")
     private String educationalSpecialty;
 
+    @Column(name = "spb_district")
+    private String spbDistrict;
+
     private String vk;
 
     @Column(name = "clothing_size")

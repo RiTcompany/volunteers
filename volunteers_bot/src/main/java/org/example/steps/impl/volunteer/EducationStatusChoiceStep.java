@@ -54,7 +54,7 @@ public class EducationStatusChoiceStep extends ChoiceStep {
     @Override
     protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
         EEducationStatus eEducationStatus = EEducationStatus.valueOf(data);
-        volunteerService.saveEducation(chatHash.getId(), eEducationStatus);
+        volunteerService.saveEducationStatus(chatHash.getId(), eEducationStatus);
         sendFinishMessage(chatHash, sender, getAnswerMessageText(eEducationStatus.getValue()));
         return 0;
     }
