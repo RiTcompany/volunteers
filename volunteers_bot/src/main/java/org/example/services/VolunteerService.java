@@ -27,7 +27,9 @@ public interface VolunteerService {
 
     void saveEducationInstitution(long chatId, String educationInstitution) throws EntityNotFoundException;
 
-    void saveEducation(long chatId, EEducationStatus eEducationStatus) throws EntityNotFoundException;
+    void saveEducationStatus(long chatId, EEducationStatus eEducationStatus) throws EntityNotFoundException;
+
+    void saveEducationSpeciality(long chatId, String educationSpeciality) throws EntityNotFoundException;
 
     void saveEmail(long chatId, String email) throws EntityNotFoundException;
 
@@ -52,6 +54,8 @@ public interface VolunteerService {
     void saveSweatshirtExists(long chatId, Boolean hasSweatshirt) throws EntityNotFoundException;
 
     void saveTShirtExists(long chatId, Boolean hasTShirt) throws EntityNotFoundException;
+
+    void saveSpbDistrict(long chatId, String spbDistrict) throws EntityNotFoundException;
 
     void updateTgLink(Volunteer volunteer, String tgUserName);
 

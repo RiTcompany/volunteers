@@ -75,9 +75,16 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    public void saveEducation(long chatId, EEducationStatus eEducationStatus) throws EntityNotFoundException {
+    public void saveEducationStatus(long chatId, EEducationStatus eEducationStatus) throws EntityNotFoundException {
         Volunteer volunteer = getByChatId(chatId);
         volunteer.setEducationStatus(eEducationStatus);
+        volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void saveEducationSpeciality(long chatId, String educationSpeciality) throws EntityNotFoundException {
+        Volunteer volunteer = getByChatId(chatId);
+        volunteer.setEducationalSpecialty(educationSpeciality);
         volunteerRepository.saveAndFlush(volunteer);
     }
 
@@ -162,6 +169,13 @@ public class VolunteerServiceImpl implements VolunteerService {
     public void saveTShirtExists(long chatId, Boolean hasTShirt) throws EntityNotFoundException {
         Volunteer volunteer = getByChatId(chatId);
         volunteer.setHasTShirt(hasTShirt);
+        volunteerRepository.saveAndFlush(volunteer);
+    }
+
+    @Override
+    public void saveSpbDistrict(long chatId, String spbDistrict) throws EntityNotFoundException {
+        Volunteer volunteer = getByChatId(chatId);
+        volunteer.setSpbDistrict(spbDistrict);
         volunteerRepository.saveAndFlush(volunteer);
     }
 

@@ -48,9 +48,17 @@ public class VolunteerRegistrationConversation extends AConversation {
             }});
             put(EConversationStep.EDUCATION_INSTITUTION_CHOICE, new ArrayList<>() {{
                 add(EConversationStep.EDUCATION_INSTITUTION_INPUT);
-                add(EConversationStep.AGREEMENT_CHOICE);
+                add(EConversationStep.EDUCATION_SPECIALITY_INPUT);
+                add(EConversationStep.SPB_DISTRICT_CHOICE);
             }});
             put(EConversationStep.EDUCATION_INSTITUTION_INPUT, new ArrayList<>() {{
+                add(EConversationStep.EDUCATION_SPECIALITY_INPUT);
+                add(EConversationStep.SPB_DISTRICT_CHOICE);
+            }});
+            put(EConversationStep.EDUCATION_SPECIALITY_INPUT, new ArrayList<>() {{
+                add(EConversationStep.SPB_DISTRICT_CHOICE);
+            }});
+            put(EConversationStep.SPB_DISTRICT_CHOICE, new ArrayList<>() {{
                 add(EConversationStep.AGREEMENT_CHOICE);
             }});
             put(EConversationStep.AGREEMENT_CHOICE, new ArrayList<>() {{

@@ -32,6 +32,7 @@ import org.example.steps.impl.volunteer.ClothingSizeChoiceStep;
 import org.example.steps.impl.volunteer.EducationInstitutionChoiceStep;
 import org.example.steps.impl.volunteer.EducationInstitutionInputStep;
 import org.example.steps.impl.volunteer.EducationStatusChoiceStep;
+import org.example.steps.impl.volunteer.EducationalSpecialtyInputStep;
 import org.example.steps.impl.volunteer.EmailInputStep;
 import org.example.steps.impl.volunteer.ExperienceInputStep;
 import org.example.steps.impl.volunteer.FullNameInputStep;
@@ -39,6 +40,7 @@ import org.example.steps.impl.volunteer.GenderChoiceStep;
 import org.example.steps.impl.volunteer.PhoneInputStep;
 import org.example.steps.impl.volunteer.PhotoSendStep;
 import org.example.steps.impl.volunteer.ReasonInputStep;
+import org.example.steps.impl.volunteer.SpbDistrictChoiceStep;
 import org.example.steps.impl.volunteer.SweatshirtExistChoiceStep;
 import org.example.steps.impl.volunteer.TShirtExistChoiceStep;
 import org.example.steps.impl.volunteer.VkInputStep;
@@ -89,6 +91,8 @@ public class ConversationConfig {
             @Autowired EducationStatusChoiceStep educationStatusChoiceStep,
             @Autowired EducationInstitutionChoiceStep educationInstitutionChoiceStep,
             @Autowired EducationInstitutionInputStep educationInstitutionInputStep,
+            @Autowired EducationalSpecialtyInputStep educationalSpecialtyInputStep,
+            @Autowired SpbDistrictChoiceStep spbDistrictChoiceStep,
             @Autowired AgreementChoiceStep agreementChoiceStep,
             @Autowired VkInputStep vkInputStep,
             @Autowired ClothingSizeChoiceStep clothingSizeChoiceStep,
@@ -127,6 +131,8 @@ public class ConversationConfig {
             put(EConversationStep.EDUCATION_STATUS_CHOICE, educationStatusChoiceStep);
             put(EConversationStep.EDUCATION_INSTITUTION_CHOICE, educationInstitutionChoiceStep);
             put(EConversationStep.EDUCATION_INSTITUTION_INPUT, educationInstitutionInputStep);
+            put(EConversationStep.EDUCATION_SPECIALITY_INPUT, educationalSpecialtyInputStep);
+            put(EConversationStep.SPB_DISTRICT_CHOICE, spbDistrictChoiceStep);
             put(EConversationStep.AGREEMENT_CHOICE, agreementChoiceStep);
             put(EConversationStep.VK_INPUT, vkInputStep);
             put(EConversationStep.CLOTHING_SIZE_CHOICE, clothingSizeChoiceStep);

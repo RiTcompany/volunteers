@@ -52,12 +52,21 @@ public class ValidUtil {
         return digitPattern.matcher(data).matches();
     }
 
-    public static boolean isLongDescriptionText(String text) {
-        return text.length() > MAX_DESCRIPTION_TEXT_LENGTH;
-    }
-
     public static boolean isLongRegisterPlace(String registerPlace) {
         return registerPlace.length() > MAX_REGISTER_PLACE_LENGTH;
+    }
+
+    public static ResultDto isValidShortString(String string) {
+        if (string.isBlank()) {
+            return new ResultDto(false, "Вы ввели пустую строку. Попробуйте снова");
+        }
+
+        if (string.length() > MAX_DESCRIPTION_TEXT_LENGTH) {
+            String exceptionMessage = ValidUtil.getLongMessageExceptionText(ValidUtil.MAX_DESCRIPTION_TEXT_LENGTH);
+            return new ResultDto(false, exceptionMessage);
+        }
+
+        return new ResultDto(true);
     }
 
     public static ResultDto isValidBirthday(String birthdayStr) {

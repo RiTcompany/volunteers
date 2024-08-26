@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.ResultDto;
 import org.example.entities.ChatHash;
-import org.example.exceptions.EntityNotFoundException;
+import org.example.exceptions.AbstractException;
 import org.example.services.VolunteerService;
 import org.example.steps.InputStep;
 import org.example.utils.StepUtil;
@@ -15,14 +15,20 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ReasonInputStep extends InputStep {
+public class EducationalSpecialtyInputStep extends InputStep {
     private final VolunteerService volunteerService;
-    private static final String PREPARE_MESSAGE_TEXT = "Расскажите, почему вы решили стать волонтёром";
-    private static final String ANSWER_MESSAGE_TEXT = "Спасибо за ваш ответ";
+    private static final String PREPARE_MESSAGE_TEXT = "Введите вашу специальность";
 
     @Override
-    public void prepare(ChatHash chatHash, AbsSender sender) throws EntityNotFoundException {
+    public void prepare(ChatHash chatHash, AbsSender sender) throws AbstractException {
         StepUtil.sendPrepareMessageOnlyText(chatHash, PREPARE_MESSAGE_TEXT, sender);
+    }
+
+    @Override
+    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws AbstractException {
+        volunteerService.saveEducationSpeciality(chatHash.getId(), data);
+        sendFinishMessage(chatHash, sender, getAnswerMessageText(data));
+        return 0;
     }
 
     @Override
@@ -30,10 +36,7 @@ public class ReasonInputStep extends InputStep {
         return ValidUtil.isValidShortString(data);
     }
 
-    @Override
-    protected int finishStep(ChatHash chatHash, AbsSender sender, String data) throws EntityNotFoundException {
-        volunteerService.saveReason(chatHash.getId(), data);
-        sendFinishMessage(chatHash, sender, ANSWER_MESSAGE_TEXT);
-        return 0;
+    private String getAnswerMessageText(String answer) {
+        return "Ваша специализация: <b>".concat(answer).concat("</b>");
     }
 }
