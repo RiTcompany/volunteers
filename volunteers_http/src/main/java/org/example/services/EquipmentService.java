@@ -1,6 +1,6 @@
 package org.example.services;
 
-import org.example.pojo.dto.EquipmentDto;
+import org.example.pojo.dto.table.EquipmentDto;
 import org.example.pojo.filters.EquipmentFilter;
 import org.springframework.stereotype.Service;
 

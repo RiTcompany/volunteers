@@ -1,12 +1,13 @@
 package org.example.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.pojo.dto.CenterDto;
-import org.example.pojo.dto.DocumentDto;
+import org.example.pojo.dto.table.DocumentDto;
+import org.example.pojo.dto.update.DocumentUpdateDto;
 import org.example.pojo.filters.DocumentFilter;
 import org.example.services.DocumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,5 +31,12 @@ public class DocumentController {
             @PathVariable Long districtTeamId, @RequestBody DocumentFilter filter
     ) {
         return ResponseEntity.ok(documentService.getDistrictTeamDocumentList(districtTeamId, filter));
+    }
+
+    @PatchMapping("/document/{id}")
+    public ResponseEntity<Long> updateDocument(
+            @PathVariable Long id, @RequestBody DocumentUpdateDto updateDto
+    ) {
+        return ResponseEntity.ok(documentService.updateDocument(id, updateDto));
     }
 }

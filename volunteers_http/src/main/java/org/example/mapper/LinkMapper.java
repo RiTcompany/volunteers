@@ -2,7 +2,7 @@ package org.example.mapper;
 
 import org.example.entities.Center;
 import org.example.entities.Event;
-import org.example.pojo.dto.LinkDto;
+import org.example.pojo.dto.table.LinkDto;
 import org.springframework.stereotype.Component;
 
 @Component

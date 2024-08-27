@@ -2,8 +2,10 @@ package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.entities.Document;
+import org.example.exceptions.DocumentNotFoundException;
 import org.example.mapper.DocumentMapper;
-import org.example.pojo.dto.DocumentDto;
+import org.example.pojo.dto.table.DocumentDto;
+import org.example.pojo.dto.update.DocumentUpdateDto;
 import org.example.pojo.filters.DocumentFilter;
 import org.example.repositories.DocumentRepository;
 import org.example.services.DocumentService;
@@ -21,7 +23,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentMapper documentMapper;
 
     @Override
-    public List<DocumentDto> getCenterDocumentList(long centerId, DocumentFilter filter) {
+    public List<DocumentDto> getCenterDocumentList(Long centerId, DocumentFilter filter) {
         Stream<Document> stream = documentRepository.findAllByCenterId(centerId).stream();
         stream = sortedStream(
                 filterStream(stream, filter), filter
@@ -30,12 +32,20 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<DocumentDto> getDistrictTeamDocumentList(long districtTeamId, DocumentFilter filter) {
+    public List<DocumentDto> getDistrictTeamDocumentList(Long districtTeamId, DocumentFilter filter) {
         Stream<Document> stream = documentRepository.findAllByCenterId(districtTeamId).stream();
         stream = sortedStream(
                 filterStream(stream, filter), filter
         );
         return stream.map(documentMapper::documentDto).toList();
+    }
+
+    @Override
+    public Long updateDocument(Long id, DocumentUpdateDto updateDto) {
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new DocumentNotFoundException(id.toString()));
+        document = documentMapper.document(document, updateDto);
+        return documentRepository.saveAndFlush(document).getId();
     }
 
     private Stream<Document> filterStream(Stream<Document> stream, DocumentFilter filter) {

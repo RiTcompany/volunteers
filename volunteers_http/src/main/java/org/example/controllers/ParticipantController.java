@@ -1,19 +1,17 @@
 package org.example.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.pojo.dto.CenterParticipantDto;
-import org.example.pojo.dto.DistrictParticipantDto;
-import org.example.pojo.dto.EventDto;
-import org.example.pojo.dto.EventParticipantDto;
-import org.example.pojo.dto.VolunteerDto;
-import org.example.pojo.filters.CenterParticipantFilter;
-import org.example.pojo.filters.DistrictParticipantFilter;
-import org.example.pojo.filters.EventParticipantFilter;
-import org.example.pojo.filters.VolunteerFilter;
+import org.example.pojo.dto.table.CenterParticipantDto;
+import org.example.pojo.dto.table.DistrictParticipantDto;
+import org.example.pojo.dto.table.EventParticipantDto;
+import org.example.pojo.dto.update.ParticipantUpdateDto;
+import org.example.pojo.dto.table.VolunteerDto;
+import org.example.pojo.filters.ParticipantFilter;
 import org.example.services.ParticipantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +24,15 @@ public class ParticipantController {
     private final ParticipantService participantService;
 
     @GetMapping("/volunteer")
-    public ResponseEntity<List<VolunteerDto>> getVolunteerList(@RequestBody VolunteerFilter filter) {
+    public ResponseEntity<List<VolunteerDto>> getVolunteerList(@RequestBody ParticipantFilter filter) {
         return ResponseEntity.ok(participantService.getVolunteerList(filter));
+    }
+
+    @PatchMapping("/volunteer/{id}")
+    public ResponseEntity<Long> updateVolunteer(
+            @PathVariable Long id, @RequestBody ParticipantUpdateDto updateDto
+    ) {
+        return ResponseEntity.ok(participantService.updateParticipant(id, updateDto));
     }
 
     @DeleteMapping("/volunteer/{id}")
@@ -37,21 +42,21 @@ public class ParticipantController {
 
     @GetMapping("/center_participant/{centerId}")
     public ResponseEntity<List<CenterParticipantDto>> getCenterParticipantList(
-            @PathVariable Long centerId, @RequestBody CenterParticipantFilter filter
+            @PathVariable Long centerId, @RequestBody ParticipantFilter filter
     ) {
         return ResponseEntity.ok(participantService.getCenterParticipantList(centerId, filter));
     }
 
     @GetMapping("/event_participant/{eventId}")
-    public ResponseEntity<List<EventParticipantDto>> getDistrictParticipantList(
-            @PathVariable Long eventId, @RequestBody EventParticipantFilter filter
+    public ResponseEntity<List<EventParticipantDto>> getEventParticipantList(
+            @PathVariable Long eventId, @RequestBody ParticipantFilter filter
     ) {
         return ResponseEntity.ok(participantService.getEventParticipantList(eventId, filter));
     }
 
     @GetMapping("/district_team_participant/{districtTeamId}")
     public ResponseEntity<List<DistrictParticipantDto>> getDistrictParticipantList(
-            @PathVariable Long districtTeamId, @RequestBody DistrictParticipantFilter filter
+            @PathVariable Long districtTeamId, @RequestBody ParticipantFilter filter
     ) {
         return ResponseEntity.ok(participantService.getDistrictParticipantList(districtTeamId, filter));
     }

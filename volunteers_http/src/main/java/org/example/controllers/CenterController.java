@@ -1,7 +1,7 @@
 package org.example.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.pojo.dto.CenterDto;
+import org.example.pojo.dto.table.CenterDto;
 import org.example.services.CenterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

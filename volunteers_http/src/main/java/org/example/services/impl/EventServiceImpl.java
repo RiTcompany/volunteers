@@ -1,8 +1,11 @@
 package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.entities.Event;
+import org.example.exceptions.EventNotFoundException;
 import org.example.mapper.EventMapper;
-import org.example.pojo.dto.EventDto;
+import org.example.pojo.dto.table.EventDto;
+import org.example.pojo.dto.update.EventUpdateDto;
 import org.example.repositories.EventRepository;
 import org.example.services.EventService;
 import org.springframework.stereotype.Service;
@@ -21,13 +24,21 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> getCenterEventList(long centerId) {
+    public List<EventDto> getCenterEventList(Long centerId) {
         return eventRepository.findAllByCenterId(centerId).stream().map(eventMapper::eventDto).toList();
     }
 
     @Override
     public Long addEvent(EventDto eventDto) {
         return eventRepository.saveAndFlush(eventMapper.event(eventDto)).getId();
+    }
+
+    @Override
+    public Long updateEvent(Long id, EventUpdateDto updateDto) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException(id.toString()));
+        event = eventMapper.event(event, updateDto);
+        return eventRepository.saveAndFlush(event).getId();
     }
 
     @Override

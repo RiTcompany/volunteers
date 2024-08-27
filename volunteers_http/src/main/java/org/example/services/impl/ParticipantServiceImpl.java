@@ -5,15 +5,14 @@ import org.example.DateUtil;
 import org.example.entities.Event;
 import org.example.entities.Volunteer;
 import org.example.enums.EColor;
+import org.example.exceptions.VolunteerNotFoundException;
 import org.example.mapper.ParticipialMapper;
-import org.example.pojo.dto.CenterParticipantDto;
-import org.example.pojo.dto.DistrictParticipantDto;
-import org.example.pojo.dto.EventParticipantDto;
-import org.example.pojo.dto.VolunteerDto;
-import org.example.pojo.filters.CenterParticipantFilter;
-import org.example.pojo.filters.DistrictParticipantFilter;
-import org.example.pojo.filters.EventParticipantFilter;
-import org.example.pojo.filters.VolunteerFilter;
+import org.example.pojo.dto.table.CenterParticipantDto;
+import org.example.pojo.dto.table.DistrictParticipantDto;
+import org.example.pojo.dto.table.EventParticipantDto;
+import org.example.pojo.dto.update.ParticipantUpdateDto;
+import org.example.pojo.dto.table.VolunteerDto;
+import org.example.pojo.filters.ParticipantFilter;
 import org.example.repositories.VolunteerRepository;
 import org.example.services.ParticipantService;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final ParticipialMapper participialMapper;
 
     @Override
-    public List<VolunteerDto> getVolunteerList(VolunteerFilter filter) {
+    public List<VolunteerDto> getVolunteerList(ParticipantFilter filter) {
         Stream<Volunteer> stream = volunteerRepository.findAll().stream();
 
         stream = filterByMinAge(stream, filter.getMinAge());
@@ -42,19 +41,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         stream = filterByLevel(stream, filter.getLevelList());
         stream = filterByCenter(stream, filter.getCenterIdList());
 
-        stream = sortByRankDesc(
-                sortByRankAsc(
-                        stream, filter.isOrderByRankAsc()
-                ), filter.isOrderByRankDesc()
-        );
-
-        stream = sortByDateDesc(
-                sortByDateAsc(
-                        stream, filter.isOrderByDateAsc()
-                ), filter.isOrderByDateDesc()
-        );
+        stream = sortByRank(stream, filter);
+        stream = sortByDate(stream, filter);
 
         return stream.map(participialMapper::volunteerDto).toList();
+    }
+
+    @Override
+    public Long updateParticipant(Long id, ParticipantUpdateDto updateDto) throws VolunteerNotFoundException {
+        Volunteer volunteer = volunteerRepository.findById(id)
+                .orElseThrow(() -> new VolunteerNotFoundException(id.toString()));
+        volunteer = participialMapper.volunteer(volunteer, updateDto);
+        return volunteerRepository.saveAndFlush(volunteer).getId();
     }
 
     @Override
@@ -64,7 +62,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public List<DistrictParticipantDto> getDistrictParticipantList(long districtTeamId, DistrictParticipantFilter filter) {
+    public List<DistrictParticipantDto> getDistrictParticipantList(Long districtTeamId, ParticipantFilter filter) {
         Stream<Volunteer> stream = volunteerRepository.findAllByDistrictTeamId(districtTeamId).stream();
 
         stream = filterByMinAge(stream, filter.getMinAge());
@@ -73,17 +71,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         stream = filterByColor(stream, filter.getColorList());
         stream = filterByEvent(stream, filter.getEventIdList());
 
-        stream = sortByDateDesc(
-                sortByDateAsc(
-                        stream, filter.isOrderByDateAsc()
-                ), filter.isOrderByDateDesc()
-        );
+        stream = sortByDate(stream, filter);
 
         return stream.map(participialMapper::districtParticipantDto).toList();
     }
 
     @Override
-    public List<EventParticipantDto> getEventParticipantList(long eventId, EventParticipantFilter filter) {
+    public DistrictParticipantDto updateDistrictParticipant(Long id, ParticipantUpdateDto updateDto) {
+        return null;
+    }
+
+    @Override
+    public List<EventParticipantDto> getEventParticipantList(Long eventId, ParticipantFilter filter) {
         Stream<Volunteer> stream = volunteerRepository.findAll().stream(); // TODO : filter by event
 
         stream = filterByMinAge(stream, filter.getMinAge());
@@ -93,23 +92,14 @@ public class ParticipantServiceImpl implements ParticipantService {
         stream = filterByTesting(stream, filter.getTesting());
         stream = filterByClothes(stream, filter.getHasClothes());
 
-        stream = sortByRankDesc(
-                sortByRankAsc(
-                        stream, filter.isOrderByRankAsc()
-                ), filter.isOrderByRankDesc()
-        );
-
-        stream = sortByDateDesc(
-                sortByDateAsc(
-                        stream, filter.isOrderByDateAsc()
-                ), filter.isOrderByDateDesc()
-        );
+        stream = sortByRank(stream, filter);
+        stream = sortByDate(stream, filter);
 
         return stream.map(participialMapper::eventParticipantDto).toList();
     }
 
     @Override
-    public List<CenterParticipantDto> getCenterParticipantList(long centerId, CenterParticipantFilter filter) {
+    public List<CenterParticipantDto> getCenterParticipantList(Long centerId, ParticipantFilter filter) {
         Stream<Volunteer> stream = volunteerRepository.findAllByCenterId(centerId).stream();
 
         stream = filterByMinAge(stream, filter.getMinAge());
@@ -121,19 +111,26 @@ public class ParticipantServiceImpl implements ParticipantService {
         stream = filterByColor(stream, filter.getColorList());
         stream = filterByEvent(stream, filter.getEventIdList());
 
-        stream = sortByRankDesc(
+        stream = sortByRank(stream, filter);
+        stream = sortByDate(stream, filter);
+
+        return stream.map(participialMapper::centerParticipantDto).toList();
+    }
+
+    private Stream<Volunteer> sortByRank(Stream<Volunteer> stream, ParticipantFilter filter) {
+        return sortByRankDesc(
                 sortByRankAsc(
                         stream, filter.isOrderByRankAsc()
                 ), filter.isOrderByRankDesc()
         );
+    }
 
-        stream = sortByDateDesc(
+    private Stream<Volunteer> sortByDate(Stream<Volunteer> stream, ParticipantFilter filter) {
+        return sortByDateDesc(
                 sortByDateAsc(
                         stream, filter.isOrderByDateAsc()
                 ), filter.isOrderByDateDesc()
         );
-
-        return stream.map(participialMapper::centerParticipantDto).toList();
     }
 
     private Stream<Volunteer> filterByMinAge(Stream<Volunteer> stream, Integer minAge) {

@@ -3,7 +3,7 @@ package org.example.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.entities.Equipment;
 import org.example.mapper.EquipmentMapper;
-import org.example.pojo.dto.EquipmentDto;
+import org.example.pojo.dto.table.EquipmentDto;
 import org.example.pojo.filters.EquipmentFilter;
 import org.example.repositories.EquipmentRepository;
 import org.example.services.EquipmentService;

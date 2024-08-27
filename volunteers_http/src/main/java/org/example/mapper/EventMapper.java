@@ -1,7 +1,8 @@
 package org.example.mapper;
 
 import org.example.entities.Event;
-import org.example.pojo.dto.EventDto;
+import org.example.pojo.dto.table.EventDto;
+import org.example.pojo.dto.update.EventUpdateDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +25,14 @@ public class EventMapper {
         event.setEndTime(eventDto.getEndTime());
         event.setLocation(eventDto.getLocation());
         event.setTeamLeader(eventDto.getTeamLeader());
+        return event;
+    }
+
+    public Event event(Event event, EventUpdateDto updateDto) {
+        if (updateDto.getTeamLeader() != null) {
+            event.setTeamLeader(updateDto.getTeamLeader());
+        }
+
         return event;
     }
 }

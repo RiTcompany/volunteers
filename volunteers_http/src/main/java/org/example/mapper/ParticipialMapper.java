@@ -5,11 +5,14 @@ import org.example.DateUtil;
 import org.example.entities.Event;
 import org.example.entities.Volunteer;
 import org.example.enums.EParticipant;
-import org.example.pojo.dto.CenterParticipantDto;
-import org.example.pojo.dto.DistrictParticipantDto;
-import org.example.pojo.dto.EventParticipantDto;
-import org.example.pojo.dto.LinkDto;
-import org.example.pojo.dto.VolunteerDto;
+import org.example.exceptions.CenterNotFoundException;
+import org.example.pojo.dto.table.CenterParticipantDto;
+import org.example.pojo.dto.table.DistrictParticipantDto;
+import org.example.pojo.dto.table.EventParticipantDto;
+import org.example.pojo.dto.table.LinkDto;
+import org.example.pojo.dto.update.ParticipantUpdateDto;
+import org.example.pojo.dto.table.VolunteerDto;
+import org.example.repositories.CenterRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParticipialMapper {
     private final LinkMapper linkMapper;
+    private final CenterRepository centerRepository;
 
     public VolunteerDto volunteerDto(Volunteer volunteer) {
         VolunteerDto volunteerDto = new VolunteerDto();
@@ -74,6 +78,28 @@ public class ParticipialMapper {
         centerParticipantDto.setInterview(volunteer.isHasInterview());
         centerParticipantDto.setLevel(volunteer.getLevel());
         return centerParticipantDto;
+    }
+
+    public Volunteer volunteer(Volunteer volunteer, ParticipantUpdateDto updateDto) {
+        if (updateDto.getColor() != null) {
+            volunteer.setColor(updateDto.getColor());
+        }
+
+        if (updateDto.getHasInterview() != null) {
+            volunteer.setHasInterview(updateDto.getHasInterview());
+        }
+
+        if (updateDto.getLevel() != null) {
+            volunteer.setLevel(updateDto.getLevel());
+        }
+
+        if (updateDto.getCenterId() != null) {
+            volunteer.setCenter(centerRepository.findById(updateDto.getCenterId())
+                    .orElseThrow(() -> new CenterNotFoundException(updateDto.getCenterId().toString()))
+            );
+        }
+
+        return volunteer;
     }
 
     private List<LinkDto> eventLinkList(List<Event> eventList) {

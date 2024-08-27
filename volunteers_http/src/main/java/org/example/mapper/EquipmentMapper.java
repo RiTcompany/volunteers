@@ -1,7 +1,7 @@
 package org.example.mapper;
 
 import org.example.entities.Equipment;
-import org.example.pojo.dto.EquipmentDto;
+import org.example.pojo.dto.table.EquipmentDto;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -2,7 +2,7 @@ package org.example.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.mapper.CenterMapper;
-import org.example.pojo.dto.CenterDto;
+import org.example.pojo.dto.table.CenterDto;
 import org.example.repositories.CenterRepository;
 import org.example.services.CenterService;
 import org.springframework.stereotype.Service;

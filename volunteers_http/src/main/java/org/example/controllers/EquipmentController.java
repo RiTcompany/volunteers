@@ -1,8 +1,7 @@
 package org.example.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.pojo.dto.CenterDto;
-import org.example.pojo.dto.EquipmentDto;
+import org.example.pojo.dto.table.EquipmentDto;
 import org.example.pojo.filters.EquipmentFilter;
 import org.example.services.EquipmentService;
 import org.springframework.http.ResponseEntity;
