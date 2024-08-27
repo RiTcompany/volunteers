@@ -16,6 +16,8 @@ import java.util.List;
 public interface ParticipantService {
     List<VolunteerDto> getVolunteerList(VolunteerFilter filter);
 
+    Long deleteVolunteer(Long id);
+
     List<DistrictParticipantDto> getDistrictParticipantList(long districtTeamId, DistrictParticipantFilter filter);
 
     List<EventParticipantDto> getEventParticipantList(long eventId, EventParticipantFilter filter);

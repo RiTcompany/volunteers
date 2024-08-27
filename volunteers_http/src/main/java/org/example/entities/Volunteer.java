@@ -109,8 +109,6 @@ public class Volunteer {
 
     private String level;
 
-    private Long centerId;
-
     private String comment;
 
     private boolean hasInterview;

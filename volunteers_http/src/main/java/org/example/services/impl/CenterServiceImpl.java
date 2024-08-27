@@ -19,4 +19,15 @@ public class CenterServiceImpl implements CenterService {
     public List<CenterDto> getCenterList() {
         return centerRepository.findAll().stream().map(centerMapper::centerDto).toList();
     }
+
+    @Override
+    public long addCenter(CenterDto centerDto) {
+        return centerRepository.saveAndFlush(centerMapper.center(centerDto)).getId();
+    }
+
+    @Override
+    public long deleteCenter(Long id) {
+        centerRepository.deleteById(id);
+        return id;
+    }
 }

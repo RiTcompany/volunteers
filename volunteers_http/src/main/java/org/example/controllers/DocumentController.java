@@ -19,14 +19,14 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @GetMapping("/center_document/{centerId}")
-    public ResponseEntity<List<DocumentDto>> getCenterList(
+    public ResponseEntity<List<DocumentDto>> getCenterDocumentList(
             @PathVariable Long centerId, @RequestBody DocumentFilter filter
     ) {
         return ResponseEntity.ok(documentService.getCenterDocumentList(centerId, filter));
     }
 
     @GetMapping("/district_team_document/{districtTeamId}")
-    public ResponseEntity<List<DocumentDto>> getDistrictTeamList(
+    public ResponseEntity<List<DocumentDto>> getDistrictTeamDocumentList(
             @PathVariable Long districtTeamId, @RequestBody DocumentFilter filter
     ) {
         return ResponseEntity.ok(documentService.getDistrictTeamDocumentList(districtTeamId, filter));

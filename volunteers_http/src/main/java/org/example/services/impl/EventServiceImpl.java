@@ -24,4 +24,15 @@ public class EventServiceImpl implements EventService {
     public List<EventDto> getCenterEventList(long centerId) {
         return eventRepository.findAllByCenterId(centerId).stream().map(eventMapper::eventDto).toList();
     }
+
+    @Override
+    public Long addEvent(EventDto eventDto) {
+        return eventRepository.saveAndFlush(eventMapper.event(eventDto)).getId();
+    }
+
+    @Override
+    public Long deleteEvent(Long id) {
+        eventRepository.deleteById(id);
+        return id;
+    }
 }

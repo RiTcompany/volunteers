@@ -10,4 +10,8 @@ public interface EventService {
     List<EventDto> getEventList();
 
     List<EventDto> getCenterEventList(long centerId);
+
+    Long addEvent(EventDto eventDto);
+
+    Long deleteEvent(Long id);
 }

@@ -26,6 +26,17 @@ public class EquipmentServiceImpl implements EquipmentService {
         return stream.map(equipmentMapper::equipmentDto).toList();
     }
 
+    @Override
+    public long addEquipment(EquipmentDto equipmentDto) {
+        return equipmentRepository.saveAndFlush(equipmentMapper.equipment(equipmentDto)).getId();
+    }
+
+    @Override
+    public long deleteEquipment(Long id) {
+        equipmentRepository.deleteById(id);
+        return id;
+    }
+
     private Stream<Equipment> filterByType(Stream<Equipment> stream, List<String> typeList) {
         if (typeList != null) {
             return stream.filter(equipment -> typeList.contains(equipment.getType()));

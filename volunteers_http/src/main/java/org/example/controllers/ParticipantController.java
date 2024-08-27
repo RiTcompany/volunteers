@@ -12,6 +12,7 @@ import org.example.pojo.filters.EventParticipantFilter;
 import org.example.pojo.filters.VolunteerFilter;
 import org.example.services.ParticipantService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,12 @@ public class ParticipantController {
     public ResponseEntity<List<VolunteerDto>> getVolunteerList(@RequestBody VolunteerFilter filter) {
         return ResponseEntity.ok(participantService.getVolunteerList(filter));
     }
+
+    @DeleteMapping("/volunteer/{id}")
+    public ResponseEntity<Long> deleteVolunteer(@PathVariable Long id) {
+        return ResponseEntity.ok(participantService.deleteVolunteer(id));
+    }
+
     @GetMapping("/center_participant/{centerId}")
     public ResponseEntity<List<CenterParticipantDto>> getCenterParticipantList(
             @PathVariable Long centerId, @RequestBody CenterParticipantFilter filter

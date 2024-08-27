@@ -18,6 +18,9 @@ public class Equipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "equipment_id")
+    private Long equipmentId;
+
     private String type;
 
     private int year;

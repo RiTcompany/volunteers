@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CenterDto {
+    private Long id;
     private String name;
     private int participantCount;
     private String location;

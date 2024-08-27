@@ -9,4 +9,8 @@ import java.util.List;
 @Service
 public interface EquipmentService {
     List<EquipmentDto> getEquipmentList(EquipmentFilter filter);
+
+    long addEquipment(EquipmentDto equipmentDto);
+
+    long deleteEquipment(Long id);
 }

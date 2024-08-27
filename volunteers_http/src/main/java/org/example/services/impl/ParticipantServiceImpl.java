@@ -58,6 +58,12 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    public Long deleteVolunteer(Long id) {
+        volunteerRepository.deleteById(id);
+        return id;
+    }
+
+    @Override
     public List<DistrictParticipantDto> getDistrictParticipantList(long districtTeamId, DistrictParticipantFilter filter) {
         Stream<Volunteer> stream = volunteerRepository.findAllByDistrictTeamId(districtTeamId).stream();
 
@@ -196,7 +202,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     private Stream<Volunteer> filterByCenter(Stream<Volunteer> stream, List<Long> centerIdList) {
         if (centerIdList != null) {
             stream = stream.filter(volunteer ->
-                    centerIdList.contains(volunteer.getCenterId())
+                    centerIdList.contains(volunteer.getCenter().getId())
             );
         }
 

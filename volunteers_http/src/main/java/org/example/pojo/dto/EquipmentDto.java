@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class EquipmentDto {
     private Long id;
+    private Long equipmentId;
     private String type;
     private int year;
     private String currentOwner;

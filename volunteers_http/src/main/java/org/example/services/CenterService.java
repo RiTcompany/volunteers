@@ -8,4 +8,8 @@ import java.util.List;
 @Service
 public interface CenterService {
     List<CenterDto> getCenterList();
+
+    long addCenter(CenterDto centerDto);
+
+    long deleteCenter(Long id);
 }
