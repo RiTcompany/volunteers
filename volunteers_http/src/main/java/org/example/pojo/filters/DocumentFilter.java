@@ -11,8 +11,6 @@ public class DocumentFilter {
     private Date startDate;
     private Date endDate;
     private Boolean approvalControl;
-    private Long centerId;
-    private Long districtTeamId;
     private boolean OrderByDateAsc;
     private boolean OrderByDateDesc;
 }

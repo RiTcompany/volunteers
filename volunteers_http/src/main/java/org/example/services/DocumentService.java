@@ -8,5 +8,7 @@ import java.util.List;
 
 @Service
 public interface DocumentService {
-    List<DocumentDto> getDocumentList(DocumentFilter filter);
+    List<DocumentDto> getCenterDocumentList(long centerId, DocumentFilter filter);
+
+    List<DocumentDto> getDistrictTeamDocumentList(long districtTeamId, DocumentFilter filter);
 }

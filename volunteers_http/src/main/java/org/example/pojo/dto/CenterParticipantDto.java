@@ -1,11 +1,15 @@
 package org.example.pojo.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.enums.EColor;
 
 import java.util.Date;
 
+@Getter
+@Setter
 public class CenterParticipantDto {
-    private int id;
+    private String id;
     private String fullName;
     private Date birthday;
     private String tgLink;

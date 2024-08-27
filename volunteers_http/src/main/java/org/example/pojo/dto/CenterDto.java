@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class CenterDto {
     private String name;
-    private int peopleCount;
-    private String address;
+    private int participantCount;
+    private String location;
     private String contact;
 }

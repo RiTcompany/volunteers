@@ -20,12 +20,7 @@ public class Center {
 
     private String name;
 
-    @Column(name = "participant_count")
-    private Integer participantCount;
-
     private String location;
 
     private String contacts;
-
-    private String link;
 }

@@ -36,5 +36,6 @@ public class Event {
     @Column(name = "team_leader")
     private String teamLeader;
 
-    private String link;
+    @Column(name = "center_id")
+    private Long centerId;
 }

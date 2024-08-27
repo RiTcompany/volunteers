@@ -5,6 +5,7 @@ import org.example.DateUtil;
 import org.example.entities.Event;
 import org.example.entities.Volunteer;
 import org.example.enums.EParticipant;
+import org.example.pojo.dto.CenterParticipantDto;
 import org.example.pojo.dto.DistrictParticipantDto;
 import org.example.pojo.dto.EventParticipantDto;
 import org.example.pojo.dto.LinkDto;
@@ -31,7 +32,6 @@ public class ParticipialMapper {
         volunteerDto.setRank(volunteer.getRank());
         volunteerDto.setHasInterview(volunteer.isHasInterview());
         volunteerDto.setLevel(volunteer.getLevel());
-        volunteerDto.setHeadquartersLink(linkMapper.headquarters(volunteer.getHeadquarters()));
         volunteerDto.setCenterLink(linkMapper.center(volunteer.getCenter()));
         return volunteerDto;
     }
@@ -60,6 +60,20 @@ public class ParticipialMapper {
         eventParticipantDto.setRank(volunteer.getRank());
         eventParticipantDto.setHasClothes(volunteer.getHasAnorak()); // TODO : так ли понял
         return eventParticipantDto;
+    }
+
+    public CenterParticipantDto centerParticipantDto(Volunteer volunteer) {
+        CenterParticipantDto centerParticipantDto = new CenterParticipantDto();
+        centerParticipantDto.setId(volunteer.getVolunteerId());
+        centerParticipantDto.setFullName(volunteer.getFullName());
+        centerParticipantDto.setBirthday(volunteer.getBirthday());
+        centerParticipantDto.setTgLink(volunteer.getTgLink());
+        centerParticipantDto.setVkLink(volunteer.getVk());
+        centerParticipantDto.setColor(volunteer.getColor());
+        centerParticipantDto.setRank(volunteer.getRank());
+        centerParticipantDto.setInterview(volunteer.isHasInterview());
+        centerParticipantDto.setLevel(volunteer.getLevel());
+        return centerParticipantDto;
     }
 
     private List<LinkDto> eventLinkList(List<Event> eventList) {
