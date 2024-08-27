@@ -20,8 +20,6 @@ public interface ParticipantService {
 
     List<DistrictParticipantDto> getDistrictParticipantList(Long districtTeamId, ParticipantFilter filter);
 
-    DistrictParticipantDto updateDistrictParticipant(Long id, ParticipantUpdateDto updateDto);
-
     List<EventParticipantDto> getEventParticipantList(Long eventId, ParticipantFilter filter);
 
     List<CenterParticipantDto> getCenterParticipantList(Long centerId, ParticipantFilter filter);

@@ -77,11 +77,6 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public DistrictParticipantDto updateDistrictParticipant(Long id, ParticipantUpdateDto updateDto) {
-        return null;
-    }
-
-    @Override
     public List<EventParticipantDto> getEventParticipantList(Long eventId, ParticipantFilter filter) {
         Stream<Volunteer> stream = volunteerRepository.findAll().stream(); // TODO : filter by event
 
