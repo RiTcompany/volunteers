@@ -1,10 +1,8 @@
 package org.example.mapper;
 
-import lombok.RequiredArgsConstructor;
 import org.example.entities.Document;
 import org.example.pojo.dto.table.DocumentDto;
 import org.example.pojo.dto.update.DocumentUpdateDto;
-import org.example.repositories.DocumentRepository;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +23,16 @@ public class DocumentMapper {
             document.setApprovalControl(updateDto.getApprovalControl());
         }
 
+        return document;
+    }
+
+    public Document document(DocumentDto documentDto) {
+        Document document = new Document();
+        document.setName(documentDto.getName());
+        document.setSender(documentDto.getSender());
+        document.setRecipient(documentDto.getRecipient());
+        document.setCreateDate(documentDto.getCreateDate());
+        document.setApprovalControl(documentDto.isApprovalControl());
         return document;
     }
 }

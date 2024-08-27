@@ -3,8 +3,8 @@ package org.example.services;
 import org.example.pojo.dto.table.CenterParticipantDto;
 import org.example.pojo.dto.table.DistrictParticipantDto;
 import org.example.pojo.dto.table.EventParticipantDto;
-import org.example.pojo.dto.update.ParticipantUpdateDto;
 import org.example.pojo.dto.table.VolunteerDto;
+import org.example.pojo.dto.update.ParticipantUpdateDto;
 import org.example.pojo.filters.ParticipantFilter;
 import org.springframework.stereotype.Service;
 

@@ -17,14 +17,14 @@ public class CenterMapper {
         centerDto.setName(center.getName());
         centerDto.setParticipantCount(volunteerRepository.countAllByCenterId(center.getId()));
         centerDto.setLocation(center.getLocation());
-        centerDto.setContact(centerDto.getContact());
+        centerDto.setContact(center.getContact());
         return centerDto;
     }
 
     public Center center(CenterDto centerDto) {
         Center center = new Center();
         center.setName(centerDto.getName());
-        center.setLocation(center.getLocation());
+        center.setLocation(centerDto.getLocation());
         center.setContact(centerDto.getContact());
         return center;
     }

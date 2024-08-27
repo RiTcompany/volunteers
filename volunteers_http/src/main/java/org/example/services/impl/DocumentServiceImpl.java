@@ -48,6 +48,11 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.saveAndFlush(document).getId();
     }
 
+    @Override
+    public Long addDocument(DocumentDto documentDto) {
+        return documentRepository.saveAndFlush(documentMapper.document(documentDto)).getId();
+    }
+
     private Stream<Document> filterStream(Stream<Document> stream, DocumentFilter filter) {
         return filterByEndDate(
                 filterByStartDate(

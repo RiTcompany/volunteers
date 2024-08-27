@@ -6,7 +6,6 @@ import org.example.pojo.filters.EquipmentFilter;
 import org.example.services.EquipmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,7 @@ import java.util.List;
 public class EquipmentController {
     private final EquipmentService equipmentService;
 
-    @GetMapping("/equipment")
+    @PostMapping("/all_equipment")
     public ResponseEntity<List<EquipmentDto>> getEquipmentList(@RequestBody EquipmentFilter filter) {
         return ResponseEntity.ok(equipmentService.getEquipmentList(filter));
     }

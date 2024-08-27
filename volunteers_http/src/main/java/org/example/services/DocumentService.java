@@ -14,4 +14,6 @@ public interface DocumentService {
     List<DocumentDto> getDistrictTeamDocumentList(Long districtTeamId, DocumentFilter filter);
 
     Long updateDocument(Long id, DocumentUpdateDto updateDto);
+
+    Long addDocument(DocumentDto documentDto);
 }

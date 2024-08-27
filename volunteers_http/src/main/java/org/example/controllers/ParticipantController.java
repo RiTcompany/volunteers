@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.example.pojo.dto.table.CenterParticipantDto;
 import org.example.pojo.dto.table.DistrictParticipantDto;
 import org.example.pojo.dto.table.EventParticipantDto;
-import org.example.pojo.dto.update.ParticipantUpdateDto;
 import org.example.pojo.dto.table.VolunteerDto;
+import org.example.pojo.dto.update.ParticipantUpdateDto;
 import org.example.pojo.filters.ParticipantFilter;
 import org.example.services.ParticipantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +23,7 @@ import java.util.List;
 public class ParticipantController {
     private final ParticipantService participantService;
 
-    @GetMapping("/volunteer")
+    @PostMapping("/volunteer")
     public ResponseEntity<List<VolunteerDto>> getVolunteerList(@RequestBody ParticipantFilter filter) {
         return ResponseEntity.ok(participantService.getVolunteerList(filter));
     }
@@ -40,21 +40,21 @@ public class ParticipantController {
         return ResponseEntity.ok(participantService.deleteVolunteer(id));
     }
 
-    @GetMapping("/center_participant/{centerId}")
+    @PostMapping("/center_participant/{centerId}")
     public ResponseEntity<List<CenterParticipantDto>> getCenterParticipantList(
             @PathVariable Long centerId, @RequestBody ParticipantFilter filter
     ) {
         return ResponseEntity.ok(participantService.getCenterParticipantList(centerId, filter));
     }
 
-    @GetMapping("/event_participant/{eventId}")
+    @PostMapping("/event_participant/{eventId}")
     public ResponseEntity<List<EventParticipantDto>> getEventParticipantList(
             @PathVariable Long eventId, @RequestBody ParticipantFilter filter
     ) {
         return ResponseEntity.ok(participantService.getEventParticipantList(eventId, filter));
     }
 
-    @GetMapping("/district_team_participant/{districtTeamId}")
+    @PostMapping("/district_team_participant/{districtTeamId}")
     public ResponseEntity<List<DistrictParticipantDto>> getDistrictParticipantList(
             @PathVariable Long districtTeamId, @RequestBody ParticipantFilter filter
     ) {
