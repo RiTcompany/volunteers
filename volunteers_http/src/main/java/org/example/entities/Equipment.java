@@ -12,20 +12,21 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "headquarters")
-public class Headquarters {
+@Table(name = "equipment")
+public class Equipment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(name = "equipment_id")
+    private Long equipmentId;
 
-    @Column(name = "participant_count")
-    private Integer participantCount;
+    private String type;
 
-    private String location;
+    private int year;
 
-    private String contacts;
+    @Column(name = "current_owner")
+    private String currentOwner;
 
-    private String link;
+//    TODO : add owner history
 }

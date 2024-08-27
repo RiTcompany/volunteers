@@ -1,6 +1,5 @@
 package org.example.entities;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,12 +19,7 @@ public class Center {
 
     private String name;
 
-    @Column(name = "participant_count")
-    private Integer participantCount;
-
     private String location;
 
-    private String contacts;
-
-    private String link;
+    private String contact;
 }
