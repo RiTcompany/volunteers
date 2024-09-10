@@ -19,7 +19,6 @@ public abstract class FileSendStep extends ConversationStep {
 
         downloadFile(chatHash.getId(), messageDto, sender);
         return finishStep(chatHash, sender, getAnswerMessageText());
-
     }
 
     protected abstract ResultDto isValidFile(MessageDto messageDto, AbsSender sender);

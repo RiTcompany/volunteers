@@ -70,7 +70,10 @@ public class SpbDistrictChoiceStep extends ChoiceStep {
 
     private KeyboardDto keyboardDto(ChatHash chatHash) {
         return keyboardMapper.keyboardDto(chatHash, getButtonList(
-                spbDistrictRepository.findAll().stream().map(SpbDistrict::getName).toList()
+                spbDistrictRepository.findAll().stream()
+                        .map(SpbDistrict::getName)
+                        .sorted()
+                        .toList()
         ));
     }
 

@@ -140,7 +140,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public void saveVolunteerId(long chatId, String volunteerId) throws EntityNotFoundException {
         Volunteer volunteer = getByChatId(chatId);
-        volunteer.setVolunteerId(volunteerId);
+        volunteer.setVolunteerId(Long.parseLong(volunteerId));
         volunteerRepository.saveAndFlush(volunteer);
     }
 

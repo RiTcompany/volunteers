@@ -37,6 +37,6 @@ public class EducationalSpecialtyInputStep extends InputStep {
     }
 
     private String getAnswerMessageText(String answer) {
-        return "Ваша специализация: <b>".concat(answer).concat("</b>");
+        return "Ваша специальность: <b>".concat(answer).concat("</b>");
     }
 }

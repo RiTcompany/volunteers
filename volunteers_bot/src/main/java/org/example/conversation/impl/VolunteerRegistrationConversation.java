@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class VolunteerRegistrationConversation extends AConversation {
     private static final EConversationStep START_STEP = EConversationStep.CITY_CHOICE;
-    private static final String FINISH_MESSAGE = "Благодарим тебя за регистрацию! Теперь ты можешь выбирать мероприятия для участия!";
+    private static final String FINISH_MESSAGE = "Благодарим вас за регистрацию! Теперь вы можете выбирать мероприятия для участия!";
 
     public VolunteerRegistrationConversation() {
         super(completeStepGraph(), START_STEP, FINISH_MESSAGE);

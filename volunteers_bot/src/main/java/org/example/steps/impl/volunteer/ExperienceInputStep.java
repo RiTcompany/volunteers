@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @RequiredArgsConstructor
 public class ExperienceInputStep extends InputStep {
     private final VolunteerService volunteerService;
-    private static final String PREPARE_MESSAGE_TEXT = "Расскажите, о своём волонтёрском опыте";
+    private static final String PREPARE_MESSAGE_TEXT = "Расскажите о своём волонтёрском опыте";
     private static final String ANSWER_MESSAGE_TEXT = "Спасибо за ваш ответ";
 
     @Override
